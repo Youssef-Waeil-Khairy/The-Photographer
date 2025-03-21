@@ -16,13 +16,16 @@ public class MovementSystem : MonoBehaviour
     public float minAngleRotation = -80f;
 
     private Rigidbody rb;
-    private Camera playerCamera;
+    private Transform playerCamera;
     private float rotationX = 0f;
+
+    //refrecne crouching script , to acces the same camera
+    private CrouchingSystem crouchingSystem;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        playerCamera = Camera.main;
+        playerCamera = Camera.main?.transform;
 
         //For mouse pointer to disapper
         Cursor.lockState = CursorLockMode.Locked;
@@ -30,12 +33,20 @@ public class MovementSystem : MonoBehaviour
 
         //to prevent roatations
         rb.freezeRotation = true;
+
+        //refrence
+        crouchingSystem = GetComponent<CrouchingSystem>();
     }
 
     void Update()
     {
         Move();
         MouseLook();
+
+        if (playerCamera != null)
+        {
+            Debug.Log("Camera Position: " + playerCamera.position);
+        }
     }
 
     void Move()
@@ -48,6 +59,13 @@ public class MovementSystem : MonoBehaviour
 
         //Detrmine speed
         float speed = Input.GetKey(KeyCode.LeftShift) ? runningSpeed : walkSpeed;
+
+        //if crouching then reduce the speed by 50
+        if (crouchingSystem != null && crouchingSystem.IsCrouching) 
+        {
+            speed *= 0.5f;
+        }
+
 
         rb.linearVelocity = new Vector3(move.x * speed, rb.linearVelocity.y, move.z * speed);
 
@@ -67,7 +85,7 @@ public class MovementSystem : MonoBehaviour
         rotationX -= mouseY;
         rotationX = Mathf.Clamp(rotationX, minAngleRotation,maxAngleRotation);
 
-        playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+        playerCamera.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
 
         transform.Rotate(Vector3.up * mouseX);
     }

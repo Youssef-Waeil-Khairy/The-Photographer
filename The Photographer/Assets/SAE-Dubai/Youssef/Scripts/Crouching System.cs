@@ -9,14 +9,18 @@ public class CrouchingSystem : MonoBehaviour
     public Transform crouchPoint;
     public float crouchSpeed = 5f;
 
-    private Camera playerCam;
+    private Transform playerCam;
     //0 being standing and 1 is fully crouched, so like (0.1 ,0.2 ,0.9 ,1.0)
     private float crouchLevel = 0f;
     private bool isCrouching = false;
 
+    //for movemnt script to acces it
+    public bool IsCrouching => isCrouching;
+    
+
     private void Start()
     {
-        playerCam = Camera.main;    
+        playerCam = Camera.main?.transform;  
     }
 
     private void Update()
@@ -41,10 +45,10 @@ public class CrouchingSystem : MonoBehaviour
         {
             float scroll = Input.GetAxis("Mouse ScrollWheel");
 
-            crouchLevel = scroll;
+            crouchLevel = Mathf.Clamp01(crouchLevel + scroll);
         }
 
         //the transiton between crouchign and standing
-        playerCam.transform.position = Vector3.Lerp(standingPoint.position, crouchPoint.position, crouchLevel);
+        playerCam.localPosition = Vector3.Lerp(standingPoint.position, crouchPoint.position, crouchLevel);
     }
 }
