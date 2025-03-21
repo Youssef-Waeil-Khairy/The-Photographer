@@ -6,7 +6,7 @@ public class CrouchingSystem : MonoBehaviour
     //when the player is standing aka normal position
     public Transform standingPoint;
     //when the player crouches to any positions the players wants
-    public Transform crouchPOint;
+    public Transform crouchPoint;
     public float crouchSpeed = 5f;
 
     private Camera playerCam;
@@ -21,13 +21,30 @@ public class CrouchingSystem : MonoBehaviour
 
     private void Update()
     {
-        
+        HandleCrouch();
     }
 
     void HandleCrouch()
     {
         //toogle crouch mode with left crtl
+        if (Input.GetKey(KeyCode.LeftControl)) 
+        {
+            isCrouching = true;
+        }
+        else
+        {
+            isCrouching = false;
+        }
+
         //adjust crouching using the wheel scroll
+        if(isCrouching) 
+        {
+            float scroll = Input.GetAxis("Mouse ScrollWheel");
+
+            crouchLevel = scroll;
+        }
+
         //the transiton between crouchign and standing
+        playerCam.transform.position = Vector3.Lerp(standingPoint.position, crouchPoint.position, crouchLevel);
     }
 }
