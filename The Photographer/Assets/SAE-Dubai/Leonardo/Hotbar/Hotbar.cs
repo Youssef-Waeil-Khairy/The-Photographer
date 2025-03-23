@@ -119,7 +119,7 @@ namespace SAE_Dubai.Leonardo.Hotbar
             {
                 slotImage.color = selectedSlotColor;
             }
-            else if (string.IsNullOrEmpty(equipmentSlots[selectedSlot]))
+            else if (string.IsNullOrEmpty(equipmentSlots[slotIndex]))
             {
                 slotImage.color = emptySlotColor;
             }
