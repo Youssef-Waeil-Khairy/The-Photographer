@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -69,8 +70,8 @@ namespace SAE_Dubai.Leonardo.Hotbar
                 GameObject slot = Instantiate(slotPrefab, slotsParent);
                 slot.name = "Slot_" + i;
 
-                Text slotNumber = slot.transform.Find("SlotNumber").GetComponent<Text>();
-                Text itemName = slot.transform.Find("ItemName").GetComponent<Text>();
+                TextMeshProUGUI slotNumber = slot.transform.Find("SlotNumber").GetComponent<TextMeshProUGUI>();
+                TextMeshProUGUI itemName = slot.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
                 Image slotImage = slot.GetComponent<Image>();
 
                 slotNumber.text = (i + 1).ToString();
@@ -141,7 +142,6 @@ namespace SAE_Dubai.Leonardo.Hotbar
         {
             if (slotIndex < 0)
             {
-                // TODO: Find empty slot
                 slotIndex = FindEmptySlot();
                 if (slotIndex < 0) return false;
             }
@@ -149,7 +149,7 @@ namespace SAE_Dubai.Leonardo.Hotbar
             equipmentSlots[slotIndex] = equipmentName;
 
             Transform slotTrasnform = slotsParent.GetChild(slotIndex);
-            Text itemName = slotTrasnform.Find("ItemName").GetComponent<Text>();
+            TextMeshProUGUI itemName = slotTrasnform.Find("ItemName").GetComponent<TextMeshProUGUI>();
             itemName.text = equipmentName;
 
             UpdateSlotUi(slotIndex);
@@ -176,7 +176,7 @@ namespace SAE_Dubai.Leonardo.Hotbar
             equipmentSlots[slotIndex] = null;
 
             Transform slotTrasnform = slotsParent.GetChild(slotIndex);
-            Text itemName = slotTrasnform.Find("ItemName").GetComponent<Text>();
+            TextMeshProUGUI itemName = slotTrasnform.Find("ItemName").GetComponent<TextMeshProUGUI>();
             itemName.text = "";
         }
 
