@@ -13,7 +13,7 @@ public class CameraSystem : MonoBehaviour
     [Header("- Current Settings")] [Range(100, 12800)]
     public int currentISO = 100;
 
-    [Range(1.4f, 22f)] public float currentAperture = 5.6f; // f-stop value
+    [Range(1.4f, 22f)] public float currentAperture = 5.6f;
 
     [Tooltip("- Current shutter speed in seconds")]
     public float currentShutterSpeed = 1 / 100f;
@@ -40,7 +40,7 @@ public class CameraSystem : MonoBehaviour
     public Camera mainCamera;
     private float _defaultFOV;
 
-    [Header("- Photo Storage")] public int maxPhotoCapacity = 36; // Like a film roll
+    [Header("- Photo Storage")] public int maxPhotoCapacity = 50; 
     public int remainingPhotos;
     public List<CapturedPhoto> photoAlbum = new List<CapturedPhoto>();
 
