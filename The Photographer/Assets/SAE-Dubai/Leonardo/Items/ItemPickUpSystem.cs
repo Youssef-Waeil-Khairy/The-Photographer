@@ -9,6 +9,7 @@ namespace SAE_Dubai.Leonardo.Items
         public float pickupRange = 3f;
         public LayerMask pickupLayer;
         public KeyCode pickupKey = KeyCode.E;
+        public float pickupHoldDuration = 0.2f;
     
         [Header("References")]
         private Camera _playerCamera;
@@ -17,6 +18,8 @@ namespace SAE_Dubai.Leonardo.Items
         public TMPro.TextMeshProUGUI pickupText;
     
         private IPickupable _currentTarget;
+        private float _pickupHoldTimer = 0f;
+        private bool _isHoldingPickup = false;
         
         private void Start()
         {
@@ -32,10 +35,49 @@ namespace SAE_Dubai.Leonardo.Items
         private void Update()
         {
             LookForItems();
-
-            if (_currentTarget != null && Input.GetKeyDown(pickupKey))
+            
+            // Added a delay to picking up items.
+            if (_currentTarget != null)
             {
-                PickupItem();
+                if (Input.GetKey(pickupKey))
+                {
+                    if (!_isHoldingPickup)
+                    {
+                        _isHoldingPickup = true;
+                        _pickupHoldTimer = 0f;
+                    }
+                    
+                    _pickupHoldTimer += Time.deltaTime;
+                    
+                    // Update UI to show progress.
+                    if (pickupPrompt != null && pickupText != null)
+                    {
+                        float progress = Mathf.Clamp01(_pickupHoldTimer / pickupHoldDuration);
+                        pickupText.text = $"Picking up {_currentTarget.GetItemName()} ({(progress * 100):0}%)";
+                    }
+                    
+                    // Check if held long enough.
+                    if (_pickupHoldTimer >= pickupHoldDuration)
+                    {
+                        PickupItem();
+                        _isHoldingPickup = false;
+                    }
+                }
+                else if (_isHoldingPickup)
+                {
+                    // Player released the key before completing pickup.
+                    _isHoldingPickup = false;
+                    
+                    // Reset UI.
+                    if (pickupPrompt != null && pickupText != null)
+                    {
+                        pickupText.text = $"Press E to pick up {_currentTarget.GetItemName()}";
+                    }
+                }
+            }
+            else
+            {
+                _isHoldingPickup = false;
             }
         }
 
@@ -59,7 +101,7 @@ namespace SAE_Dubai.Leonardo.Items
                     if (pickupPrompt != null)
                     {
                         pickupPrompt.SetActive(true);
-                        if (pickupText != null)
+                        if (pickupText != null && !_isHoldingPickup)
                         {
                             pickupText.text = $"Press E to pick up {pickupable.GetItemName()}";
                         }

@@ -71,7 +71,6 @@ namespace SAE_Dubai.Leonardo.Hotbar
 
         private void PlaceItem(ItemData item)
         {
-            // Ray from camera for placement.
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
 
             if (Physics.Raycast(ray, out RaycastHit hit, 5f))
@@ -82,13 +81,17 @@ namespace SAE_Dubai.Leonardo.Hotbar
                     Instantiate(item.ItemPrefab, hit.point, Quaternion.identity);
                     Debug.Log($"Placed item: {item.ItemName}");
 
-                    // Remove the item from hotbar after placing.
-                    int selectedSlot = _hotbar.GetSelectedSlotIndex();
-                    if (selectedSlot >= 0)
-                    {
-                        _hotbar.RemoveEquipment(selectedSlot);
-                    }
+                    RemoveSelectedItem();
                 }
+            }
+        }
+
+        private void RemoveSelectedItem()
+        {
+            int selectedSlot = _hotbar.GetSelectedSlotIndex();
+            if (selectedSlot >= 0)
+            {
+                _hotbar.RemoveEquipment(selectedSlot);
             }
         }
 
@@ -105,13 +108,7 @@ namespace SAE_Dubai.Leonardo.Hotbar
         private void ConsumeItem(ItemData item)
         {
             Debug.Log($"Consumed item: {item.ItemName}");
-
-            // Remove the item from the hotbar after consuming.
-            int selectedSlot = _hotbar.GetSelectedSlotIndex();
-            if (selectedSlot >= 0)
-            {
-                _hotbar.RemoveEquipment(selectedSlot);
-            }
+            RemoveSelectedItem();
         }
     }
 }

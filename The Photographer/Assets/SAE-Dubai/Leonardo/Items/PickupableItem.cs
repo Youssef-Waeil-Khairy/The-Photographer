@@ -4,7 +4,7 @@ namespace SAE_Dubai.Leonardo.Items
 {
     public class PickupableItem : MonoBehaviour, IPickupable
     {
-        [Header("Item Settings")]
+        [Header("- Item Settings")]
         public string itemName = "Item";
         public bool destroyOnPickup = true;
         public AudioClip pickupSound;
