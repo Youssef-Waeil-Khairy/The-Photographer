@@ -45,7 +45,7 @@ public class MovementSystem : MonoBehaviour
 
         if (playerCamera != null)
         {
-            Debug.Log("Camera Position: " + playerCamera.position);
+            //Debug.Log("Camera Position: " + playerCamera.position);
         }
     }
 
