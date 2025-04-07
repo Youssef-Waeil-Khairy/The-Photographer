@@ -31,9 +31,14 @@ namespace SAE_Dubai.Leonardo.Items
 
         private void Update()
         {
-            throw new NotImplementedException();
+            LookForItems();
+
+            if (_currentTarget != null && Input.GetKeyDown(pickupKey))
+            {
+                PickupItem();
+            }
         }
-        
+
         private void LookForItems()
         {
             // Refresh the target every time.
