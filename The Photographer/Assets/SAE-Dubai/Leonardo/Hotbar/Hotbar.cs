@@ -19,16 +19,16 @@ namespace SAE_Dubai.Leonardo.Hotbar
         [SerializeField] private Color selectedSlotColor = Color.green;
         [SerializeField] private Color emptySlotColor = Color.grey;
 
-        private string[] equipmentSlots;
+        private string[] _equipmentSlots;
 
         #region Unity Methods
 
         private void Start()
         {
-            equipmentSlots = new string[maxSlots];
+            _equipmentSlots = new string[maxSlots];
             for (int i = 0; i < maxSlots; i++)
             {
-                equipmentSlots[i] = "";
+                _equipmentSlots[i] = "";
             }
 
             CreateHotbarUi();
@@ -76,13 +76,13 @@ namespace SAE_Dubai.Leonardo.Hotbar
 
                 slotNumber.text = (i + 1).ToString();
 
-                itemName.text = equipmentSlots[i];
+                itemName.text = _equipmentSlots[i];
 
                 if (i == selectedSlot)
                 {
                     slotImage.color = selectedSlotColor;
                 }
-                else if (string.IsNullOrEmpty(equipmentSlots[i]))
+                else if (string.IsNullOrEmpty(_equipmentSlots[i]))
                 {
                     slotImage.color = emptySlotColor;
                 }
@@ -99,14 +99,14 @@ namespace SAE_Dubai.Leonardo.Hotbar
             UpdateSlotUi(prevSlot);
             UpdateSlotUi(selectedSlot);
 
-            if (!string.IsNullOrEmpty(equipmentSlots[selectedSlot]))
+            /*if (!string.IsNullOrEmpty(_equipmentSlots[selectedSlot]))
             {
-                Debug.Log($"Hotbar.cs: selected: {equipmentSlots[selectedSlot]}");
+                Debug.Log($"Hotbar.cs: selected: {_equipmentSlots[selectedSlot]}");
             }
             else
             {
                 Debug.Log($"Hotbar.cs: selected empty slot: {selectedSlot}");
-            }
+            }*/
         }
 
         private void UpdateSlotUi(int slotIndex)
@@ -120,7 +120,7 @@ namespace SAE_Dubai.Leonardo.Hotbar
             {
                 slotImage.color = selectedSlotColor;
             }
-            else if (string.IsNullOrEmpty(equipmentSlots[slotIndex]))
+            else if (string.IsNullOrEmpty(_equipmentSlots[slotIndex]))
             {
                 slotImage.color = emptySlotColor;
             }
@@ -138,6 +138,8 @@ namespace SAE_Dubai.Leonardo.Hotbar
             SelectSlot(newSlot);
         }
 
+        // Methods to call from outside.
+        
         public bool AddEquipment(string equipmentName, int slotIndex = -1)
         {
             if (slotIndex < 0)
@@ -146,7 +148,7 @@ namespace SAE_Dubai.Leonardo.Hotbar
                 if (slotIndex < 0) return false;
             }
 
-            equipmentSlots[slotIndex] = equipmentName;
+            _equipmentSlots[slotIndex] = equipmentName;
 
             Transform slotTrasnform = slotsParent.GetChild(slotIndex);
             TextMeshProUGUI itemName = slotTrasnform.Find("ItemName").GetComponent<TextMeshProUGUI>();
@@ -158,9 +160,9 @@ namespace SAE_Dubai.Leonardo.Hotbar
 
         private int FindEmptySlot()
         {
-            for (int i = 0; i < equipmentSlots.Length; i++)
+            for (int i = 0; i < _equipmentSlots.Length; i++)
             {
-                if (string.IsNullOrEmpty(equipmentSlots[i]))
+                if (string.IsNullOrEmpty(_equipmentSlots[i]))
                 {
                     return i;
                 }
@@ -173,7 +175,7 @@ namespace SAE_Dubai.Leonardo.Hotbar
         {
             if (slotIndex < 0 || slotIndex >= maxSlots) return;
 
-            equipmentSlots[slotIndex] = null;
+            _equipmentSlots[slotIndex] = null;
 
             Transform slotTrasnform = slotsParent.GetChild(slotIndex);
             TextMeshProUGUI itemName = slotTrasnform.Find("ItemName").GetComponent<TextMeshProUGUI>();
@@ -184,19 +186,19 @@ namespace SAE_Dubai.Leonardo.Hotbar
         {
             if (newSize <= maxSlots) return;
 
-            string[] oldEquipment = equipmentSlots;
+            string[] oldEquipment = _equipmentSlots;
 
             maxSlots = newSize;
-            equipmentSlots = new string[maxSlots];
+            _equipmentSlots = new string[maxSlots];
 
             for (int i = 0; i < oldEquipment.Length; i++)
             {
-                equipmentSlots[i] = oldEquipment[i];
+                _equipmentSlots[i] = oldEquipment[i];
             }
 
             for (int i = oldEquipment.Length; i < maxSlots; i++)
             {
-                equipmentSlots[i] = "";
+                _equipmentSlots[i] = "";
             }
 
             CreateHotbarUi();
@@ -204,12 +206,17 @@ namespace SAE_Dubai.Leonardo.Hotbar
 
         public string GetSelectedEquipment()
         {
-            if (selectedSlot >= 0 && selectedSlot < equipmentSlots.Length)
+            if (selectedSlot >= 0 && selectedSlot < _equipmentSlots.Length)
             {
-                return equipmentSlots[selectedSlot];
+                return _equipmentSlots[selectedSlot];
             }
 
             return "";
+        }
+
+        public int GetSelectedSlotIndex()
+        {
+            return selectedSlot;
         }
 
         #endregion
