@@ -107,7 +107,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
                     // Initialize the camera if needed.
                     if (activeCamera != null)
                     {
-                        activeCamera.InitializeCamera();
+                        //activeCamera.InitializeCamera();
                         Debug.Log($"CameraManager: Activated camera: {cameraName}");
                     }
                 }
@@ -125,7 +125,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 }
                 
                 // Call deselection method.
-                activeCamera.OnDeselected();
+                //activeCamera.OnDeselected();
                 
                 // Hide the camera.
                 activeCamera.gameObject.SetActive(false);

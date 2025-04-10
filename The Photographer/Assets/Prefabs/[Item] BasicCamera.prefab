@@ -1360,6 +1360,7 @@ GameObject:
   - component: {fileID: 5708554998372725898}
   - component: {fileID: 2743842226938047450}
   - component: {fileID: 5274522635987771459}
+  - component: {fileID: 2603599259830890249}
   m_Layer: 7
   m_Name: '[Item] BasicCamera'
   m_TagString: Untagged
@@ -1444,26 +1445,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CameraSettings: {fileID: 0}
+  cameraController: {fileID: 0}
   screenCamera: {fileID: 1188681389108499952}
   usingViewfinder: 0
   screenRenderer: {fileID: 8857597761819418619}
   screenOnMaterial: {fileID: 2100000, guid: c3f4f20e4cdf0524da6b96fca905d54f, type: 2}
   screenOffMaterial: {fileID: 2100000, guid: 2e0423d249d8c924294c0fcc529aaa8b, type: 2}
-  currentISO: 100
-  currentAperture: 5.6
-  currentShutterSpeed: 0.01
-  currentFocalLength: 50
-  autoExposure: 1
-  autoFocus: 1
   flashEnabled: 0
-  exposurePrecision: 0.8
   isInPhotoMode: 0
   photographyUI: {fileID: 6545793292740230583}
-  isoText: {fileID: 2558647953870322508}
-  apertureText: {fileID: 1883431906617558311}
-  shutterSpeedText: {fileID: 2498653729784992599}
-  focalLengthText: {fileID: 2040908971882584288}
-  exposureMeter: {fileID: 0}
   audioSource: {fileID: 0}
   mainCamera: {fileID: 0}
   maxPhotoCapacity: 50
@@ -1476,12 +1466,7 @@ MonoBehaviour:
   enterPhotoModeKey: 99
   takePhotoKey: 323
   focusKey: 324
-  increaseApertureKey: 111
-  decreaseApertureKey: 112
-  increaseShutterSpeedKey: 107
-  decreaseShutterSpeedKey: 108
-  increaseIsoKey: 105
-  decreaseIsoKey: 117
+  toggleViewfinderKey: 118
 --- !u!114 &5708554998372725898
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1549,3 +1534,70 @@ MonoBehaviour:
   shutterSound: {fileID: 0}
   focusSound: {fileID: 0}
   zoomSound: {fileID: 0}
+--- !u!114 &2603599259830890249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8164753298345851315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74c8da0ca985f674086b9f84efcfa07b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  physicalCamera: {fileID: 3384195725814463880}
+  baseISO: 100
+  currentISO: 100
+  isoStops: 64000000c8000000900100002003000040060000800c00000019000000320000
+  minAperture: 1.4
+  maxAperture: 16
+  currentAperture: 5.6
+  apertureStops:
+  - 1.4
+  - 2
+  - 2.8
+  - 4
+  - 5.6
+  - 8
+  - 11
+  - 16
+  - 22
+  currentShutterSpeed: 0.01
+  shutterSpeedStops:
+  - 0.00025
+  - 0.0005
+  - 0.001
+  - 0.002
+  - 0.004
+  - 0.008
+  - 0.016666668
+  - 0.033333335
+  - 0.06666667
+  - 0.125
+  - 0.25
+  - 0.5
+  - 1
+  - 2
+  - 4
+  - 8
+  - 15
+  - 30
+  minFocalLength: 18
+  maxFocalLength: 70
+  currentFocalLength: 50
+  increaseISOKey: 105
+  decreaseISOKey: 117
+  increaseApertureKey: 111
+  decreaseApertureKey: 112
+  increaseShutterSpeedKey: 107
+  decreaseShutterSpeedKey: 108
+  increaseFocalLengthKey: 46
+  decreaseFocalLengthKey: 44
+  isoText: {fileID: 2558647953870322508}
+  apertureText: {fileID: 1883431906617558311}
+  shutterSpeedText: {fileID: 2498653729784992599}
+  focalLengthText: {fileID: 2040908971882584288}
+  exposureMeter: {fileID: 0}
+  autoExposure: 1
+  exposurePrecision: 0.8

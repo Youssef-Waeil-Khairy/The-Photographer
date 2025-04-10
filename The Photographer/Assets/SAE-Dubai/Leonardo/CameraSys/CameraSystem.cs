@@ -1,83 +1,49 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace SAE_Dubai.Leonardo.CameraSys
 {
     public class CameraSystem : MonoBehaviour
     {
-        #region Variables
-        [Header("- Camera Setup")] 
-        public CameraSettings CameraSettings;
+        [Header("- Camera Setup")] public CameraSettings CameraSettings;
 
-        [Header("- Rendering")]
-        public Camera screenCamera;
+        [Header("- Camera Controller")] public CameraController cameraController;
+
+        [Header("- Rendering")] public Camera screenCamera;
         public bool usingViewfinder = false;
         public Renderer screenRenderer;
         public Material screenOnMaterial;
         public Material screenOffMaterial;
-        
-        [Header("- Current Settings")] [Range(100, 12800)]
-        public int currentISO = 100;
 
-        [Range(1.4f, 22f)] public float currentAperture = 5.6f;
-
-        [Tooltip("- Current shutter speed in seconds")]
-        public float currentShutterSpeed = 1 / 100f;
-
-        [Tooltip("- Current focal length in mm")]
-        public float currentFocalLength = 50f;
-
-        [Header("- Mode Settings")] public bool autoExposure = true;
-        public bool autoFocus = true;
-        public bool flashEnabled = false;
-        [Range(0.1f, 1f)] public float exposurePrecision = 0.8f;
+        [Header("- Mode Settings")] public bool flashEnabled = false;
 
         [Header("- State")] public bool isInPhotoMode = false;
         private bool _isFocusing = false;
         private bool _isCapturing = false;
 
         [Header("- UI References")] public GameObject photographyUI;
-        public TextMeshProUGUI isoText;
-        public TextMeshProUGUI apertureText;
-        public TextMeshProUGUI shutterSpeedText;
-        public TextMeshProUGUI focalLengthText;
-        public Image exposureMeter;
 
         [Header("- References")] public AudioSource audioSource;
         public Camera mainCamera;
         private float _defaultFOV;
 
-        [Header("- Photo Storage")] public int maxPhotoCapacity = 50; 
+        [Header("- Photo Storage")] public int maxPhotoCapacity = 50;
         public int remainingPhotos;
         public List<CapturedPhoto> photoAlbum = new List<CapturedPhoto>();
 
         [Header("- Quality Settings")] [Range(0.1f, 1f)]
         public float focusPrecision = 0.9f;
-        
-        [Header("- Camera Componentes")]
-        public Camera viewfinderCamera;
+
+        [Header("- Camera Components")] public Camera viewfinderCamera;
         public Canvas settingsCanvas;
-        public bool useViewfinder; 
+        public bool useViewfinder;
 
-
-        /// <summary>
-        /// The input keys are just for now. TODO: Later we'll make the player actually click on the camera buttons as if physical.
-        /// </summary>
         [Header("- Input keys")] public KeyCode enterPhotoModeKey = KeyCode.C;
-
         public KeyCode takePhotoKey = KeyCode.Mouse0;
         public KeyCode focusKey = KeyCode.Mouse1;
-        public KeyCode increaseApertureKey = KeyCode.O;
-        public KeyCode decreaseApertureKey = KeyCode.P;
-        public KeyCode increaseShutterSpeedKey = KeyCode.K;
-        public KeyCode decreaseShutterSpeedKey = KeyCode.L;
-        public KeyCode increaseIsoKey = KeyCode.I;
-        public KeyCode decreaseIsoKey = KeyCode.U;
-        #endregion
-        
+        public KeyCode toggleViewfinderKey = KeyCode.V;
+
         private void Start()
         {
             if (mainCamera == null)
@@ -97,8 +63,28 @@ namespace SAE_Dubai.Leonardo.CameraSys
             _defaultFOV = mainCamera.fieldOfView;
 
             remainingPhotos = maxPhotoCapacity;
+            
+            if (photographyUI != null)
+            {
+                photographyUI.SetActive(false);
+            }
 
-            InitializeCamera();
+            if (cameraController == null)
+            {
+                cameraController = GetComponent<CameraController>();
+                if (cameraController == null && screenCamera != null)
+                {
+                    cameraController = screenCamera.GetComponent<CameraController>();
+                }
+
+                if (cameraController == null)
+                {
+                    Debug.LogWarning(
+                        "CameraSystem: No CameraController found. Camera parameter adjustment will not work.");
+                }
+            }
+
+            InitializeCameraSettings();
         }
 
         private void Update()
@@ -107,8 +93,8 @@ namespace SAE_Dubai.Leonardo.CameraSys
             {
                 TogglePhotoMode();
             }
-    
-            if (Input.GetKeyDown(KeyCode.V) && isInPhotoMode)
+
+            if (Input.GetKeyDown(toggleViewfinderKey) && isInPhotoMode)
             {
                 ToggleViewMode();
             }
@@ -117,78 +103,59 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 return;
 
             HandlePhotoModeInputs();
-    
-            UpdatePhysicalCameraSettings();
-
-            UpdatePhotoUI();
         }
 
-        public void InitializeCamera()
-        {
-            // Initialize camera settings.
-            InitializeCameraSettings();
-    
-            // Make sure the camera is turned off at first.
-            isInPhotoMode = false;
-    
-            // Reset cameras to initial state.
-            if (viewfinderCamera != null) viewfinderCamera.enabled = false;
-            if (screenCamera != null) screenCamera.enabled = false;
-    
-            // Set screen material.
-            if (screenRenderer != null && screenOffMaterial != null)
-            {
-                screenRenderer.material = screenOffMaterial;
-            }
-    
-            // Hide photography UI.
-            if (photographyUI != null)
-            {
-                photographyUI.SetActive(false);
-            }
-    
-            // Reset FOV.
-            if (mainCamera != null)
-            {
-                mainCamera.fieldOfView = _defaultFOV;
-            }
-    
-            Debug.Log($"Camera initialized: {CameraSettings.modelName}");
-        }
-        
-        // TODO: add the actual settings -----------------------------------------------------------------------------------------------------------------------
         private void InitializeCameraSettings()
         {
-            // Set defaults based on camera type
-            switch (CameraSettings.cameraType)
+            if (CameraSettings != null)
             {
-                case CameraModel.Beginner:
-                    autoExposure = true;
-                    autoFocus = true;
+                switch (CameraSettings.cameraType)
+                {
+                    case CameraModel.Beginner:
+                        if (cameraController != null)
+                        {
+                            cameraController.autoExposure = true;
+                            cameraController.currentISO = CameraSettings.baseISO;
+                            cameraController.currentAperture = 5.6f;
+                            cameraController.currentShutterSpeed = 1 / 125f;
+                            cameraController.currentFocalLength = CameraSettings.focalLengthMin;
+                        }
 
-                    // TODO: MORE AUTOMATIC SETTINGS HERE
+                        break;
 
-                    break;
+                    case CameraModel.Intermediate:
+                        if (cameraController != null)
+                        {
+                            cameraController.autoExposure = false;
+                            cameraController.currentISO = CameraSettings.baseISO;
+                            cameraController.currentAperture = 4f;
+                            cameraController.currentShutterSpeed = 1 / 250f;
+                            cameraController.currentFocalLength = CameraSettings.focalLengthMin;
+                        }
 
-                case CameraModel.Intermediate:
-                    autoExposure = false;
+                        break;
 
-                    autoFocus = true;
-                    // TODO: ADJUST MANUAL OPTIONS
+                    case CameraModel.Professional:
+                        if (cameraController != null)
+                        {
+                            cameraController.autoExposure = false;
+                            cameraController.currentISO = CameraSettings.baseISO;
+                            cameraController.currentAperture = CameraSettings.minAperture;
+                            cameraController.currentShutterSpeed = 1 / 500f;
+                            cameraController.currentFocalLength = CameraSettings.focalLengthMin;
+                        }
 
-                    break;
+                        break;
+                }
 
-                case CameraModel.Professional:
-                    autoExposure = false;
-                    autoFocus = false;
-                    break;
+                if (cameraController != null)
+                {
+                    cameraController.minAperture = CameraSettings.minAperture;
+                    cameraController.maxAperture = CameraSettings.maxAperture;
+                    cameraController.minFocalLength = CameraSettings.focalLengthMin;
+                    cameraController.maxFocalLength = CameraSettings.focalLengthMax;
+                }
             }
-
-            currentISO = CameraSettings.baseISO;
-            currentAperture = (CameraSettings.minAperture + CameraSettings.maxAperture) / 2;
-            currentShutterSpeed =
-                1 / 125f; // This is a standard value used to take pictures, it's usually the minimum shutter speed photographers go.
-            currentFocalLength = CameraSettings.focalLengthMin;
         }
 
         public void TogglePhotoMode()
@@ -198,12 +165,12 @@ namespace SAE_Dubai.Leonardo.CameraSys
             if (isInPhotoMode)
             {
                 Debug.Log("CameraSystem.cs: Entered photography mode");
-        
+
                 if (usingViewfinder)
                 {
                     if (viewfinderCamera != null) viewfinderCamera.enabled = true;
                     if (screenCamera != null) screenCamera.enabled = false;
-            
+
                     if (screenRenderer != null && screenOffMaterial != null)
                     {
                         screenRenderer.material = screenOffMaterial;
@@ -213,50 +180,58 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 {
                     if (viewfinderCamera != null) viewfinderCamera.enabled = false;
                     if (screenCamera != null) screenCamera.enabled = true;
-            
+
                     if (screenRenderer != null && screenOnMaterial != null)
                     {
                         screenRenderer.material = screenOnMaterial;
                     }
                 }
-        
+
                 if (photographyUI != null)
                 {
                     photographyUI.SetActive(true);
+                }
+
+                if (cameraController != null)
+                {
+                    cameraController.SetActive(true);
                 }
             }
             else
             {
                 Debug.Log("CameraSystem.cs: Exited photography mode");
-        
+
                 if (viewfinderCamera != null) viewfinderCamera.enabled = false;
                 if (screenCamera != null) screenCamera.enabled = false;
-        
+
                 if (screenRenderer != null && screenOffMaterial != null)
                 {
                     screenRenderer.material = screenOffMaterial;
                 }
-        
+
                 if (photographyUI != null)
                 {
                     photographyUI.SetActive(false);
                 }
-        
+
                 mainCamera.fieldOfView = _defaultFOV;
+
+                if (cameraController != null)
+                {
+                    cameraController.SetActive(false);
+                }
             }
-        }        
-        
+        }
+
         public void ToggleViewMode()
         {
             usingViewfinder = !usingViewfinder;
-    
+
             if (usingViewfinder)
             {
-                // Using viewfinder, disable screen camera.
                 if (viewfinderCamera != null) viewfinderCamera.enabled = true;
                 if (screenCamera != null) screenCamera.enabled = false;
-        
-                // Turn off screen (idk if this helps with performance but I'm doing it anyways).
+
                 if (screenRenderer != null && screenOffMaterial != null)
                 {
                     screenRenderer.material = screenOffMaterial;
@@ -264,51 +239,29 @@ namespace SAE_Dubai.Leonardo.CameraSys
             }
             else
             {
-                // Using screen, disable viewfinder camera.
                 if (viewfinderCamera != null) viewfinderCamera.enabled = false;
                 if (screenCamera != null) screenCamera.enabled = true;
-        
-                // Turn on screen.
+
                 if (screenRenderer != null && screenOnMaterial != null)
                 {
                     screenRenderer.material = screenOnMaterial;
                 }
             }
         }
-        
-        private void UpdatePhysicalCameraSettings()
-        {
-            if (screenCamera != null)
-            {
-                screenCamera.iso = currentISO;
-        
-                screenCamera.aperture = currentAperture;
-        
-                screenCamera.focalLength = currentFocalLength;
-        
-                // TODO: Unity's value is in seconds, so a conversion might be needed if things are looking weird.
-                screenCamera.shutterSpeed = currentShutterSpeed;
-            }
-    
-            // Same for viewfinder.
-            if (viewfinderCamera != null)
-            {
-                viewfinderCamera.iso = currentISO;
-                viewfinderCamera.aperture = currentAperture;
-                viewfinderCamera.focalLength = currentFocalLength;
-                viewfinderCamera.shutterSpeed = currentShutterSpeed;
-            }
-        }
-        
+
         private void HandlePhotoModeInputs()
         {
-
-            // Take Photo.
             if (Input.GetKeyDown(takePhotoKey) && !_isCapturing)
             {
                 CapturePhoto();
             }
+
+            if (Input.GetKeyDown(focusKey) && !_isFocusing)
+            {
+                StartCoroutine(FocusEffect());
+            }
         }
+
         private void CapturePhoto()
         {
             if (remainingPhotos <= 0)
@@ -319,87 +272,88 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
             _isCapturing = true;
 
-            // Play shutter sound
             if (CameraSettings.shutterSound != null && audioSource != null)
             {
                 audioSource.PlayOneShot(CameraSettings.shutterSound);
             }
 
-            // Capture the photo
             StartCoroutine(CapturePhotoEffect());
         }
 
         private IEnumerator CapturePhotoEffect()
         {
-            // Flash effect if enabled
             if (flashEnabled && CameraSettings.hasBuiltInFlash)
             {
-                // TODO: Add flash effect
+                // TODO: Add flash effect (could be a bright white flash overlay)
             }
 
-            // Calculate photo quality
-            //float photoQuality = CalculatePhotoQuality();
-
-            // Create new photo data
             CapturedPhoto newPhoto = new CapturedPhoto
             {
-                TimeStamp = System.DateTime.Now,
-                iso = currentISO,
-                aperture = currentAperture,
-                shutterSpeed = currentShutterSpeed,
-                focalLength = currentFocalLength,
-                //quality = photoQuality
+                TimeStamp = System.DateTime.Now
             };
 
-            // Add to album
+            if (cameraController != null)
+            {
+                newPhoto.iso = cameraController.currentISO;
+                newPhoto.aperture = cameraController.currentAperture;
+                newPhoto.shutterSpeed = cameraController.currentShutterSpeed;
+                newPhoto.focalLength = cameraController.currentFocalLength;
+
+                newPhoto.quality = CalculatePhotoQuality();
+            }
+
             photoAlbum.Add(newPhoto);
 
-            // Decrease remaining photos
             remainingPhotos--;
-
-            // Visual effect - brief screen darkening
-            // TODO: Add screen darkening effect
 
             yield return new WaitForSeconds(0.5f);
 
             _isCapturing = false;
 
-            Debug.Log($"Photo captured, {remainingPhotos} photos remaining.");
+            Debug.Log($"Photo captured, quality: {newPhoto.quality:F2}, {remainingPhotos} photos remaining.");
         }
-    
 
-        private void UpdatePhotoUI()
+        private IEnumerator FocusEffect()
         {
-            if (photographyUI == null)
-                return;
+            _isFocusing = true;
 
-            // Update text displays.
-            if (isoText != null)
-                isoText.text = $"ISO: {currentISO}";
-
-            if (apertureText != null)
-                apertureText.text = $"F-Stop: f/{currentAperture}";
-
-            if (shutterSpeedText != null)
+            if (CameraSettings.focusSound != null && audioSource != null)
             {
-                string speedDisplay = currentShutterSpeed < 1f
-                    ? $"1/{Mathf.Round(1f / currentShutterSpeed)}"
-                    : $"{currentShutterSpeed}s";
-                shutterSpeedText.text = $"Shutter: {speedDisplay}";
+                audioSource.PlayOneShot(CameraSettings.focusSound);
+            }
+            
+            yield return new WaitForSeconds(0.3f);
+
+            _isFocusing = false;
+            Debug.Log("Camera focused");
+        }
+
+        private float CalculatePhotoQuality()
+        {
+            float quality = 0.5f; // A base one.
+
+            if (cameraController != null)
+            {
+
+                float isoFactor = 1.0f - Mathf.InverseLerp(100, 12800, cameraController.currentISO);
+
+                float apertureFactor;
+                if (cameraController.currentAperture < 4.0f)
+                    apertureFactor = Mathf.InverseLerp(1.4f, 4.0f, cameraController.currentAperture);
+                else if (cameraController.currentAperture > 11.0f)
+                    apertureFactor = 1.0f - Mathf.InverseLerp(11.0f, 22.0f, cameraController.currentAperture);
+                else
+                    apertureFactor = 1.0f;
+
+                float shutterFactor = cameraController.currentShutterSpeed < 1 / 30f
+                    ? 1.0f
+                    : Mathf.InverseLerp(1 / 30f, 1.0f, cameraController.currentShutterSpeed);
+
+                quality = 0.4f * isoFactor + 0.4f * apertureFactor + 0.2f * shutterFactor;
+                quality = Mathf.Clamp01(quality);
             }
 
-            if (focalLengthText != null)
-                focalLengthText.text = $"Focal Length: {currentFocalLength}mm";
-        }
-        
-        public void OnDeselected()
-        {
-            if (isInPhotoMode)
-            {
-                TogglePhotoMode();
-            }
-    
-            // TODO: If any other clean-up stuff is needed.
+            return quality;
         }
     }
 }
