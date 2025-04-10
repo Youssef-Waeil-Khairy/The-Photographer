@@ -12,6 +12,7 @@ public class ComputerUI : MonoBehaviour
     {
         PlayerObject.SetActive(false);
         ComputerCamera.SetActive(true);
+        Cursor.lockState = CursorLockMode.Confined;
     }
 
     // Update is called once per frame
@@ -25,11 +26,16 @@ public class ComputerUI : MonoBehaviour
             {
                 ComputerCamera.SetActive(false);
                 PlayerObject.SetActive(true);
+                Cursor.lockState = CursorLockMode.Confined;
+                Cursor.visible = true;
             }
             else
             {
                 ComputerCamera.SetActive(true);
                 PlayerObject.SetActive(false);
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+
             }
         }
     }
