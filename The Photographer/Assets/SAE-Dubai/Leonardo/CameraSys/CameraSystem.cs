@@ -8,6 +8,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
 {
     public class CameraSystem : MonoBehaviour
     {
+        #region Variables
         [Header("- Camera Setup")] public CameraSettings CameraSettings;
 
         [Header("- Rendering")]
@@ -74,7 +75,8 @@ namespace SAE_Dubai.Leonardo.CameraSys
         public KeyCode decreaseShutterSpeedKey = KeyCode.L;
         public KeyCode increaseIsoKey = KeyCode.I;
         public KeyCode decreaseIsoKey = KeyCode.U;
-
+        #endregion
+        
         private void Start()
         {
             if (mainCamera == null)
@@ -93,17 +95,9 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
             _defaultFOV = mainCamera.fieldOfView;
 
-            // Initialize remaining photos.
             remainingPhotos = maxPhotoCapacity;
 
-            // Hide photography UI at start
-            if (photographyUI != null)
-            {
-                photographyUI.SetActive(false);
-            }
-
-            // Initialize camera settings based on type
-            InitializeCameraSettings();
+            InitializeCamera();
         }
 
         private void Update()
@@ -128,6 +122,39 @@ namespace SAE_Dubai.Leonardo.CameraSys
             UpdatePhotoUI();
         }
 
+        public void InitializeCamera()
+        {
+            // Initialize camera settings.
+            InitializeCameraSettings();
+    
+            // Make sure the camera is turned off at first.
+            isInPhotoMode = false;
+    
+            // Reset cameras to initial state.
+            if (viewfinderCamera != null) viewfinderCamera.enabled = false;
+            if (screenCamera != null) screenCamera.enabled = false;
+    
+            // Set screen material.
+            if (screenRenderer != null && screenOffMaterial != null)
+            {
+                screenRenderer.material = screenOffMaterial;
+            }
+    
+            // Hide photography UI.
+            if (photographyUI != null)
+            {
+                photographyUI.SetActive(false);
+            }
+    
+            // Reset FOV.
+            if (mainCamera != null)
+            {
+                mainCamera.fieldOfView = _defaultFOV;
+            }
+    
+            Debug.Log($"Camera initialized: {CameraSettings.modelName}");
+        }
+        
         // TODO: add the actual settings -----------------------------------------------------------------------------------------------------------------------
         private void InitializeCameraSettings()
         {
@@ -362,6 +389,16 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
             if (focalLengthText != null)
                 focalLengthText.text = $"Focal Length: {currentFocalLength}mm";
+        }
+        
+        public void OnDeselected()
+        {
+            if (isInPhotoMode)
+            {
+                TogglePhotoMode();
+            }
+    
+            // TODO: If any other clean-up stuff is needed.
         }
     }
 }
