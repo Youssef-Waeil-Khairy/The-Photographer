@@ -162,13 +162,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 313772182920917362}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: -0.0224, z: 0.0147}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 87990976430386877}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!20 &1188681389108499952
 Camera:
   m_ObjectHideFlags: 0
@@ -1112,7 +1112,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5529326556754094000
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1359,6 +1359,7 @@ GameObject:
   - component: {fileID: 644998913508302845}
   - component: {fileID: 5708554998372725898}
   - component: {fileID: 2743842226938047450}
+  - component: {fileID: 5274522635987771459}
   m_Layer: 7
   m_Name: '[Item] BasicCamera'
   m_TagString: Untagged
@@ -1442,6 +1443,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 633cae69c252414448ee95e411d77aa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CameraSettings: {fileID: 0}
   screenCamera: {fileID: 1188681389108499952}
   usingViewfinder: 0
   screenRenderer: {fileID: 8857597761819418619}
@@ -1455,7 +1457,7 @@ MonoBehaviour:
   autoFocus: 1
   flashEnabled: 0
   exposurePrecision: 0.8
-  isInPhotoMode: 1
+  isInPhotoMode: 0
   photographyUI: {fileID: 6545793292740230583}
   isoText: {fileID: 2558647953870322508}
   apertureText: {fileID: 1883431906617558311}
@@ -1516,3 +1518,34 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.3, y: 0.3, z: 0.2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5274522635987771459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8164753298345851315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40aff62cdb3172f4daceac3cd7116138, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modelName: Basic Camera
+  cameraType: 0
+  manufacturer: Leo Epic Hardware
+  baseISO: 100
+  minAperture: 1.4
+  maxAperture: 16
+  minShutterSpeedFraction: 4000
+  maxShutterSpeed: 30
+  hasZoom: 1
+  focalLengthMin: 24
+  focalLengthMax: 70
+  hasAutoFocus: 1
+  hasImageStabilization: 0
+  hasBuiltInFlash: 1
+  cameraSprite: {fileID: 0}
+  cameraModel3D: {fileID: 0}
+  shutterSound: {fileID: 0}
+  focusSound: {fileID: 0}
+  zoomSound: {fileID: 0}

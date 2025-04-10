@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace SAE_Dubai.Leonardo.CameraSys
 {
-    public class CameraSettings
+    public class CameraSettings : MonoBehaviour
     {
         [Header("- Basic Settings")]
         public string modelName = "Default Camera";

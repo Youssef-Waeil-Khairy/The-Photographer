@@ -9,7 +9,8 @@ namespace SAE_Dubai.Leonardo.CameraSys
     public class CameraSystem : MonoBehaviour
     {
         #region Variables
-        [Header("- Camera Setup")] public CameraSettings CameraSettings;
+        [Header("- Camera Setup")] 
+        public CameraSettings CameraSettings;
 
         [Header("- Rendering")]
         public Camera screenCamera;
