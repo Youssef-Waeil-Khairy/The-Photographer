@@ -2225,17 +2225,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 633cae69c252414448ee95e411d77aa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  screenCamera: {fileID: 0}
+  usingViewfinder: 0
+  screenRenderer: {fileID: 0}
+  screenOnMaterial: {fileID: 0}
+  screenOffMaterial: {fileID: 0}
   currentISO: 100
-  viewfinderCamera: {fileID: 0}
-  lcdScreenCamera: {fileID: 0}
-  settingsCanvas: {fileID: 0}
-  useViewfinder: 0
   currentAperture: 5.6
   currentShutterSpeed: 0.01
   currentFocalLength: 50
   autoExposure: 1
   autoFocus: 1
   flashEnabled: 0
+  exposurePrecision: 0.8
   isInPhotoMode: 0
   photographyUI: {fileID: 0}
   isoText: {fileID: 0}
@@ -2249,7 +2251,9 @@ MonoBehaviour:
   remainingPhotos: 0
   photoAlbum: []
   focusPrecision: 0.9
-  exposurePrecision: 0.8
+  viewfinderCamera: {fileID: 0}
+  settingsCanvas: {fileID: 0}
+  useViewfinder: 0
   enterPhotoModeKey: 99
   takePhotoKey: 323
   focusKey: 324
@@ -3132,18 +3136,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 633cae69c252414448ee95e411d77aa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  screenCamera: {fileID: 892798153}
+  usingViewfinder: 0
+  screenRenderer: {fileID: 2146623937}
+  screenOnMaterial: {fileID: 2100000, guid: c3f4f20e4cdf0524da6b96fca905d54f, type: 2}
+  screenOffMaterial: {fileID: 2100000, guid: 2e0423d249d8c924294c0fcc529aaa8b, type: 2}
   currentISO: 100
-  viewfinderCamera: {fileID: 293967523}
-  lcdScreenCamera: {fileID: 892798153}
-  settingsCanvas: {fileID: 595703619}
-  useViewfinder: 0
   currentAperture: 5.6
   currentShutterSpeed: 0.01
   currentFocalLength: 50
   autoExposure: 1
   autoFocus: 1
   flashEnabled: 0
-  isInPhotoMode: 0
+  exposurePrecision: 0.8
+  isInPhotoMode: 1
   photographyUI: {fileID: 1631254463}
   isoText: {fileID: 1584302950}
   apertureText: {fileID: 1103061689}
@@ -3156,7 +3162,9 @@ MonoBehaviour:
   remainingPhotos: 0
   photoAlbum: []
   focusPrecision: 0.9
-  exposurePrecision: 0.8
+  viewfinderCamera: {fileID: 293967523}
+  settingsCanvas: {fileID: 595703619}
+  useViewfinder: 0
   enterPhotoModeKey: 99
   takePhotoKey: 323
   focusKey: 324

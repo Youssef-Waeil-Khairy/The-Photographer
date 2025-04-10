@@ -10,14 +10,15 @@ namespace SAE_Dubai.Leonardo.CameraSys
     {
         [Header("- Camera Setup")] public CameraSettings CameraSettings;
 
+        [Header("- Rendering")]
+        public Camera screenCamera;
+        public bool usingViewfinder = false;
+        public Renderer screenRenderer;
+        public Material screenOnMaterial;
+        public Material screenOffMaterial;
+        
         [Header("- Current Settings")] [Range(100, 12800)]
         public int currentISO = 100;
-        
-        [Header("- Camera Componentes")]
-        public Camera viewfinderCamera;
-        public Camera lcdScreenCamera;
-        public Canvas settingsCanvas;
-        public bool useViewfinder; 
 
         [Range(1.4f, 22f)] public float currentAperture = 5.6f;
 
@@ -30,6 +31,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
         [Header("- Mode Settings")] public bool autoExposure = true;
         public bool autoFocus = true;
         public bool flashEnabled = false;
+        [Range(0.1f, 1f)] public float exposurePrecision = 0.8f;
 
         [Header("- State")] public bool isInPhotoMode = false;
         private bool _isFocusing = false;
@@ -52,8 +54,12 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
         [Header("- Quality Settings")] [Range(0.1f, 1f)]
         public float focusPrecision = 0.9f;
+        
+        [Header("- Camera Componentes")]
+        public Camera viewfinderCamera;
+        public Canvas settingsCanvas;
+        public bool useViewfinder; 
 
-        [Range(0.1f, 1f)] public float exposurePrecision = 0.8f;
 
         /// <summary>
         /// The input keys are just for now. TODO: Later we'll make the player actually click on the camera buttons as if physical.
@@ -102,19 +108,23 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
         private void Update()
         {
-            // Toggle photo mode
             if (Input.GetKeyDown(enterPhotoModeKey))
             {
                 TogglePhotoMode();
+            }
+    
+            if (Input.GetKeyDown(KeyCode.V) && isInPhotoMode)
+            {
+                ToggleViewMode();
             }
 
             if (!isInPhotoMode)
                 return;
 
-            // Handle photo mode inputs
             HandlePhotoModeInputs();
+    
+            UpdatePhysicalCameraSettings();
 
-            // Update UI
             UpdatePhotoUI();
         }
 
@@ -161,55 +171,107 @@ namespace SAE_Dubai.Leonardo.CameraSys
             {
                 Debug.Log("CameraSystem.cs: Entered photography mode");
         
-                // Enable the correct camera.
-                if (viewfinderCamera != null)
+                if (usingViewfinder)
                 {
-                    viewfinderCamera.enabled = useViewfinder;
+                    if (viewfinderCamera != null) viewfinderCamera.enabled = true;
+                    if (screenCamera != null) screenCamera.enabled = false;
+            
+                    if (screenRenderer != null && screenOffMaterial != null)
+                    {
+                        screenRenderer.material = screenOffMaterial;
+                    }
+                }
+                else
+                {
+                    if (viewfinderCamera != null) viewfinderCamera.enabled = false;
+                    if (screenCamera != null) screenCamera.enabled = true;
+            
+                    if (screenRenderer != null && screenOnMaterial != null)
+                    {
+                        screenRenderer.material = screenOnMaterial;
+                    }
                 }
         
-                if (lcdScreenCamera != null)
-                {
-                    lcdScreenCamera.enabled = !useViewfinder;
-                }
-        
-                // Show UI.
                 if (photographyUI != null)
                 {
                     photographyUI.SetActive(true);
                 }
-        
-                // TODO: We might want to disable player movement here.
-                // DisablePlayerMovement();
             }
             else
             {
-                Debug.Log("Exited photography mode");
+                Debug.Log("CameraSystem.cs: Exited photography mode");
         
-                // Disable camera viewfinder/screen.
-                if (viewfinderCamera != null)
+                if (viewfinderCamera != null) viewfinderCamera.enabled = false;
+                if (screenCamera != null) screenCamera.enabled = false;
+        
+                if (screenRenderer != null && screenOffMaterial != null)
                 {
-                    viewfinderCamera.enabled = false;
+                    screenRenderer.material = screenOffMaterial;
                 }
         
-                if (lcdScreenCamera != null)
-                {
-                    lcdScreenCamera.enabled = false;
-                }
-        
-                // Hide UI.
                 if (photographyUI != null)
                 {
                     photographyUI.SetActive(false);
                 }
         
-                // Reset camera values.
                 mainCamera.fieldOfView = _defaultFOV;
+            }
+        }        
         
-                // Re-enable player controls if disabled?
-                // EnablePlayerMovement();
+        public void ToggleViewMode()
+        {
+            usingViewfinder = !usingViewfinder;
+    
+            if (usingViewfinder)
+            {
+                // Using viewfinder, disable screen camera.
+                if (viewfinderCamera != null) viewfinderCamera.enabled = true;
+                if (screenCamera != null) screenCamera.enabled = false;
+        
+                // Turn off screen (idk if this helps with performance but I'm doing it anyways).
+                if (screenRenderer != null && screenOffMaterial != null)
+                {
+                    screenRenderer.material = screenOffMaterial;
+                }
+            }
+            else
+            {
+                // Using screen, disable viewfinder camera.
+                if (viewfinderCamera != null) viewfinderCamera.enabled = false;
+                if (screenCamera != null) screenCamera.enabled = true;
+        
+                // Turn on screen.
+                if (screenRenderer != null && screenOnMaterial != null)
+                {
+                    screenRenderer.material = screenOnMaterial;
+                }
             }
         }
-
+        
+        private void UpdatePhysicalCameraSettings()
+        {
+            if (screenCamera != null)
+            {
+                screenCamera.iso = currentISO;
+        
+                screenCamera.aperture = currentAperture;
+        
+                screenCamera.focalLength = currentFocalLength;
+        
+                // TODO: Unity's value is in seconds, so a conversion might be needed if things are looking weird.
+                screenCamera.shutterSpeed = currentShutterSpeed;
+            }
+    
+            // Same for viewfinder.
+            if (viewfinderCamera != null)
+            {
+                viewfinderCamera.iso = currentISO;
+                viewfinderCamera.aperture = currentAperture;
+                viewfinderCamera.focalLength = currentFocalLength;
+                viewfinderCamera.shutterSpeed = currentShutterSpeed;
+            }
+        }
+        
         private void HandlePhotoModeInputs()
         {
 
