@@ -1444,8 +1444,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 633cae69c252414448ee95e411d77aa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CameraSettings: {fileID: 0}
-  cameraController: {fileID: 0}
+  CameraSettings: {fileID: 5274522635987771459}
+  cameraController: {fileID: 2603599259830890249}
   screenCamera: {fileID: 1188681389108499952}
   usingViewfinder: 0
   screenRenderer: {fileID: 8857597761819418619}
@@ -1530,7 +1530,7 @@ MonoBehaviour:
   hasImageStabilization: 0
   hasBuiltInFlash: 1
   cameraSprite: {fileID: 0}
-  cameraModel3D: {fileID: 0}
+  cameraModel3D: {fileID: 8164753298345851315}
   shutterSound: {fileID: 0}
   focusSound: {fileID: 0}
   zoomSound: {fileID: 0}
