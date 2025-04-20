@@ -19,7 +19,7 @@ MonoBehaviour:
   minISO: 100
   maxISO: 6400
   availableISOStops: 64000000c8000000900100002003000040060000800c000000190000
-  hasAutoISO: 1
+  hasAutoISO: 0
   minAperture: 1.4
   maxAperture: 16
   availableApertureStops:
