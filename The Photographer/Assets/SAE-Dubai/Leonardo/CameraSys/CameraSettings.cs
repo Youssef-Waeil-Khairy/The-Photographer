@@ -3,6 +3,28 @@ using UnityEngine;
 namespace SAE_Dubai.Leonardo.CameraSys
 {
     /// <summary>
+    /// Defines the various camera sensor types available in Unity by defautl.
+    /// </summary>
+    public enum CameraSensorType
+    {
+        Custom,
+        EightMM,
+        SuperEightMM,
+        SixteenMM,
+        SuperSixteenMM,
+        ThirtyFiveMM_2Perf,
+        ThirtyFiveMM_Academy,
+        Super35,
+        ThirtyFiveMM_TVProjection,
+        ThirtyFiveMM_FullAperture,
+        ThirtyFiveMM_185Projection,
+        ThirtyFiveMM_Anamorphic,
+        SixtyFiveMM_ALEXA,
+        SeventyMM,
+        SeventyMM_IMAX
+    }
+
+    /// <summary>
     /// ScriptableObject that defines all settings and capabilities for a specific camera model.
     /// This allows for creating different camera types as assets in the Unity editor that can
     /// be referenced by camera prefabs.
@@ -19,6 +41,13 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
         [TextArea(2, 5)] [Tooltip("Description of this camera's features and quality")]
         public string description = "A basic camera.";
+
+        [Header("- Sensor Settings")]
+        [Tooltip("The type of camera sensor used in this model")]
+        public CameraSensorType sensorType = CameraSensorType.ThirtyFiveMM_FullAperture;
+
+        [Tooltip("Custom sensor size in mm (X = width, Y = height), used only when sensorType is Custom")]
+        public Vector2 customSensorSize = new Vector2(36, 24);
 
         [Header("- ISO Settings")]
         [Tooltip("The base/native ISO value of this camera")]
@@ -78,6 +107,23 @@ namespace SAE_Dubai.Leonardo.CameraSys
         [Tooltip("Whether this camera has auto focus capability")]
         public bool hasAutoFocus = true;
 
+        [Header("- Aperture Shape Settings")]
+        [Tooltip("Number of aperture blades (affects bokeh shape)")]
+        [Range(3, 11)]
+        public int apertureBladeCount = 5;
+
+        [Tooltip("Curvature of aperture blades (0 = straight, 1 = circular)")]
+        [Range(0f, 1f)]
+        public Vector2 apertureBladeCurvature = new Vector2(0.5f, 0.5f);
+
+        [Tooltip("Barrel clipping value for the aperture")]
+        [Range(0f, 1f)]
+        public float apertureBarrelClipping = 0.25f;
+        
+        [Tooltip("Anamorphism value for the aperture (creates oval bokeh)")]
+        [Range(-1f, 1f)]
+        public float apertureAnamorphism = 0f;
+
         [Header("- Additional Features")]
         [Tooltip("Whether this camera has image stabilization")]
         public bool hasImageStabilization = false;
@@ -100,6 +146,47 @@ namespace SAE_Dubai.Leonardo.CameraSys
         public AudioClip focusSound;
 
         [Tooltip("Sound played when zooming")] public AudioClip zoomSound;
+
+        /// <summary>
+        /// Returns the sensor size for the selected sensor type.
+        /// </summary>
+        public Vector2 GetSensorSize()
+        {
+            switch (sensorType)
+            {
+                case CameraSensorType.EightMM:
+                    return new Vector2(4.8f, 3.5f);
+                case CameraSensorType.SuperEightMM:
+                    return new Vector2(5.79f, 4.01f);
+                case CameraSensorType.SixteenMM:
+                    return new Vector2(10.26f, 7.49f);
+                case CameraSensorType.SuperSixteenMM:
+                    return new Vector2(12.52f, 7.41f);
+                case CameraSensorType.ThirtyFiveMM_2Perf:
+                    return new Vector2(21.95f, 9.35f);
+                case CameraSensorType.ThirtyFiveMM_Academy:
+                    return new Vector2(21.95f, 16.0f);
+                case CameraSensorType.Super35:
+                    return new Vector2(24.89f, 18.66f);
+                case CameraSensorType.ThirtyFiveMM_TVProjection:
+                    return new Vector2(21.95f, 16.46f);
+                case CameraSensorType.ThirtyFiveMM_FullAperture:
+                    return new Vector2(36.0f, 24.0f);
+                case CameraSensorType.ThirtyFiveMM_185Projection:
+                    return new Vector2(22.05f, 12.0f);
+                case CameraSensorType.ThirtyFiveMM_Anamorphic:
+                    return new Vector2(21.95f, 18.59f);
+                case CameraSensorType.SixtyFiveMM_ALEXA:
+                    return new Vector2(54.12f, 25.59f);
+                case CameraSensorType.SeventyMM:
+                    return new Vector2(52.63f, 23.01f);
+                case CameraSensorType.SeventyMM_IMAX:
+                    return new Vector2(69.6f, 48.5f);
+                case CameraSensorType.Custom:
+                default:
+                    return customSensorSize;
+            }
+        }
 
         /// <summary>
         /// Initializes a new camera with default settings for its skill level.

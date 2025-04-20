@@ -21,6 +21,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
         private TextMeshProUGUI _overlayFocusText;
         private TextMeshProUGUI _overlayFocalLengthText;
         private Image _overlayFocusReticleImage;
+        private TextMeshProUGUI _overlaySensorText;
 
         [Header("- Camera Reference")]
         [Tooltip("Reference to the CameraSystem that this UI displays information for")]
@@ -29,33 +30,28 @@ namespace SAE_Dubai.Leonardo.CameraSys
         [Header("- SCREEN Text Components")]
         [Tooltip("Text that displays the current aperture/f-stop")]
         public TextMeshProUGUI apertureText;
-
         [Tooltip("Text that displays the current shutter speed")]
         public TextMeshProUGUI shutterSpeedText;
-
         [Tooltip("Text that displays the current ISO value")]
         public TextMeshProUGUI isoText;
-
         [Tooltip("Text that displays focus information")]
         public TextMeshProUGUI focusText;
-
         [Tooltip("Text that displays the current focal length")]
         public TextMeshProUGUI focalLengthText;
+        [Tooltip("Text that displays the camera sensor information")]
+        public TextMeshProUGUI sensorText;
 
         [Header("- SCREEN UI Elements")]
         [Tooltip("Focus reticle/indicator in the center of the screen")]
         public Image focusReticleImage;
-
         [Tooltip("Whether the UI is active when the camera is turned off")]
         public bool hideWhenCameraOff = true;
 
         [Header("- Focus Animation Colors")]
         [Tooltip("Color of the focus reticle when focusing")]
         public Color focusingColor = Color.yellow;
-
         [Tooltip("Color of the focus reticle when focused")]
         public Color focusedColor = Color.green;
-
         [Tooltip("Color of the focus reticle when not focused")]
         public Color unfocusedColor = Color.red;
 
@@ -68,6 +64,10 @@ namespace SAE_Dubai.Leonardo.CameraSys
         // Keeping track of focus state.
         private bool _isFocused;
         private bool _isFocusing;
+        
+        [Tooltip("Curvature of aperture blades (0 = straight, 1 = circular)")]
+        [Range(0f, 1f)]
+        public Vector2 apertureBladeCurvature = new Vector2(0.5f, 0.5f);
 
         /// <summary>
         /// Initialize component references and set up the UI.
@@ -99,6 +99,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 _overlayFocusText = _overlayPanel.transform.Find("FocusText")?.GetComponent<TextMeshProUGUI>();
                 _overlayFocalLengthText = _overlayPanel.transform.Find("FocalLengthText")?.GetComponent<TextMeshProUGUI>();
                 _overlayFocusReticleImage = _overlayPanel.transform.Find("FocusReticle")?.GetComponent<Image>();
+                _overlaySensorText = _overlayPanel.transform.Find("SensorText")?.GetComponent<TextMeshProUGUI>();
             }
 
             // Initial UI update.
@@ -147,11 +148,16 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
             float focalLength = cameraSystem.GetCurrentFocalLength();
             UpdateUiElement(focalLengthText, _overlayFocalLengthText, $"{focalLength:F0}mm");
+            
+            string sensorTypeText = GetSensorTypeDisplayName(settings.sensorType);
+            Vector2 sensorSize = settings.GetSensorSize();
+            string sensorInfoText = $"{sensorTypeText} ({sensorSize.x:F1}x{sensorSize.y:F1}mm)";
+            UpdateUiElement(sensorText, _overlaySensorText, sensorInfoText);
 
             // Update focus state.
             _isFocusing = cameraSystem.IsFocusing();
             _isFocused = cameraSystem.IsFocused();
-
+            
             // Update focus UI.
             UpdateFocusUI();
         }
@@ -241,6 +247,49 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 return $"{shutterSpeed}s";
             else
                 return $"1/{Mathf.Round(1f / shutterSpeed)}";
+        }
+        
+        /// <summary>
+        /// Get the sensor name from the Unity defaults list.
+        /// </summary>
+        /// <param name="sensorType"></param>
+        /// <returns></returns>
+        private string GetSensorTypeDisplayName(CameraSensorType sensorType)
+        {
+            switch (sensorType)
+            {
+                case CameraSensorType.EightMM:
+                    return "8mm";
+                case CameraSensorType.SuperEightMM:
+                    return "Super 8mm";
+                case CameraSensorType.SixteenMM:
+                    return "16mm";
+                case CameraSensorType.SuperSixteenMM:
+                    return "Super 16mm";
+                case CameraSensorType.ThirtyFiveMM_2Perf:
+                    return "35mm 2-Perf";
+                case CameraSensorType.ThirtyFiveMM_Academy:
+                    return "35mm Academy";
+                case CameraSensorType.Super35:
+                    return "Super 35";
+                case CameraSensorType.ThirtyFiveMM_TVProjection:
+                    return "35mm TV";
+                case CameraSensorType.ThirtyFiveMM_FullAperture:
+                    return "Full Frame";
+                case CameraSensorType.ThirtyFiveMM_185Projection:
+                    return "35mm 1.85:1";
+                case CameraSensorType.ThirtyFiveMM_Anamorphic:
+                    return "35mm Anamorphic";
+                case CameraSensorType.SixtyFiveMM_ALEXA:
+                    return "65mm ALEXA";
+                case CameraSensorType.SeventyMM:
+                    return "70mm";
+                case CameraSensorType.SeventyMM_IMAX:
+                    return "70mm IMAX";
+                case CameraSensorType.Custom:
+                default:
+                    return "Custom";
+            }
         }
     }
 }

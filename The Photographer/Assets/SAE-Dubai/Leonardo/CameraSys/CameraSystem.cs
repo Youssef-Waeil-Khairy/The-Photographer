@@ -653,29 +653,64 @@ namespace SAE_Dubai.Leonardo.CameraSys
         private void ApplyCameraParameters() {
             if (cameraSettings == null) return;
 
-            // Get the current parameter values
+            // Get the current parameter values.
             int iso = cameraSettings.availableISOStops[_currentISOIndex];
             float aperture = cameraSettings.availableApertureStops[_currentApertureIndex];
             float shutterSpeed = cameraSettings.availableShutterSpeedStops[_currentShutterSpeedIndex];
             float focalLength = _currentFocalLength;
 
-            // Apply to screen camera if available
+            // Get sensor size from camera settings.
+            Vector2 sensorSize = cameraSettings.GetSensorSize();
+
+            // Apply to screen camera if available.
             if (cameraRenderer != null) {
+                // Enable physical camera .
+                cameraRenderer.usePhysicalProperties = true;
+
+                // Basic camera parameters.
                 cameraRenderer.iso = iso;
                 cameraRenderer.aperture = aperture;
                 cameraRenderer.shutterSpeed = shutterSpeed;
                 cameraRenderer.focalLength = focalLength;
+
+                // Sensor size.
+                cameraRenderer.sensorSize = sensorSize;
+
+                // Apply aperture shape settings.
+                cameraRenderer.bladeCount = cameraSettings.apertureBladeCount;
+                cameraRenderer.curvature = cameraSettings.apertureBladeCurvature;
+                cameraRenderer.barrelClipping = cameraSettings.apertureBarrelClipping;
+                cameraRenderer.anamorphism = cameraSettings.apertureAnamorphism;
+
+                // Set focus distance.
+                cameraRenderer.focusDistance = _currentFocusDistance;
             }
 
-            // Apply to viewfinder camera if available
+            // Apply to viewfinder camera if available.
             if (viewfinderCamera != null) {
+                // Enable physical camera mode.
+                viewfinderCamera.usePhysicalProperties = true;
+
+                // Basic camera parameters.
                 viewfinderCamera.iso = iso;
                 viewfinderCamera.aperture = aperture;
                 viewfinderCamera.shutterSpeed = shutterSpeed;
                 viewfinderCamera.focalLength = focalLength;
+
+                // Sensor size.
+                viewfinderCamera.sensorSize = sensorSize;
+
+                // Apply aperture shape settings.
+                viewfinderCamera.bladeCount = cameraSettings.apertureBladeCount;
+                viewfinderCamera.curvature = cameraSettings.apertureBladeCurvature;
+                viewfinderCamera.barrelClipping = cameraSettings.apertureBarrelClipping;
+                viewfinderCamera.anamorphism = cameraSettings.apertureAnamorphism;
+
+                // Set focus distance.
+                viewfinderCamera.focusDistance = _currentFocusDistance;
             }
 
-            // Apply post-processing effects for camera settigns.
+            // Apply post-processing effects for camera settings.
             ApplyIsoBasedGrain();
             ApplyApertureBasedDepthOfField();
         }
@@ -814,7 +849,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
             localDepthOfField.active = true;
             localDepthOfField.focusMode.value = DepthOfFieldMode.UsePhysicalCamera;
             localDepthOfField.focusDistance.value = _currentFocusDistance;
-            
+
             if (cameraRenderer != null) {
                 cameraRenderer.usePhysicalProperties = true;
 
