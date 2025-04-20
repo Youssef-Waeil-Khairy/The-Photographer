@@ -8,6 +8,8 @@ namespace SAE_Dubai.JW.UI
     {
         [Header("Camera Item")]
         public CameraSettings CamSettings;
+        public float CameraPrice = 100f;
+        public GameObject CameraItemPrefab;
 
         [Header("Text Fields")] 
         [SerializeField] private TMP_Text cameraName;
@@ -22,10 +24,11 @@ namespace SAE_Dubai.JW.UI
         [SerializeField] private TMP_Text cameraHasZoom;
         [SerializeField] private TMP_Text cameraSensor;
 
-        public void SetCameraInfo(CameraSettings cameraSettings)
+        public void SetCameraInfo(CameraSettings cameraSettings, float cameraPrice, GameObject cameraItemPrefab)
         {
             CamSettings = cameraSettings;
-            
+            CameraPrice = cameraPrice;
+            CameraItemPrefab = cameraItemPrefab;
             ShowCameraInfo();
         }
 
@@ -43,7 +46,8 @@ namespace SAE_Dubai.JW.UI
             
             cameraAutoShutterSpeed.text = CamSettings.hasAutoShutterSpeed ? "Auto Shutter Speed" : "Manual Shutter Speed";
             cameraShutterSpeed.text = $"Shutter Speed: {CamSettings.minShutterSpeed} -> {CamSettings.maxShutterSpeed}";
-            
+
+            cameraSensor.text = $"Sensor: {CamSettings.sensorType.ToString()}";
         }
     }
 }

@@ -10,12 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 40aff62cdb3172f4daceac3cd7116138, type: 3}
-  m_Name: Basic Camera
+  m_Name: CameraOfHatred
   m_EditorClassIdentifier: 
-  modelName: Default Camera
-  manufacturer: Epic leo cameras
-  description: A basic camera.
-  sensorType: 8
+  modelName: Camera Of Hatred
+  manufacturer: Hatred Inc.
+  description: A camera that perfectly captures the red tinted view of those you
+    hate most
+  sensorType: 9
   customSensorSize: {x: 36, y: 24}
   baseISO: 100
   minISO: 100
@@ -34,7 +35,7 @@ MonoBehaviour:
   - 11
   - 16
   - 22
-  hasAutoAperture: 1
+  hasAutoAperture: 0
   minShutterSpeed: 0.00025
   maxShutterSpeed: 30
   availableShutterSpeedStops:
@@ -56,18 +57,18 @@ MonoBehaviour:
   - 8
   - 15
   - 30
-  hasAutoShutterSpeed: 1
-  hasZoom: 1
+  hasAutoShutterSpeed: 0
+  hasZoom: 0
   minFocalLength: 18
   maxFocalLength: 70
-  hasAutoFocus: 1
+  hasAutoFocus: 0
   apertureBladeCount: 5
   apertureBladeCurvature: {x: 0.5, y: 0.5}
   apertureBarrelClipping: 0.25
   apertureAnamorphism: 0
   hasImageStabilization: 0
   hasBuiltInFlash: 0
-  photoCapacity: 50
+  photoCapacity: 1
   cameraIcon: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
   shutterSound: {fileID: 0}
   focusSound: {fileID: 0}

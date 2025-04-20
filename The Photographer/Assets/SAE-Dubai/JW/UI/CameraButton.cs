@@ -10,10 +10,10 @@ namespace SAE_Dubai.JW.UI
     {
         [Header("Camera Settings")]
         [SerializeField] CameraSettings cameraSettings;
-        
-        [Header("Item Shop")]
+
+        [Header("Item Shop")] 
+        [SerializeField] private GameObject item;
         [SerializeField] private float price = 100f;
-        [SerializeField] Button _button;
         
         [Header("UI")]
         [SerializeField] CameraInfoPanel _cameraInfoPanel;
@@ -35,7 +35,7 @@ namespace SAE_Dubai.JW.UI
                     _cameraInfoPanel.gameObject.SetActive(true);
                 }
             }
-            _cameraInfoPanel.SetCameraInfo(cameraSettings);
+            _cameraInfoPanel.SetCameraInfo(cameraSettings, price, item);
         }
     }
 }

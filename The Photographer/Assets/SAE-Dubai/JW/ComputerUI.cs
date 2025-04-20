@@ -1,4 +1,5 @@
 using System;
+using SAE_Dubai.JW;
 using SAE_Dubai.Leonardo;
 using TMPro;
 using UnityEngine;
@@ -8,6 +9,7 @@ public class ComputerUI : MonoBehaviour
     [SerializeField] private MouseController  mouseController;
     [SerializeField] Camera computerCamera;
     [SerializeField] Camera playerCamera;
+    [SerializeField] TMP_Text balanceText;
 
     private void Update()
     {
@@ -15,6 +17,8 @@ public class ComputerUI : MonoBehaviour
         {
             ToggleComputerVision();
         }
+
+        balanceText.text = $"Balance: {PlayerBalance.Instance.Balance}";
     }
 
     private void ToggleComputerVision()
