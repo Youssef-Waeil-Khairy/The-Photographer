@@ -2869,6 +2869,22 @@ PrefabInstance:
       propertyPath: localCameraVolume
       value: 
       objectReference: {fileID: 1922741107}
+    - target: {fileID: 696843265103558002, guid: 0ea8f560ba634624a985af59d34c91f6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.0515
+      objectReference: {fileID: 0}
+    - target: {fileID: 696843265103558002, guid: 0ea8f560ba634624a985af59d34c91f6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.0385
+      objectReference: {fileID: 0}
+    - target: {fileID: 696843265103558002, guid: 0ea8f560ba634624a985af59d34c91f6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 696843265103558002, guid: 0ea8f560ba634624a985af59d34c91f6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
     - target: {fileID: 1160189438672032649, guid: 0ea8f560ba634624a985af59d34c91f6, type: 3}
       propertyPath: m_Enabled
       value: 0

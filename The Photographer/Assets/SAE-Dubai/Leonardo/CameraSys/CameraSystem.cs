@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,12 +18,12 @@ namespace SAE_Dubai.Leonardo.CameraSys
     public class CameraSystem : MonoBehaviour
     {
         private CameraManager manager;
-        
+
         [Header("- Camera Configuration")]
         [Tooltip("Reference to the scriptable object containing all settings for this camera.")]
         public CameraSettings cameraSettings;
 
-        
+
         [Header("- Rendering")]
         [Tooltip("The camera used to render the viewfinder/screen.")]
         public Camera cameraRenderer;
@@ -39,7 +40,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
         [Tooltip("Material used when the camera screen is off.")]
         public Material screenOffMaterial;
 
-        
+
         [Header("- State")]
         [Tooltip("Whether the camera is currently powered on.")]
         public bool isCameraOn = false;
@@ -48,25 +49,27 @@ namespace SAE_Dubai.Leonardo.CameraSys
         [SerializeField] private bool _isCapturing = false;
         [SerializeField] private bool _isFocused = false;
 
-        
+
         [Header("- UI References")]
         [Tooltip("The UI panel containing all photography controls and information.(Screen)")]
         public GameObject photographyUI;
 
         [FormerlySerializedAs("_overlayUI")] [Tooltip("The UI panel for the OVERLAY UI. (Viewfinder)")] [SerializeField]
         private GameObject overlayUI;
+
         private CameraUIController _uiController;
 
-        
+
         [Header("- Audio")]
         [Tooltip("Audio source for camera sounds.")]
         public AudioSource audioSource;
 
         [Tooltip("Reference to the main player camera.")]
         public Camera mainCamera;
+
         [SerializeField] private float _defaultFOV;
 
-        
+
         [Header("- Photo Storage")]
         [Tooltip("Current number of photos remaining in storage.")]
         public int remainingPhotos;
@@ -74,17 +77,19 @@ namespace SAE_Dubai.Leonardo.CameraSys
         [Tooltip("Collection of all photos taken with this camera.")]
         public List<CapturedPhoto> photoAlbum = new List<CapturedPhoto>();
 
-        
+
         [Header("- Camera Components")]
         [Tooltip("The viewfinder camera (if available).")]
         public Camera viewfinderCamera;
 
 
         [Header("- Camera Effects")]
-        [Tooltip("Reference to the Post Processing Volume (or Layer)")]
-        public Volume localCameraVolume;
-        [FormerlySerializedAs("postProcessFilmGrain")] public FilmGrain localFilmGrain;
-        
+        [Tooltip("Reference to the Post Processing Volume (or Layer)")] [SerializeField]
+        private Volume localCameraVolume;
+
+        private FilmGrain localFilmGrain;
+        private DepthOfField localDepthOfField;
+
         [Header("- Input Keys")]
         [Tooltip("Key to turn the camera on/off.")]
         public KeyCode turnCameraOnKey = KeyCode.C;
@@ -102,6 +107,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
         private int _currentShutterSpeedIndex = 5;
         private float _currentFocalLength;
         private bool _autoExposureEnabled = true;
+        private float _currentFocusDistance = 10f;
 
         /// <summary>
         /// Get a reference to the overlay photo panel to disable it.
@@ -110,7 +116,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
             manager = FindObjectOfType<CameraManager>();
 
             overlayUI = manager.overlayUI;
-            
+
             if (overlayUI != null) {
                 // Initially disable it.
                 overlayUI.SetActive(false);
@@ -135,7 +141,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
                     audioSource = gameObject.AddComponent<AudioSource>();
                 }
             }
-            
+
             _defaultFOV = mainCamera.fieldOfView;
 
             // Initialize camera settings from scriptable object.
@@ -165,9 +171,10 @@ namespace SAE_Dubai.Leonardo.CameraSys
             if (photographyUI != null) {
                 photographyUI.SetActive(false);
             }
-            
+
             // Get post-processing object.
             localCameraVolume.profile.TryGet(out localFilmGrain);
+            localCameraVolume.profile.TryGet(out localDepthOfField);
         }
 
         /// <summary>
@@ -239,19 +246,20 @@ namespace SAE_Dubai.Leonardo.CameraSys
                     if (screenRenderer != null && screenOffMaterial != null) {
                         screenRenderer.material = screenOffMaterial;
                     }
-        
+
                     // Show overlay UI, hide world space UI.
                     if (photographyUI != null) photographyUI.SetActive(false);
                     if (CameraManager.Instance != null && CameraManager.Instance.overlayUI != null) {
                         CameraManager.Instance.overlayUI.SetActive(true);
                     }
-                } else {
+                }
+                else {
                     if (viewfinderCamera != null) viewfinderCamera.enabled = false;
                     if (cameraRenderer != null) cameraRenderer.enabled = true;
                     if (screenRenderer != null && screenOnMaterial != null) {
                         screenRenderer.material = screenOnMaterial;
                     }
-        
+
                     // Show world space UI, hide overlay UI.
                     if (photographyUI != null) photographyUI.SetActive(true);
                     if (CameraManager.Instance != null && CameraManager.Instance.overlayUI != null) {
@@ -261,10 +269,11 @@ namespace SAE_Dubai.Leonardo.CameraSys
             }
             else {
                 //Debug.Log("CameraSystem.cs: Turned cam off.");
-                
+
                 if (photographyUI != null) {
                     photographyUI.SetActive(false);
                 }
+
                 if (manager != null && manager.overlayUI != null) {
                     manager.overlayUI.SetActive(false);
                 }
@@ -294,11 +303,11 @@ namespace SAE_Dubai.Leonardo.CameraSys
             usingViewfinder = !usingViewfinder;
             // Get the camera manager reference.
             CameraManager manager = CameraManager.Instance;
-    
+
             // Toggle camera renderers.
             if (viewfinderCamera != null) viewfinderCamera.enabled = usingViewfinder;
             if (cameraRenderer != null) cameraRenderer.enabled = !usingViewfinder;
-    
+
             // Update screen material.
             if (screenRenderer != null) {
                 Material materialToUse = usingViewfinder ? screenOffMaterial : screenOnMaterial;
@@ -306,16 +315,16 @@ namespace SAE_Dubai.Leonardo.CameraSys
                     screenRenderer.material = materialToUse;
                 }
             }
-    
+
             // Toggle UI panels.
             if (photographyUI != null) {
                 photographyUI.SetActive(!usingViewfinder);
             }
-    
+
             if (manager != null && manager.overlayUI != null) {
                 manager.overlayUI.SetActive(usingViewfinder);
             }
-    
+
             Debug.Log("CameraSystem: Switched to " + (usingViewfinder ? "viewfinder" : "screen") + " view");
         }
 
@@ -450,28 +459,52 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
             // Cast a ray from the center of the camera view to find focus distance.
             Ray ray = focusCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-            if (Physics.Raycast(ray, out RaycastHit hit, 100f)) {
-                // Get the focus distance
-                float focusDistance = hit.distance;
 
-                // Apply focus distance to both cameras (viewfinder and screen).
+            // Use a longer max distance to allow focusing on distant objects.
+            float maxFocusDistance = 100f;
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit, maxFocusDistance)) {
+                // Get the focus distance.
+                _currentFocusDistance = hit.distance;
+
+                Debug.Log($"Focus hit: {hit.collider.name} at distance {_currentFocusDistance:F2}m");
+
+                // Apply focus distance to cameras.
                 if (cameraRenderer != null) {
-                    cameraRenderer.focusDistance = focusDistance;
+                    cameraRenderer.focusDistance = _currentFocusDistance;
                 }
 
                 if (viewfinderCamera != null) {
-                    viewfinderCamera.focusDistance = focusDistance;
+                    viewfinderCamera.focusDistance = _currentFocusDistance;
                 }
+
+                // Apply DoF effect immediately.
+                ApplyApertureBasedDepthOfField();
 
                 // Start the successful focus effect.
                 StartCoroutine(SuccessfulFocusEffect());
-
-                Debug.Log($"Focusing at distance: {focusDistance}m");
             }
             else {
-                // No object hit, cannot focus successfully.
-                StartCoroutine(FailedFocusEffect());
-                Debug.Log("Cannot focus - no object detected");
+                // No object hit, try to focus at a far distance.
+                _currentFocusDistance = 50f;
+
+                Debug.Log($"No direct focus target found, focusing at {_currentFocusDistance:F2}m");
+
+                // Apply the far focus distance to cameras.
+                if (cameraRenderer != null) {
+                    cameraRenderer.focusDistance = _currentFocusDistance;
+                }
+
+                if (viewfinderCamera != null) {
+                    viewfinderCamera.focusDistance = _currentFocusDistance;
+                }
+
+                // Apply DoF effect immediately.
+                ApplyApertureBasedDepthOfField();
+
+                // Use success effect since if focusing at infinity.
+                StartCoroutine(SuccessfulFocusEffect());
             }
         }
 
@@ -641,9 +674,10 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 viewfinderCamera.shutterSpeed = shutterSpeed;
                 viewfinderCamera.focalLength = focalLength;
             }
-            
-            // Apply ISO effects.
+
+            // Apply post-processing effects for camera settigns.
             ApplyIsoBasedGrain();
+            ApplyApertureBasedDepthOfField();
         }
 
         /// <summary>
@@ -750,29 +784,75 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
         #region Camera Post Processing Effects
 
-        private void ApplyIsoBasedGrain()
-        {
+        /// <summary>
+        /// Adjusts the Film Grain post-processing effect based on ISO.
+        /// </summary>
+        private void ApplyIsoBasedGrain() {
             if (localFilmGrain == null || cameraSettings == null) return;
 
             int currentISO = cameraSettings.availableISOStops[_currentISOIndex];
-            //Debug.Log($"CameraSystem.cs: current ISO: {currentISO}");
-
-            // Normalize ISO to a 0-1 range.
             float isoNormalized = Mathf.InverseLerp(cameraSettings.minISO, cameraSettings.maxISO, currentISO);
 
             // Control Grain Intensity.
-            float minIntensity = 0.0f;     // Minimum grain intensity.
-            float maxIntensity = 0.5f;     // Maximum grain intensity.
+            float minIntensity = 0.0f; // Minimum grain intensity.
+            float maxIntensity = 0.5f; // Maximum grain intensity.
             localFilmGrain.intensity.value = Mathf.Lerp(minIntensity, maxIntensity, isoNormalized);
-            //Debug.Log($"CameraSystem.cs: localFilmGrain.intensity: {localFilmGrain.intensity.value}");
 
-            // Control Grain Response (size/sharpness - experiment with this).
-            float minResponse = 0.1f;     // Minimum grain response.
-            float maxResponse = 0.9f;     // Maximum grain response.
+            // Control Grain Response.
+            float minResponse = 0.1f; // Minimum grain response.
+            float maxResponse = 0.9f; // Maximum grain response.
             localFilmGrain.response.value = Mathf.Lerp(minResponse, maxResponse, isoNormalized);
-            //Debug.Log($"CameraSystem.cs: localFilmGrain.response.value: {localFilmGrain.response.value}");
+        }
 
 
+        /// <summary>
+        /// Adjusts the Depth of Field effect based on the current aperture and focus.
+        /// This version utilizes Unity's Physical Camera settings for DoF calculations.
+        /// </summary>
+        private void ApplyApertureBasedDepthOfField() {
+            if (localDepthOfField == null || cameraSettings == null) return;
+            localDepthOfField.active = true;
+            localDepthOfField.focusMode.value = DepthOfFieldMode.UsePhysicalCamera;
+            localDepthOfField.focusDistance.value = _currentFocusDistance;
+            
+            if (cameraRenderer != null) {
+                cameraRenderer.usePhysicalProperties = true;
+
+                float aperture = cameraSettings.availableApertureStops[_currentApertureIndex];
+                cameraRenderer.aperture = aperture;
+                cameraRenderer.focalLength = _currentFocalLength;
+                cameraRenderer.focusDistance = _currentFocusDistance;
+            }
+
+            if (viewfinderCamera != null) {
+                viewfinderCamera.usePhysicalProperties = true;
+
+                float aperture = cameraSettings.availableApertureStops[_currentApertureIndex];
+                viewfinderCamera.aperture = aperture;
+                viewfinderCamera.focalLength = _currentFocalLength;
+                viewfinderCamera.focusDistance = _currentFocusDistance;
+            }
+
+            // Adjust quality settings for DoF based on aperture
+            float currentAperture = cameraSettings.availableApertureStops[_currentApertureIndex];
+
+            // ------------------------------------------------------------------------------------------------------
+            // Adjust sample count and max radius based on aperture.!!
+            // For wide apertures (small f-numbers like f/1.4), higher quality should be used.
+            // For narrow apertures (large f-numbers like f/22), lower should be fine.
+            // ------------------------------------------------------------------------------------------------------
+
+            // Normalized aperture value (inversed, 0 = widest aperture, 1 = narrowest aperture).
+            float apertureNormalized =
+                Mathf.InverseLerp(cameraSettings.minAperture, cameraSettings.maxAperture, currentAperture);
+
+            // Adjust max blur radius - wide apertures create more pronounced bokeh.
+            float nearMaxRadius = Mathf.Lerp(8f, 3f, apertureNormalized);
+            float farMaxRadius = Mathf.Lerp(10f, 4f, apertureNormalized);
+
+            // Apply quality settings.
+            localDepthOfField.nearMaxBlur = nearMaxRadius;
+            localDepthOfField.farMaxBlur = farMaxRadius;
         }
 
         #endregion
