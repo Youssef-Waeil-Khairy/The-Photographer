@@ -18,9 +18,12 @@ namespace SAE_Dubai.Leonardo.CameraSys
         /// </summary>
         public static CameraManager Instance { get; private set; }
         
-        [Header("References")]
+        [Header("- References")]
         [Tooltip("Transform where camera will be positioned when in use")]
         public Transform cameraHoldPosition;
+        
+        [Tooltip("Reference to the overlay UI used in viewfinder mode")]
+        public GameObject overlayUI;
         
         // Dictionary to store camera instances by name.
         private Dictionary<string, GameObject> _cameraInstances = new Dictionary<string, GameObject>();
@@ -44,6 +47,21 @@ namespace SAE_Dubai.Leonardo.CameraSys
             {
                 Destroy(gameObject);
                 return;
+            }
+            
+            // Reference to the camera overlay UI (used by viewfinder in all cameras).
+            if (overlayUI == null)
+            {
+                overlayUI = GameObject.FindWithTag("OverlayCameraUI");
+                if (overlayUI == null)
+                {
+                    Debug.LogWarning("CameraManager.cs: No overlay UI found with tag 'OverlayCameraUI'");
+                }
+                else
+                {
+                    // Initially set it to inactive
+                    overlayUI.SetActive(false);
+                }
             }
         }
         
