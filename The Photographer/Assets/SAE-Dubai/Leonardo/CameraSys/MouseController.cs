@@ -46,7 +46,7 @@ namespace SAE_Dubai.Leonardo
             }
         }
         
-        private void EnableFreeMouse()
+        public void EnableFreeMouse()
         {
             if (Camera.main != null)
             {
@@ -65,7 +65,7 @@ namespace SAE_Dubai.Leonardo
             Debug.Log("MouseController.cs: Free mouse mode enabled");
         }
         
-        private void DisableFreeMouse()
+        public void DisableFreeMouse()
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
