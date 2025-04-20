@@ -9,10 +9,10 @@ namespace SAE_Dubai.Leonardo.CameraSys
     /// </summary>
     public class CameraController : MonoBehaviour
     {
-        [Header("Camera References")]
+        [Header("- Camera References")]
         public Camera physicalCamera;
 
-        [Header("Camera Parameters")]
+        [Header("- Camera Parameters")]
         [Range(100, 12800)]
         public int baseISO = 100;
         [Range(100, 12800)]
@@ -27,7 +27,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
         public float currentAperture = 5.6f;
         public float[] apertureStops = { 1.4f, 2f, 2.8f, 4f, 5.6f, 8f, 11f, 16f, 22f };
         
-        [Tooltip("Shutter speed in seconds")]
+        [Tooltip("- Shutter speed in seconds")]
         public float currentShutterSpeed = 0.01f; // 1/100 second
         public float[] shutterSpeedStops = { 1/4000f, 1/2000f, 1/1000f, 1/500f, 1/250f, 1/125f, 1/60f, 1/30f, 1/15f, 1/8f, 1/4f, 0.5f, 1f, 2f, 4f, 8f, 15f, 30f };
         
@@ -38,7 +38,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
         [Range(18f, 200f)]
         public float currentFocalLength = 50f;
         
-        [Header("Control Keys")]
+        [Header("- Control Keys")]
         public KeyCode increaseISOKey = KeyCode.I;
         public KeyCode decreaseISOKey = KeyCode.U;
         public KeyCode increaseApertureKey = KeyCode.O;
@@ -48,19 +48,18 @@ namespace SAE_Dubai.Leonardo.CameraSys
         public KeyCode increaseFocalLengthKey = KeyCode.Period;
         public KeyCode decreaseFocalLengthKey = KeyCode.Comma;
         
-        [Header("UI References")]
+        [Header("- UI References")]
         public TextMeshProUGUI isoText;
         public TextMeshProUGUI apertureText;
         public TextMeshProUGUI shutterSpeedText;
         public TextMeshProUGUI focalLengthText;
         public Image exposureMeter;
         
-        [Header("Mode Settings")]
+        [Header("- Mode Settings")]
         public bool autoExposure = true;
         [Range(0.1f, 1f)]
         public float exposurePrecision = 0.8f;
         
-        // Keep track of indices in our stops arrays
         private int _currentISOIndex = 0;
         private int _currentApertureIndex = 4; // Start at f/5.6
         private int _currentShutterSpeedIndex = 5; // Start at 1/125

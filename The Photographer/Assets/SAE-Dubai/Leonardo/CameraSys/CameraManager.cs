@@ -28,6 +28,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
             else
             {
                 Destroy(gameObject);
+                return;
             }
         }
         
@@ -119,7 +120,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
             if (activeCamera != null)
             {
                 // Exit photo mode if active.
-                if (activeCamera.isInPhotoMode)
+                if (activeCamera.isCameraOn)
                 {
                     activeCamera.TogglePhotoMode();
                 }

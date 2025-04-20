@@ -1,14 +1,15 @@
+using SAE_Dubai.Leonardo.CameraSys;
 using SAE_Dubai.Leonardo.Items;
 using UnityEngine;
 
 namespace SAE_Dubai.Leonardo.Hotbar
 {
-    public class HotbarItemsController : MonoBehaviour
+    public class HotbarController : MonoBehaviour
     {
         [Header("- Settings")] public KeyCode useItemKey = KeyCode.Mouse0;
 
         [Header("- References")] private Hotbar _hotbar;
-
+        private CameraManager cameraManager;
         public ItemDatabase itemDatabase;
 
         private void Start()
@@ -24,6 +25,9 @@ namespace SAE_Dubai.Leonardo.Hotbar
             {
                 itemDatabase = FindObjectOfType<ItemDatabase>();
             }
+            
+            cameraManager = CameraManager.Instance;
+
         }
 
 

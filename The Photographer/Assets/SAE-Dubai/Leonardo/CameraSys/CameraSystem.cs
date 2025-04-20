@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SAE_Dubai.Leonardo.CameraSys
 {
@@ -18,7 +19,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
         [Header("- Mode Settings")] public bool flashEnabled = false;
 
-        [Header("- State")] public bool isInPhotoMode = false;
+        [FormerlySerializedAs("isInPhotoMode")] [Header("- State")] public bool isCameraOn = false;
         private bool _isFocusing = false;
         private bool _isCapturing = false;
 
@@ -39,7 +40,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
         public Canvas settingsCanvas;
         public bool useViewfinder;
 
-        [Header("- Input keys")] public KeyCode enterPhotoModeKey = KeyCode.C;
+        [FormerlySerializedAs("enterPhotoModeKey")] [Header("- Input keys")] public KeyCode turnCameraOnKey = KeyCode.C;
         public KeyCode takePhotoKey = KeyCode.Mouse0;
         public KeyCode focusKey = KeyCode.Mouse1;
         public KeyCode toggleViewfinderKey = KeyCode.V;
@@ -89,17 +90,17 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
         private void Update()
         {
-            if (Input.GetKeyDown(enterPhotoModeKey))
+            if (Input.GetKeyDown(turnCameraOnKey))
             {
                 TogglePhotoMode();
             }
 
-            if (Input.GetKeyDown(toggleViewfinderKey) && isInPhotoMode)
+            if (Input.GetKeyDown(toggleViewfinderKey) && isCameraOn)
             {
                 ToggleViewMode();
             }
 
-            if (!isInPhotoMode)
+            if (!isCameraOn)
                 return;
 
             HandlePhotoModeInputs();
@@ -160,9 +161,9 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
         public void TogglePhotoMode()
         {
-            isInPhotoMode = !isInPhotoMode;
+            isCameraOn = !isCameraOn;
 
-            if (isInPhotoMode)
+            if (isCameraOn)
             {
                 Debug.Log("CameraSystem.cs: Entered photography mode");
 
