@@ -1,8 +1,10 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.Serialization;
+using FilmGrain = UnityEngine.Rendering.HighDefinition.FilmGrain;
 
 namespace SAE_Dubai.Leonardo.CameraSys
 {
@@ -20,6 +22,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
         [Tooltip("Reference to the scriptable object containing all settings for this camera.")]
         public CameraSettings cameraSettings;
 
+        
         [Header("- Rendering")]
         [Tooltip("The camera used to render the viewfinder/screen.")]
         public Camera cameraRenderer;
@@ -36,6 +39,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
         [Tooltip("Material used when the camera screen is off.")]
         public Material screenOffMaterial;
 
+        
         [Header("- State")]
         [Tooltip("Whether the camera is currently powered on.")]
         public bool isCameraOn = false;
@@ -44,24 +48,25 @@ namespace SAE_Dubai.Leonardo.CameraSys
         [SerializeField] private bool _isCapturing = false;
         [SerializeField] private bool _isFocused = false;
 
+        
         [Header("- UI References")]
         [Tooltip("The UI panel containing all photography controls and information.(Screen)")]
         public GameObject photographyUI;
 
         [FormerlySerializedAs("_overlayUI")] [Tooltip("The UI panel for the OVERLAY UI. (Viewfinder)")] [SerializeField]
         private GameObject overlayUI;
-
         private CameraUIController _uiController;
 
+        
         [Header("- Audio")]
         [Tooltip("Audio source for camera sounds.")]
         public AudioSource audioSource;
 
         [Tooltip("Reference to the main player camera.")]
         public Camera mainCamera;
-
         [SerializeField] private float _defaultFOV;
 
+        
         [Header("- Photo Storage")]
         [Tooltip("Current number of photos remaining in storage.")]
         public int remainingPhotos;
@@ -69,10 +74,17 @@ namespace SAE_Dubai.Leonardo.CameraSys
         [Tooltip("Collection of all photos taken with this camera.")]
         public List<CapturedPhoto> photoAlbum = new List<CapturedPhoto>();
 
+        
         [Header("- Camera Components")]
         [Tooltip("The viewfinder camera (if available).")]
         public Camera viewfinderCamera;
 
+
+        [Header("- Camera Effects")]
+        [Tooltip("Reference to the Post Processing Volume (or Layer)")]
+        public Volume localCameraVolume;
+        [FormerlySerializedAs("postProcessFilmGrain")] public FilmGrain localFilmGrain;
+        
         [Header("- Input Keys")]
         [Tooltip("Key to turn the camera on/off.")]
         public KeyCode turnCameraOnKey = KeyCode.C;
@@ -153,6 +165,9 @@ namespace SAE_Dubai.Leonardo.CameraSys
             if (photographyUI != null) {
                 photographyUI.SetActive(false);
             }
+            
+            // Get post-processing object.
+            localCameraVolume.profile.TryGet(out localFilmGrain);
         }
 
         /// <summary>
@@ -626,6 +641,9 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 viewfinderCamera.shutterSpeed = shutterSpeed;
                 viewfinderCamera.focalLength = focalLength;
             }
+            
+            // Apply ISO effects.
+            ApplyIsoBasedGrain();
         }
 
         /// <summary>
@@ -726,6 +744,35 @@ namespace SAE_Dubai.Leonardo.CameraSys
         public CameraUIController UIController {
             get { return _uiController; }
             set { _uiController = value; }
+        }
+
+        #endregion
+
+        #region Camera Post Processing Effects
+
+        private void ApplyIsoBasedGrain()
+        {
+            if (localFilmGrain == null || cameraSettings == null) return;
+
+            int currentISO = cameraSettings.availableISOStops[_currentISOIndex];
+            //Debug.Log($"CameraSystem.cs: current ISO: {currentISO}");
+
+            // Normalize ISO to a 0-1 range.
+            float isoNormalized = Mathf.InverseLerp(cameraSettings.minISO, cameraSettings.maxISO, currentISO);
+
+            // Control Grain Intensity.
+            float minIntensity = 0.0f;     // Minimum grain intensity.
+            float maxIntensity = 0.5f;     // Maximum grain intensity.
+            localFilmGrain.intensity.value = Mathf.Lerp(minIntensity, maxIntensity, isoNormalized);
+            //Debug.Log($"CameraSystem.cs: localFilmGrain.intensity: {localFilmGrain.intensity.value}");
+
+            // Control Grain Response (size/sharpness - experiment with this).
+            float minResponse = 0.1f;     // Minimum grain response.
+            float maxResponse = 0.9f;     // Maximum grain response.
+            localFilmGrain.response.value = Mathf.Lerp(minResponse, maxResponse, isoNormalized);
+            //Debug.Log($"CameraSystem.cs: localFilmGrain.response.value: {localFilmGrain.response.value}");
+
+
         }
 
         #endregion
