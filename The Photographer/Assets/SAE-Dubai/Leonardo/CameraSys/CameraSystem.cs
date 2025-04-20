@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,8 @@ namespace SAE_Dubai.Leonardo.CameraSys
     /// </summary>
     public class CameraSystem : MonoBehaviour
     {
+        private CameraManager manager;
+        
         [Header("- Camera Configuration")]
         [Tooltip("Reference to the scriptable object containing all settings for this camera.")]
         public CameraSettings cameraSettings;
@@ -38,14 +41,15 @@ namespace SAE_Dubai.Leonardo.CameraSys
         public bool isCameraOn = false;
 
         [SerializeField] private bool _isFocusing = false;
-
         [SerializeField] private bool _isCapturing = false;
-
         [SerializeField] private bool _isFocused = false;
 
         [Header("- UI References")]
-        [Tooltip("The UI panel containing all photography controls and information.")]
+        [Tooltip("The UI panel containing all photography controls and information.(Screen)")]
         public GameObject photographyUI;
+
+        [FormerlySerializedAs("_overlayUI")] [Tooltip("The UI panel for the OVERLAY UI. (Viewfinder)")] [SerializeField]
+        private GameObject overlayUI;
 
         private CameraUIController _uiController;
 
@@ -69,9 +73,6 @@ namespace SAE_Dubai.Leonardo.CameraSys
         [Tooltip("The viewfinder camera (if available).")]
         public Camera viewfinderCamera;
 
-        [Tooltip("Canvas containing camera settings UI.")]
-        public Canvas settingsCanvas;
-
         [Header("- Input Keys")]
         [Tooltip("Key to turn the camera on/off.")]
         public KeyCode turnCameraOnKey = KeyCode.C;
@@ -80,8 +81,8 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
         [Tooltip("Key to focus the camera")] public KeyCode focusKey = KeyCode.Mouse1;
 
-        [Tooltip("Key to toggle between viewfinder and screen.")]
-        public KeyCode toggleViewfinderKey = KeyCode.V;
+        [FormerlySerializedAs("toggleViewfinderKey")] [Tooltip("Key to toggle between viewfinder and screen.")]
+        public KeyCode toggleViewKey = KeyCode.V;
 
         // Internal variables for camera control.
         private int _currentISOIndex = 0;
@@ -89,6 +90,23 @@ namespace SAE_Dubai.Leonardo.CameraSys
         private int _currentShutterSpeedIndex = 5;
         private float _currentFocalLength;
         private bool _autoExposureEnabled = true;
+
+        /// <summary>
+        /// Get a reference to the overlay photo panel to disable it.
+        /// </summary>
+        private void Awake() {
+            manager = FindObjectOfType<CameraManager>();
+
+            overlayUI = manager.overlayUI;
+            
+            if (overlayUI != null) {
+                // Initially disable it.
+                overlayUI.SetActive(false);
+            }
+            else {
+                Debug.LogWarning("CameraSystem.cs: Could not find UI with tag 'OverlayCameraUI'");
+            }
+        }
 
         /// <summary>
         /// Initializes the camera system with default settings.
@@ -105,7 +123,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
                     audioSource = gameObject.AddComponent<AudioSource>();
                 }
             }
-
+            
             _defaultFOV = mainCamera.fieldOfView;
 
             // Initialize camera settings from scriptable object.
@@ -122,7 +140,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
             }
             else {
                 remainingPhotos = 50;
-                Debug.LogWarning("CameraSystem: No camera settings assigned!");
+                Debug.LogWarning("CameraSystem.cs: No camera settings assigned!");
             }
 
             // Initialize physical camera if available.
@@ -182,7 +200,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 TogglePhotoMode();
             }
 
-            if (Input.GetKeyDown(toggleViewfinderKey) && isCameraOn) {
+            if (Input.GetKeyDown(toggleViewKey) && isCameraOn) {
                 ToggleViewMode();
             }
 
@@ -199,33 +217,42 @@ namespace SAE_Dubai.Leonardo.CameraSys
             isCameraOn = !isCameraOn;
 
             if (isCameraOn) {
-                Debug.Log("CameraSystem: Entered photography mode");
-
                 // Set up appropriate camera display.
                 if (usingViewfinder) {
                     if (viewfinderCamera != null) viewfinderCamera.enabled = true;
                     if (cameraRenderer != null) cameraRenderer.enabled = false;
-
                     if (screenRenderer != null && screenOffMaterial != null) {
                         screenRenderer.material = screenOffMaterial;
                     }
-                }
-                else {
+        
+                    // Show overlay UI, hide world space UI.
+                    if (photographyUI != null) photographyUI.SetActive(false);
+                    if (CameraManager.Instance != null && CameraManager.Instance.overlayUI != null) {
+                        CameraManager.Instance.overlayUI.SetActive(true);
+                    }
+                } else {
                     if (viewfinderCamera != null) viewfinderCamera.enabled = false;
                     if (cameraRenderer != null) cameraRenderer.enabled = true;
-
                     if (screenRenderer != null && screenOnMaterial != null) {
                         screenRenderer.material = screenOnMaterial;
                     }
-                }
-
-                // Show UI.
-                if (photographyUI != null) {
-                    photographyUI.SetActive(true);
+        
+                    // Show world space UI, hide overlay UI.
+                    if (photographyUI != null) photographyUI.SetActive(true);
+                    if (CameraManager.Instance != null && CameraManager.Instance.overlayUI != null) {
+                        CameraManager.Instance.overlayUI.SetActive(false);
+                    }
                 }
             }
             else {
-                Debug.Log("CameraSystem.cs: Exited photography mode");
+                //Debug.Log("CameraSystem.cs: Turned cam off.");
+                
+                if (photographyUI != null) {
+                    photographyUI.SetActive(false);
+                }
+                if (manager != null && manager.overlayUI != null) {
+                    manager.overlayUI.SetActive(false);
+                }
 
                 // Turn off all camera displays
                 if (viewfinderCamera != null) viewfinderCamera.enabled = false;
@@ -250,23 +277,31 @@ namespace SAE_Dubai.Leonardo.CameraSys
         /// </summary>
         public void ToggleViewMode() {
             usingViewfinder = !usingViewfinder;
-
-            if (usingViewfinder) {
-                if (viewfinderCamera != null) viewfinderCamera.enabled = true;
-                if (cameraRenderer != null) cameraRenderer.enabled = false;
-
-                if (screenRenderer != null && screenOffMaterial != null) {
-                    screenRenderer.material = screenOffMaterial;
+            // Get the camera manager reference.
+            CameraManager manager = CameraManager.Instance;
+    
+            // Toggle camera renderers.
+            if (viewfinderCamera != null) viewfinderCamera.enabled = usingViewfinder;
+            if (cameraRenderer != null) cameraRenderer.enabled = !usingViewfinder;
+    
+            // Update screen material.
+            if (screenRenderer != null) {
+                Material materialToUse = usingViewfinder ? screenOffMaterial : screenOnMaterial;
+                if (materialToUse != null) {
+                    screenRenderer.material = materialToUse;
                 }
             }
-            else {
-                if (viewfinderCamera != null) viewfinderCamera.enabled = false;
-                if (cameraRenderer != null) cameraRenderer.enabled = true;
-
-                if (screenRenderer != null && screenOnMaterial != null) {
-                    screenRenderer.material = screenOnMaterial;
-                }
+    
+            // Toggle UI panels.
+            if (photographyUI != null) {
+                photographyUI.SetActive(!usingViewfinder);
             }
+    
+            if (manager != null && manager.overlayUI != null) {
+                manager.overlayUI.SetActive(usingViewfinder);
+            }
+    
+            Debug.Log("CameraSystem: Switched to " + (usingViewfinder ? "viewfinder" : "screen") + " view");
         }
 
         /// <summary>
@@ -386,29 +421,29 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
             // Determine which camera to use for focus ray.
             Camera focusCamera = usingViewfinder ? viewfinderCamera : cameraRenderer;
-    
+
             if (focusCamera == null) {
                 // Fall back to screen camera if viewfinder is null.
                 focusCamera = cameraRenderer;
-        
+
                 // If both are null, we can't focus.
                 if (focusCamera == null) {
                     StartCoroutine(FailedFocusEffect());
                     return;
                 }
             }
-    
+
             // Cast a ray from the center of the camera view to find focus distance.
             Ray ray = focusCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             if (Physics.Raycast(ray, out RaycastHit hit, 100f)) {
                 // Get the focus distance
                 float focusDistance = hit.distance;
-        
+
                 // Apply focus distance to both cameras (viewfinder and screen).
                 if (cameraRenderer != null) {
                     cameraRenderer.focusDistance = focusDistance;
                 }
-        
+
                 if (viewfinderCamera != null) {
                     viewfinderCamera.focusDistance = focusDistance;
                 }
@@ -424,6 +459,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 Debug.Log("Cannot focus - no object detected");
             }
         }
+
         /// <summary>
         /// Simulates the camera focus process.
         /// </summary>
@@ -449,9 +485,8 @@ namespace SAE_Dubai.Leonardo.CameraSys
             if (_uiController != null) {
                 _uiController.OnFocusAchieved();
             }
-            
         }
-        
+
         /// <summary>
         /// Enumerator to run if the focus is not possible.
         /// </summary>
@@ -472,7 +507,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
             yield return new WaitForSeconds(0.3f);
 
             _isFocusing = false;
-            _isFocused = false; 
+            _isFocused = false;
 
             // No need to notify UI controller about focus achieved!!!!!!
             // The UI will stay in unfocused state!!!!!
