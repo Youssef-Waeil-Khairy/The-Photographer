@@ -179,7 +179,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
                     focusReticleImage.color = unfocusedColor;
                 }
             }
-            
+    
             // Update focus text.
             if (focusText != null)
             {
@@ -193,7 +193,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 }
                 else
                 {
-                    focusText.text = "Tap to Focus";
+                    focusText.text = "No Focus - Tap to Try Again";
                 }
             }
         }

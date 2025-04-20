@@ -384,40 +384,54 @@ namespace SAE_Dubai.Leonardo.CameraSys
             if (!cameraSettings.hasAutoFocus || _isFocusing)
                 return;
 
+            // Determine which camera to use for focus ray.
+            Camera focusCamera = usingViewfinder ? viewfinderCamera : cameraRenderer;
+    
+            if (focusCamera == null) {
+                // Fall back to screen camera if viewfinder is null.
+                focusCamera = cameraRenderer;
+        
+                // If both are null, we can't focus.
+                if (focusCamera == null) {
+                    StartCoroutine(FailedFocusEffect());
+                    return;
+                }
+            }
+    
             // Cast a ray from the center of the camera view to find focus distance.
-            if (cameraRenderer != null) {
-                Ray ray = cameraRenderer.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-                if (Physics.Raycast(ray, out RaycastHit hit, 100f)) {
-                    // Set focus distance based on hit.
-                    cameraRenderer.focusDistance = hit.distance;
-
-                    // Start the focus effect.
-                    StartCoroutine(FocusEffect());
-
-                    Debug.Log($"Focusing at distance: {hit.distance}m");
+            Ray ray = focusCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+            if (Physics.Raycast(ray, out RaycastHit hit, 100f)) {
+                // Get the focus distance
+                float focusDistance = hit.distance;
+        
+                // Apply focus distance to both cameras (viewfinder and screen).
+                if (cameraRenderer != null) {
+                    cameraRenderer.focusDistance = focusDistance;
                 }
-                else {
-                    // No object hit, focus at default distance.
-                    cameraRenderer.focusDistance = 10f;
-                    StartCoroutine(FocusEffect());
-
-                    Debug.Log("Focusing at default distance (10m)");
+        
+                if (viewfinderCamera != null) {
+                    viewfinderCamera.focusDistance = focusDistance;
                 }
+
+                // Start the successful focus effect.
+                StartCoroutine(SuccessfulFocusEffect());
+
+                Debug.Log($"Focusing at distance: {focusDistance}m");
             }
             else {
-                // Just do the focus effect without changing focus distance.
-                StartCoroutine(FocusEffect());
+                // No object hit, cannot focus successfully.
+                StartCoroutine(FailedFocusEffect());
+                Debug.Log("Cannot focus - no object detected");
             }
         }
-
         /// <summary>
         /// Simulates the camera focus process.
         /// </summary>
-        private IEnumerator FocusEffect() {
+        private IEnumerator SuccessfulFocusEffect() {
             _isFocusing = true;
             _isFocused = false;
 
-            // Notify UI controller
+            // Notify UI controller.
             if (_uiController != null) {
                 _uiController.OnFocusLost();
             }
@@ -435,8 +449,33 @@ namespace SAE_Dubai.Leonardo.CameraSys
             if (_uiController != null) {
                 _uiController.OnFocusAchieved();
             }
+            
+        }
+        
+        /// <summary>
+        /// Enumerator to run if the focus is not possible.
+        /// </summary>
+        private IEnumerator FailedFocusEffect() {
+            _isFocusing = true;
+            _isFocused = false;
 
-            Debug.Log("Camera focused");
+            // Notify UI controller.
+            if (_uiController != null) {
+                _uiController.OnFocusLost();
+            }
+
+            if (cameraSettings != null && cameraSettings.focusSound != null && audioSource != null) {
+                // TODO: Could play a different sound for failed focus if available
+                audioSource.PlayOneShot(cameraSettings.focusSound);
+            }
+
+            yield return new WaitForSeconds(0.3f);
+
+            _isFocusing = false;
+            _isFocused = false; 
+
+            // No need to notify UI controller about focus achieved!!!!!!
+            // The UI will stay in unfocused state!!!!!
         }
 
         /// <summary>
@@ -529,12 +568,29 @@ namespace SAE_Dubai.Leonardo.CameraSys
         /// Applies the current camera parameters to the physical camera.
         /// </summary>
         private void ApplyCameraParameters() {
-            if (cameraRenderer == null || cameraSettings == null) return;
+            if (cameraSettings == null) return;
 
-            cameraRenderer.iso = cameraSettings.availableISOStops[_currentISOIndex];
-            cameraRenderer.aperture = cameraSettings.availableApertureStops[_currentApertureIndex];
-            cameraRenderer.shutterSpeed = cameraSettings.availableShutterSpeedStops[_currentShutterSpeedIndex];
-            cameraRenderer.focalLength = _currentFocalLength;
+            // Get the current parameter values
+            int iso = cameraSettings.availableISOStops[_currentISOIndex];
+            float aperture = cameraSettings.availableApertureStops[_currentApertureIndex];
+            float shutterSpeed = cameraSettings.availableShutterSpeedStops[_currentShutterSpeedIndex];
+            float focalLength = _currentFocalLength;
+
+            // Apply to screen camera if available
+            if (cameraRenderer != null) {
+                cameraRenderer.iso = iso;
+                cameraRenderer.aperture = aperture;
+                cameraRenderer.shutterSpeed = shutterSpeed;
+                cameraRenderer.focalLength = focalLength;
+            }
+
+            // Apply to viewfinder camera if available
+            if (viewfinderCamera != null) {
+                viewfinderCamera.iso = iso;
+                viewfinderCamera.aperture = aperture;
+                viewfinderCamera.shutterSpeed = shutterSpeed;
+                viewfinderCamera.focalLength = focalLength;
+            }
         }
 
         /// <summary>
