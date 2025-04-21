@@ -1,55 +1,39 @@
+using System;
+using SAE_Dubai.JW;
+using SAE_Dubai.Leonardo;
 using TMPro;
 using UnityEngine;
 
 public class ComputerUI : MonoBehaviour
 {
-    public float currentMoney = 100f;
-    public TMP_Text moneyText;
-    public GameObject PlayerObject;
-    public GameObject ComputerCamera;
+    [SerializeField] private MouseController  mouseController;
+    [SerializeField] Camera computerCamera;
+    [SerializeField] Camera playerCamera;
+    [SerializeField] TMP_Text balanceText;
 
-    void Start()
+    private void Update()
     {
-        PlayerObject.SetActive(false);
-        ComputerCamera.SetActive(true);
-        Cursor.lockState = CursorLockMode.Confined;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        moneyText.text = $"Money: ${currentMoney}";
-
-        if (Input.GetKeyDown(KeyCode.Backspace))
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
-            if (ComputerCamera.activeSelf)
-            {
-                ComputerCamera.SetActive(false);
-                PlayerObject.SetActive(true);
-                Cursor.lockState = CursorLockMode.Confined;
-                Cursor.visible = true;
-            }
-            else
-            {
-                ComputerCamera.SetActive(true);
-                PlayerObject.SetActive(false);
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-
-            }
+            ToggleComputerVision();
         }
+
+        balanceText.text = $"Balance: {PlayerBalance.Instance.Balance}";
     }
 
-    public bool AttemptBuy(float cost)
+    private void ToggleComputerVision()
     {
-        if (currentMoney >= cost)
+        if (computerCamera.enabled)
         {
-            currentMoney -= cost;
-            return true;
+            computerCamera.enabled = false;
+            playerCamera.enabled = true;
+            mouseController.DisableFreeMouse();
         }
         else
         {
-            return false;
+            computerCamera.enabled = true;
+            playerCamera.enabled = false;
+            mouseController.EnableFreeMouse();
         }
     }
 }
