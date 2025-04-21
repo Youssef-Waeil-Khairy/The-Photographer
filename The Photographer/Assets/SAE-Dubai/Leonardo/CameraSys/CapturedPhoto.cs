@@ -1,61 +1,57 @@
-using UnityEngine;
+// Create or Update this file as: CapturedPhoto.cs
 
+using SAE_Dubai.Leonardo.CameraSys.Client_System;
+using UnityEngine;
+// Make sure the namespace matches the other scripts
 namespace SAE_Dubai.Leonardo.CameraSys
 {
     /// <summary>
     /// Data structure to store information about photos captured by the player.
-    /// Records technical details of each photo including camera settings and quality.
     /// </summary>
     [System.Serializable]
     public class CapturedPhoto
     {
         /// <summary>
-        /// When the photo was taken.
+        /// The evaluated portrait shot type if this is a portrait photo.
+        /// Set by the system handling the OnPhotoCapture event (e.g., ClientSpawner).
         /// </summary>
+        public PortraitShotType? portraitShotType; // Make sure this uses the enum from PortraitShotType.cs
+
+        // --- Keep your existing fields ---
         public System.DateTime TimeStamp;
-        
-        /// <summary>
-        /// ISO sensitivity setting used for the photo.
-        /// </summary>
         public int iso;
-        
-        /// <summary>
-        /// Aperture f-stop used for the photo.
-        /// </summary>
         public float aperture;
-        
-        /// <summary>
-        /// Shutter speed in seconds used for the photo.
-        /// </summary>
         public float shutterSpeed;
-        
-        /// <summary>
-        /// Focal length in mm used for the photo.
-        /// </summary>
         public float focalLength;
-        
-        /// <summary>
-        /// Calculated quality value of the photo (0.0 to 1.0).
-        /// </summary>
         public float quality;
-        
+        public Texture2D photoTexture; // Optional: If you store the actual image
+        // --- End existing fields ---
+
         /// <summary>
-        /// Optional render texture containing the actual photo image.
-        /// </summary>
-        public Texture2D photoTexture;
-        
-        /// <summary>
-        /// Returns a formatted string with the camera settings used for this photo.
+        /// Returns a formatted string with the camera settings and composition info.
         /// </summary>
         public string GetPhotoInfo()
         {
-            string shutterText = shutterSpeed >= 1f 
-                ? $"{shutterSpeed}s" 
-                : $"1/{Mathf.Round(1f / shutterSpeed)}";
-                
-            return $"Photo taken: {TimeStamp.ToString("yyyy-MM-dd HH:mm:ss")}\n" +
-                   $"Settings: ISO {iso}, f/{aperture}, {shutterText}, {focalLength}mm\n" +
-                   $"Quality: {quality:P0}";
+            string shutterText = shutterSpeed >= 1f
+                ? $"{shutterSpeed:F1}s" // Format seconds with one decimal place if needed
+                : $"1/{Mathf.RoundToInt(1f / shutterSpeed)}";
+
+            string photoInfo = $"Taken: {TimeStamp:yyyy-MM-dd HH:mm:ss}\n" +
+                               $"Settings: ISO {iso}, f/{aperture:F1}, {shutterText}, {focalLength:F0}mm\n" +
+                               $"Quality: {quality:P0}";
+
+            // Add portrait information if available, using the new static evaluator method
+            if (portraitShotType.HasValue && portraitShotType.Value != PortraitShotType.Undefined)
+            {
+                // Use the static method from the new evaluator class
+                photoInfo += $"\nComposition: {PhotoCompositionEvaluator.GetShotTypeDisplayName(portraitShotType.Value)}";
+            }
+            else
+            {
+                 photoInfo += "\nComposition: N/A";
+            }
+
+            return photoInfo;
         }
     }
 }
