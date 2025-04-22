@@ -1,0 +1,7 @@
+{
+    "files.exclude": {
+        "**/*.meta": true,
+        "**/*.asset.meta": true,
+        "**/*.cs.meta": true
+    }
+} 
