@@ -92,7 +92,7 @@ namespace SAE_Dubai.Leonardo.CameraSys.Client_System
             }
         }
 
-        private void SpawnInitialClients() {
+        public void SpawnInitialClients() {
             if (availableSpawnPoints.Count < numberOfClientsToSpawn) {
                 Debug.LogWarning("ClientSpawner: Not enough available spawn points to spawn initial clients.");
                 numberOfClientsToSpawn = availableSpawnPoints.Count;
