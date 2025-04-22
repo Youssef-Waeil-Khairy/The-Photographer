@@ -5,13 +5,13 @@ namespace SAE_Dubai.Leonardo.Items
 {
     public class ItemPickUpSystem : MonoBehaviour
     {
-        [Header("Pickup Settings")]
+        [Header("- Pickup Settings")]
         public float pickupRange = 3f;
         public LayerMask pickupLayer;
         public KeyCode pickupKey = KeyCode.E;
         public float pickupHoldDuration = 0.2f;
     
-        [Header("References")]
+        [Header("- References")]
         private Camera _playerCamera;
         private Hotbar.Hotbar _hotbar;
         public GameObject pickupPrompt;
@@ -23,9 +23,11 @@ namespace SAE_Dubai.Leonardo.Items
         
         private void Start()
         {
+            // Getting references.
             _playerCamera = Camera.main;
             _hotbar = FindObjectOfType<Hotbar.Hotbar>();
         
+            // Set the pickup text to false;
             if (pickupPrompt != null)
             {
                 pickupPrompt.SetActive(false);
