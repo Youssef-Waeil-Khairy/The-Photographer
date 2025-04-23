@@ -4,6 +4,7 @@ using SAE_Dubai.Leonardo.CameraSys.Client_System;
 using SAE_Dubai.JW;
 using SAE_Dubai.JW.UI;
 using System;
+using UnityEngine.UI;
 
 namespace SAE_Dubai.Leonardo.CameraSys.Client_System
 {
@@ -28,7 +29,7 @@ namespace SAE_Dubai.Leonardo.CameraSys.Client_System
 
         private List<PhotoSession> activeSessions = new List<PhotoSession>();
         private ComputerUI computerUI;
-        private BuyButton buyButtonScript;
+        private TravelCostManager _travelCostManagerScript;
 
         // Event for when active sessions change
         public event Action OnSessionsChanged;
@@ -49,7 +50,7 @@ namespace SAE_Dubai.Leonardo.CameraSys.Client_System
         private void Start()
         {
             computerUI = FindAnyObjectByType<ComputerUI>();
-            buyButtonScript = FindAnyObjectByType<BuyButton>();
+            _travelCostManagerScript = FindAnyObjectByType<TravelCostManager>();
             
             // Initialize location names if needed
             if (locationNames == null || locationNames.Count == 0)
@@ -90,18 +91,20 @@ namespace SAE_Dubai.Leonardo.CameraSys.Client_System
             return activeSessions;
         }
 
-        public bool TravelToLocation(int locationIndex)
+        public bool TravelToLocation(int locationIndex, Button callingButton)
         {
             if (locationIndex < 0 || locationIndex >= photoLocations.Count)
                 return false;
 
-            if (buyButtonScript.AttemptTravelToClient(out float playerBalance, (int)travelCost))
+            _travelCostManagerScript = callingButton.GetComponent<TravelCostManager>();
+            if (_travelCostManagerScript == null) Debug.LogError("PhotoSessionManager.cs: No TravelCostManager script found on button.");
+            if (_travelCostManagerScript.AttemptTravelPayment(out float playerBalance, (int)travelCost))
             {
-                // Teleport player to location
+                // Teleport player to location.
                 playerObject.transform.position = photoLocations[locationIndex].position;
                 playerObject.transform.rotation = photoLocations[locationIndex].rotation;
                 
-                // Find the session for this location and spawn the client
+                // Find the session for this location and spawn the client.
                 foreach (var session in activeSessions)
                 {
                     if (session.locationIndex == locationIndex && !session.isClientSpawned)

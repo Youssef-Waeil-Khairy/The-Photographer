@@ -7,7 +7,7 @@ namespace SAE_Dubai.Leonardo.CameraSys.Client_System
 {
     public class ActiveSessionItem : MonoBehaviour
     {
-        [Header("UI References")]
+        [Header("- UI References")]
         public TMP_Text sessionInfoText;
         public Button travelButton;
         public Button cancelButton;
@@ -56,7 +56,7 @@ namespace SAE_Dubai.Leonardo.CameraSys.Client_System
         {
             if (sessionManager != null && linkedSession != null)
             {
-                bool success = sessionManager.TravelToLocation(linkedSession.locationIndex);
+                bool success = sessionManager.TravelToLocation(linkedSession.locationIndex, GetComponent<Button>());
                 
                 if (success)
                 {
