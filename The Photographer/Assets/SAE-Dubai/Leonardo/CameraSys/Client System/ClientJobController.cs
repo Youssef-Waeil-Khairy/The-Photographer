@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using SAE_Dubai.JW;
 using UnityEngine;
 
 namespace SAE_Dubai.Leonardo.CameraSys.Client_System
@@ -44,7 +45,7 @@ namespace SAE_Dubai.Leonardo.CameraSys.Client_System
             completedShotTypes = new List<PortraitShotType>();
             isJobActive = true;
 
-            gameObject.name = $"Client_{clientName}"; // Rename instance for clarity in hierarchy
+            gameObject.name = $"Client_{clientName}"; // Rename instance for clarity in hierarchy.
 
             Debug.Log($"Client '{clientName}' spawned. Requires: {string.Join(", ", requiredShotTypes)}");
             UpdateUI();
@@ -96,14 +97,14 @@ namespace SAE_Dubai.Leonardo.CameraSys.Client_System
             isJobActive = false;
             Debug.Log($"Client '{clientName}' job completed! Reward: {rewardAmount}");
 
-            // TODO: Connect reward to JW's scripts. 
-            // FindObjectOfType<GameManager>()?.AddMoney(rewardAmount);
-
+            // Connect reward to PlayerBalance.
+            PlayerBalance.Instance?.AddBalance(rewardAmount);
+        
             // Notify the spawner/manager that this job is done.
             OnJobCompleted?.Invoke(this);
-
-            // TODO: Visual feedback (play animation, sound)
-            // TODO: Disable interaction or destroy after a delay
+        
+            // TODO: Visual feedback (play animation, sound).
+            // Disable interaction or destroy after a delay.
             Destroy(gameObject, 5.0f);
         }
     }

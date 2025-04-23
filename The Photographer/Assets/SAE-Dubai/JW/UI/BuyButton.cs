@@ -1,31 +1,87 @@
 ﻿using UnityEngine;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 namespace SAE_Dubai.JW.UI
 {
     public class BuyButton : MonoBehaviour
     {
-        public CameraInfoPanel cameraInfoPanel;
-
-        public void AttemptBuy()
+        [SerializeField] private Button button;
+        [SerializeField] private TMP_Text costText;
+        [SerializeField] private TMP_Text feedbackText;
+        
+        [SerializeField] private float feedbackDisplayTime = 2f;
+        
+        private float feedbackTimer = 0f;
+        
+        private void Start()
         {
-            if (cameraInfoPanel == null)
+            if (button == null)
+                button = GetComponent<Button>();
+                
+            if (feedbackText != null)
+                feedbackText.gameObject.SetActive(false);
+        }
+        
+        private void Update()
+        {
+            if (feedbackText != null && feedbackText.gameObject.activeSelf)
             {
-                return;
+                feedbackTimer -= Time.deltaTime;
+                if (feedbackTimer <= 0)
+                {
+                    feedbackText.gameObject.SetActive(false);
+                }
             }
-
-            if (cameraInfoPanel.CamSettings == null)
+        }
+        
+        public void SetCost(int cost)
+        {
+            if (costText != null)
             {
-                return;
+                costText.text = $"${cost}";
             }
-
-            if (cameraInfoPanel.CameraPrice > PlayerBalance.Instance.Balance)
+        }
+        
+        public bool AttemptTravelToClient(out float playerBalance, int cost)
+        {
+            // Check if player has enough money
+            if (PlayerBalance.Instance != null)
             {
-                return;
+                playerBalance = PlayerBalance.Instance.Balance;
+                
+                if (PlayerBalance.Instance.HasSufficientBalance(cost))
+                {
+                    // Deduct the cost
+                    PlayerBalance.Instance.DeductBalance(cost);
+                    
+                    // Show success feedback
+                    ShowFeedback($"Travel successful! Paid ${cost}", Color.green);
+                    
+                    return true;
+                }
+                else
+                {
+                    // Show insufficient funds feedback
+                    ShowFeedback("Insufficient funds for travel!", Color.red);
+                    return false;
+                }
             }
-            // TODO: Add checks to not allow the same camera to be bought multiple times
             
-            PlayerBalance.Instance.Balance -= cameraInfoPanel.CameraPrice;
-            cameraInfoPanel.CameraItemPrefab.SetActive(true);
+            playerBalance = 0;
+            return false;
+        }
+        
+        private void ShowFeedback(string message, Color color)
+        {
+            if (feedbackText != null)
+            {
+                feedbackText.text = message;
+                feedbackText.color = color;
+                feedbackText.gameObject.SetActive(true);
+                feedbackTimer = feedbackDisplayTime;
+            }
         }
     }
 }

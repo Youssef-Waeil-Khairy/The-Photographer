@@ -27,7 +27,7 @@ namespace SAE_Dubai.Leonardo.Items
             _playerCamera = Camera.main;
             _hotbar = FindObjectOfType<Hotbar.Hotbar>();
         
-            // Set the pickup text to false;
+            // Set the pickup text to false.
             if (pickupPrompt != null)
             {
                 pickupPrompt.SetActive(false);
