@@ -429,6 +429,8 @@ namespace SAE_Dubai.Leonardo.CameraSys
             photoAlbum.Add(newPhoto);
             remainingPhotos--;
 
+            OnPhotoCapture?.Invoke(newPhoto);
+            
             // Delay before allowing another photo.
             yield return new WaitForSeconds(0.5f);
             _isCapturing = false;
@@ -891,5 +893,8 @@ namespace SAE_Dubai.Leonardo.CameraSys
         }
 
         #endregion
+        
+        public delegate void PhotoCapturedEvent(CapturedPhoto photo);
+        public event PhotoCapturedEvent OnPhotoCapture;
     }
 }
