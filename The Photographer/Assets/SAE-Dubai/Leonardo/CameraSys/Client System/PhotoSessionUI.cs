@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using SAE_Dubai.JW;
 
 namespace SAE_Dubai.Leonardo.CameraSys.Client_System
 {
