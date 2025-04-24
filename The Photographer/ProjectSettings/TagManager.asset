@@ -15,9 +15,9 @@ TagManager:
   - UI
   - 
   - Pickupable
-  - 
+  - PLAYER
   - PortraitSubject
-  - 
+  - CAMERA
   - 
   - 
   - 

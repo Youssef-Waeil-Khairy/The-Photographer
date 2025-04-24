@@ -1,0 +1,5 @@
+# Unity meta files
+*.meta
+
+# Keep .cs files
+!*.cs 
