@@ -119,6 +119,60 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &11740612
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 11740613}
+  - component: {fileID: 11740614}
+  m_Layer: 0
+  m_Name: CameraShopManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &11740613
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 11740612}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.26, y: 1.08, z: -2.04}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 647255961}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &11740614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 11740612}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b11a7b435ae45240b1a40979bc138e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraSpawnPoint: {fileID: 11740613}
+  pickupableLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  purchaseConfirmationPanel: {fileID: 0}
+  confirmationText: {fileID: 0}
+  confirmButton: {fileID: 0}
+  cancelButton: {fileID: 0}
+  feedbackText: {fileID: 0}
+  feedbackDisplayTime: 3
 --- !u!1 &29902989
 GameObject:
   m_ObjectHideFlags: 0
@@ -2225,6 +2279,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 442465844}
   m_CullTransparentMesh: 1
+--- !u!114 &449065180 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7139398788063835273, guid: 35e7ce7e1bb8eeb4f8e896fdfa8176db, type: 3}
+  m_PrefabInstance: {fileID: 808324728}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &615055262
 GameObject:
   m_ObjectHideFlags: 0
@@ -2560,6 +2625,7 @@ Transform:
   - {fileID: 914773505}
   - {fileID: 839499296}
   - {fileID: 859708944}
+  - {fileID: 11740613}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &679561439
@@ -3110,6 +3176,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LaptopScreen (Canvas)
       objectReference: {fileID: 0}
+    - target: {fileID: 2861557840516269389, guid: 35e7ce7e1bb8eeb4f8e896fdfa8176db, type: 3}
+      propertyPath: m_Name
+      value: '[Button] ClientApp'
+      objectReference: {fileID: 0}
     - target: {fileID: 3018324411549056324, guid: 35e7ce7e1bb8eeb4f8e896fdfa8176db, type: 3}
       propertyPath: item
       value: 
@@ -3139,9 +3209,29 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 330585545}
     - target: {fileID: 4598352433913044975, guid: 35e7ce7e1bb8eeb4f8e896fdfa8176db, type: 3}
+      propertyPath: homeTabButton
+      value: 
+      objectReference: {fileID: 2075202474}
+    - target: {fileID: 4598352433913044975, guid: 35e7ce7e1bb8eeb4f8e896fdfa8176db, type: 3}
+      propertyPath: cameraShopPanel
+      value: 
+      objectReference: {fileID: 808324730}
+    - target: {fileID: 4598352433913044975, guid: 35e7ce7e1bb8eeb4f8e896fdfa8176db, type: 3}
       propertyPath: mouseController
       value: 
       objectReference: {fileID: 1448744979}
+    - target: {fileID: 4598352433913044975, guid: 35e7ce7e1bb8eeb4f8e896fdfa8176db, type: 3}
+      propertyPath: photoSessionsPanel
+      value: 
+      objectReference: {fileID: 1395041024}
+    - target: {fileID: 4598352433913044975, guid: 35e7ce7e1bb8eeb4f8e896fdfa8176db, type: 3}
+      propertyPath: cameraShopTabButton
+      value: 
+      objectReference: {fileID: 449065180}
+    - target: {fileID: 4598352433913044975, guid: 35e7ce7e1bb8eeb4f8e896fdfa8176db, type: 3}
+      propertyPath: photoSessionsTabButton
+      value: 
+      objectReference: {fileID: 2046651339}
     - target: {fileID: 5567990845133976301, guid: 35e7ce7e1bb8eeb4f8e896fdfa8176db, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3162,6 +3252,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0.168
       objectReference: {fileID: 0}
+    - target: {fileID: 6087191635023249245, guid: 35e7ce7e1bb8eeb4f8e896fdfa8176db, type: 3}
+      propertyPath: m_Name
+      value: '[Button] CameraShop'
+      objectReference: {fileID: 0}
     - target: {fileID: 6847463472568255223, guid: 35e7ce7e1bb8eeb4f8e896fdfa8176db, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -3170,7 +3264,12 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 8228569050996127931, guid: 35e7ce7e1bb8eeb4f8e896fdfa8176db, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 5018933190145351711, guid: 35e7ce7e1bb8eeb4f8e896fdfa8176db, type: 3}
     m_RemovedGameObjects:
     - {fileID: 9200179436304623442, guid: 35e7ce7e1bb8eeb4f8e896fdfa8176db, type: 3}
     m_AddedGameObjects:
@@ -5002,6 +5101,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1385316769}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1395041024 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6981966339562115782, guid: 35e7ce7e1bb8eeb4f8e896fdfa8176db, type: 3}
+  m_PrefabInstance: {fileID: 808324728}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1430040466
 GameObject:
   m_ObjectHideFlags: 0
@@ -7353,6 +7457,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2039621443}
   m_CullTransparentMesh: 1
+--- !u!114 &2046651339 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1213854671925989017, guid: 35e7ce7e1bb8eeb4f8e896fdfa8176db, type: 3}
+  m_PrefabInstance: {fileID: 808324728}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2075202474 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5468779672029546786, guid: 35e7ce7e1bb8eeb4f8e896fdfa8176db, type: 3}
+  m_PrefabInstance: {fileID: 808324728}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2082136924
 GameObject:
   m_ObjectHideFlags: 0

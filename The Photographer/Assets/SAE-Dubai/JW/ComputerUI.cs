@@ -22,9 +22,7 @@ namespace SAE_Dubai.JW
         [SerializeField] Button homeTabButton;
         [SerializeField] Button photoSessionsTabButton;
         [SerializeField] Button cameraShopTabButton;
-    
-        [SerializeField] GameObject homePanel;
-
+        
         private void Start()
         {
             // Leo: Setup tab navigation
@@ -91,10 +89,6 @@ namespace SAE_Dubai.JW
 
         private void SwitchTab(TabType tabType)
         {
-            // Hide all panels first.
-            if (homePanel != null) 
-                homePanel.SetActive(false);
-            
             if (photoSessionsPanel != null)
                 photoSessionsPanel.SetActive(false);
             
@@ -104,11 +98,6 @@ namespace SAE_Dubai.JW
             // Show the selected panel.
             switch (tabType)
             {
-                case TabType.Home:
-                    if (homePanel != null)
-                        homePanel.SetActive(true);
-                    break;
-                
                 case TabType.PhotoSessions:
                     if (photoSessionsPanel != null)
                         photoSessionsPanel.SetActive(true);
