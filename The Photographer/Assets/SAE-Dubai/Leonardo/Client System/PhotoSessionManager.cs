@@ -80,14 +80,24 @@ namespace SAE_Dubai.Leonardo.Client_System
             if (locationIndex < 0 || locationIndex >= photoLocations.Count)
                 return false;
 
-            // Use the TravelCostManager singleton to handle payment.
-            if (TravelCostManager.Instance != null &&
-                TravelCostManager.Instance.AttemptTravelPayment((int)travelCost)) {
-                // Teleport player to location.
-                playerObject.transform.position = photoLocations[locationIndex].position;
-                playerObject.transform.rotation = photoLocations[locationIndex].rotation;
+            if (TravelCostManager.Instance != null && TravelCostManager.Instance.AttemptTravelPayment((int)travelCost)) {
+                // Get the main location transform.
+                Transform locationTransform = photoLocations[locationIndex];
+        
+                // ! Find the player spawn point (child transform).
+                    Transform playerSpawnPoint = locationTransform.Find("PlayerSpawnLocation");
+        
+                if (playerSpawnPoint != null) {
+                    // Teleport player to the player spawn point
+                    playerObject.transform.position = playerSpawnPoint.position;
+                    playerObject.transform.rotation = playerSpawnPoint.rotation;
+                } else {
+                    // Fallback to the main location transform if no specific spawn point exists
+                    playerObject.transform.position = locationTransform.position;
+                    playerObject.transform.rotation = locationTransform.rotation;
+                }
 
-                // Find the session for this location and spawn the client.
+                // Find the session for this location and spawn the client
                 foreach (var session in activeSessions) {
                     if (session.locationIndex == locationIndex && !session.isClientSpawned) {
                         SpawnClientForSession(session);
