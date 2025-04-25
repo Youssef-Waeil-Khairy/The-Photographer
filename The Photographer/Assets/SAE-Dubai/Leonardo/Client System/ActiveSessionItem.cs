@@ -1,9 +1,9 @@
 ﻿using SAE_Dubai.JW;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
-namespace SAE_Dubai.Leonardo.CameraSys.Client_System
+namespace SAE_Dubai.Leonardo.Client_System
 {
     public class ActiveSessionItem : MonoBehaviour
     {
@@ -54,9 +54,13 @@ namespace SAE_Dubai.Leonardo.CameraSys.Client_System
         
         private void Travel()
         {
+            Debug.Log($"ActiveSessionItem.cs: Pressed travel button. Traveling to {linkedSession.GetLocationName()}...");
+            if (sessionManager == null) Debug.LogError("NO SESSION MANAGER FOUND!");
+            if (linkedSession == null) Debug.LogError("NO LINKED SESSION FOUND!");
+            
             if (sessionManager != null && linkedSession != null)
             {
-                bool success = sessionManager.TravelToLocation(linkedSession.locationIndex, GetComponent<Button>());
+                bool success = sessionManager.TravelToLocation(linkedSession.locationIndex);
                 
                 if (success)
                 {

@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using SAE_Dubai.Leonardo.CameraSys;
 using UnityEngine;
 
-namespace SAE_Dubai.Leonardo.CameraSys.Client_System
+namespace SAE_Dubai.Leonardo.Client_System
 {
     public class ClientSpawner : MonoBehaviour
     {

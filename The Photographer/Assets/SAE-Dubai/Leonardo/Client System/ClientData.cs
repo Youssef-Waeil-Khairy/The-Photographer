@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SAE_Dubai.Leonardo.CameraSys.Client_System
+namespace SAE_Dubai.Leonardo.Client_System
 {
     [CreateAssetMenu(fileName = "New Client Data", menuName = "Photography/Client Data")]
     public class ClientData : ScriptableObject

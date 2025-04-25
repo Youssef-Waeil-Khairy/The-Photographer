@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using SAE_Dubai.JW;
+using SAE_Dubai.Leonardo.CameraSys;
 using UnityEngine;
 
-namespace SAE_Dubai.Leonardo.CameraSys.Client_System
+namespace SAE_Dubai.Leonardo.Client_System
 {
     [RequireComponent(typeof(PortraitSubject))]
     public class ClientJobController : MonoBehaviour

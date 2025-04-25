@@ -284,7 +284,6 @@ GameObject:
   - component: {fileID: 6606373465309617197}
   - component: {fileID: 4922225195465373082}
   - component: {fileID: 6295158078031836121}
-  - component: {fileID: 4425520350089476074}
   m_Layer: 0
   m_Name: '[Button] TravelToLocation'
   m_TagString: Untagged
@@ -395,22 +394,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &4425520350089476074
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 981828604778218224}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5846edb2f2af427f8083d53d8d68780f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  button: {fileID: 6295158078031836121}
-  costText: {fileID: 3351757660572968329}
-  feedbackText: {fileID: 8084824400144280500}
-  feedbackDisplayTime: 2
 --- !u!1 &2082670642835178828
 GameObject:
   m_ObjectHideFlags: 0

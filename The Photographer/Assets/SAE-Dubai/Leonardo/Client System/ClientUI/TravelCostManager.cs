@@ -1,9 +1,9 @@
-﻿using UnityEngine;
+﻿using SAE_Dubai.JW;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
-namespace SAE_Dubai.JW.UI
+namespace SAE_Dubai.Leonardo.Client_System.ClientUI
 {
     public class TravelCostManager : MonoBehaviour
     {
@@ -35,21 +35,13 @@ namespace SAE_Dubai.JW.UI
                 }
             }
         }
-        
-        public void SetCost(int cost)
-        {
-            if (costText != null)
-            {
-                costText.text = $"${cost}";
-            }
-        }
-        
-        public bool AttemptTravelPayment(out float playerBalance, int cost)
+
+        public bool AttemptTravelPayment(int cost)
         {
             // Check if player has enough money.
             if (PlayerBalance.Instance != null)
             {
-                playerBalance = PlayerBalance.Instance.Balance;
+                //playerBalance = PlayerBalance.Instance.Balance;
                 
                 if (PlayerBalance.Instance.HasSufficientBalance(cost))
                 {
@@ -68,8 +60,6 @@ namespace SAE_Dubai.JW.UI
                     return false;
                 }
             }
-            
-            playerBalance = 0;
             return false;
         }
         
