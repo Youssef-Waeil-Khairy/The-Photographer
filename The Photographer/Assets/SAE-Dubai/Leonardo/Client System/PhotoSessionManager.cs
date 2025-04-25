@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using SAE_Dubai.JW;
-using SAE_Dubai.Leonardo.Client_System.ClientUI;
 using UnityEngine;
 
 namespace SAE_Dubai.Leonardo.Client_System
@@ -28,11 +27,9 @@ namespace SAE_Dubai.Leonardo.Client_System
 
         public List<ClientData> clientArchetypes;
 
-        private List<PhotoSession> activeSessions = new List<PhotoSession>();
-        private ComputerUI computerUI;
-        private TravelCostManager _travelCostManagerScript;
+        private List<PhotoSession> activeSessions = new();
 
-        // Event for when active sessions change
+        // Event for when active sessions change.
         public event Action OnSessionsChanged;
 
         private void Awake() {
@@ -46,10 +43,9 @@ namespace SAE_Dubai.Leonardo.Client_System
         }
 
         private void Start() {
-            computerUI = FindAnyObjectByType<ComputerUI>();
-            _travelCostManagerScript = FindAnyObjectByType<TravelCostManager>();
+            FindAnyObjectByType<ComputerUI>();
 
-            // Initialize location names if needed
+            // ? Initialize location names if needed.
             if (locationNames == null || locationNames.Count == 0) {
                 locationNames = new List<string>();
                 for (int i = 0; i < photoLocations.Count; i++) {
@@ -84,8 +80,9 @@ namespace SAE_Dubai.Leonardo.Client_System
             if (locationIndex < 0 || locationIndex >= photoLocations.Count)
                 return false;
 
-            if (_travelCostManagerScript.AttemptTravelPayment((int)travelCost)) {
-                
+            // Use the TravelCostManager singleton to handle payment.
+            if (TravelCostManager.Instance != null &&
+                TravelCostManager.Instance.AttemptTravelPayment((int)travelCost)) {
                 // Teleport player to location.
                 playerObject.transform.position = photoLocations[locationIndex].position;
                 playerObject.transform.rotation = photoLocations[locationIndex].rotation;
@@ -108,30 +105,30 @@ namespace SAE_Dubai.Leonardo.Client_System
             if (session.isClientSpawned)
                 return;
 
-            // Get location transform
+            // Get location transform.
             Transform spawnLocation = photoLocations[session.locationIndex];
 
-            // Create client requirements based on session
+            // Create client requirements based on session.
             List<PortraitShotType> requirements = new List<PortraitShotType> {
                 session.requiredShotType
             };
 
-            // Select a random client archetype
+            // Select a random client archetype.
             ClientData clientArchetype = clientArchetypes[UnityEngine.Random.Range(0, clientArchetypes.Count)];
 
-            // Instantiate the client
+            // Instantiate the client.
             GameObject clientObject = Instantiate(clientPrefab, spawnLocation.position, spawnLocation.rotation);
             ClientJobController clientController = clientObject.GetComponent<ClientJobController>();
 
             if (clientController != null) {
-                // Setup the client with the session data
+                // Setup the client with the session data.
                 clientController.SetupJob(clientArchetype, requirements, (int)session.reward);
 
-                // Subscribe to the job completed event
+                // Subscribe to the job completed event.
                 clientController.OnJobCompleted +=
-                    (completedClient) => HandleClientJobCompleted(completedClient, session);
+                    (completedClient) => HandleClientJobCompleted(session);
 
-                // Mark as spawned
+                // Mark as spawned.
                 session.isClientSpawned = true;
                 session.ClientReference = clientController;
 
@@ -139,24 +136,24 @@ namespace SAE_Dubai.Leonardo.Client_System
             }
             else {
                 Debug.LogError(
-                    "Failed to setup client controller. Make sure the client prefab has a ClientJobController component.");
+                    "PhotoSessionManager.cs: Failed to setup client controller. Make sure the client prefab has a ClientJobController component.");
                 Destroy(clientObject);
             }
         }
 
-        private void HandleClientJobCompleted(ClientJobController completedClient, PhotoSession session) {
-            // Mark session as completed
+        private void HandleClientJobCompleted(PhotoSession session) {
+            // Mark session as completed.
             session.IsCompleted = true;
 
-            // Remove session from active list
+            // Remove session from active list.
             RemoveSession(session);
 
-            // Notify UI about change
+            // Notify UI about change.
             OnSessionsChanged?.Invoke();
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class PhotoSession
     {
         public string clientName;

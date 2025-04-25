@@ -745,6 +745,9 @@ MonoBehaviour:
   sessionInfoText: {fileID: 6636454159365731111}
   travelButton: {fileID: 6295158078031836121}
   cancelButton: {fileID: 2811680393183643677}
+  costText: {fileID: 3351757660572968329}
+  feedbackText: {fileID: 0}
+  feedbackDisplayTime: 2
 --- !u!1 &5352498199059684727
 GameObject:
   m_ObjectHideFlags: 0

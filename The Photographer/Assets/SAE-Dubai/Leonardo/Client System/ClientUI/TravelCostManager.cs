@@ -1,77 +1,75 @@
 ﻿using SAE_Dubai.JW;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
-namespace SAE_Dubai.Leonardo.Client_System.ClientUI
+namespace SAE_Dubai.Leonardo.Client_System
 {
+    /// <summary>
+    /// Manages the cost and payment processing for player travel.
+    /// Follows singleton pattern to be accessible throughout the application.
+    /// </summary>
     public class TravelCostManager : MonoBehaviour
     {
-        [SerializeField] private Button button;
-        [SerializeField] private TMP_Text costText;
-        [SerializeField] private TMP_Text feedbackText;
+        public static TravelCostManager Instance { get; private set; }
         
-        [SerializeField] private float feedbackDisplayTime = 2f;
+        [Header("Travel Settings")]
+        [SerializeField] private float defaultTravelCost = 25f;
         
-        private float _feedbackTimer;
+        // Delegate for notifying results of travel payment attempts
+        public delegate void TravelPaymentResult(bool success, int cost, string message);
+        public event TravelPaymentResult OnTravelPaymentProcessed;
         
-        private void Start()
+        private void Awake()
         {
-            if (button == null)
-                button = GetComponent<Button>();
-                
-            if (feedbackText != null)
-                feedbackText.gameObject.SetActive(false);
-        }
-        
-        private void Update()
-        {
-            if (feedbackText != null && feedbackText.gameObject.activeSelf)
+            // Singleton pattern implementation
+            if (Instance == null)
             {
-                _feedbackTimer -= Time.deltaTime;
-                if (_feedbackTimer <= 0)
-                {
-                    feedbackText.gameObject.SetActive(false);
-                }
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
             }
         }
-
+        
+        /// <summary>
+        /// Attempts to process a travel payment from the player's balance.
+        /// </summary>
+        /// <param name="cost">The cost to travel</param>
+        /// <returns>True if payment was successful, false otherwise</returns>
         public bool AttemptTravelPayment(int cost)
         {
-            // Check if player has enough money.
+            // Check if player has enough money
             if (PlayerBalance.Instance != null)
             {
-                //playerBalance = PlayerBalance.Instance.Balance;
-                
                 if (PlayerBalance.Instance.HasSufficientBalance(cost))
                 {
-                    // Deduct the cost.
+                    // Deduct the cost
                     PlayerBalance.Instance.DeductBalance(cost);
                     
-                    // Show success feedback.
-                    ShowFeedback($"Travel successful! Paid ${cost}", Color.green);
-                    
+                    // Notify listeners of success
+                    OnTravelPaymentProcessed?.Invoke(true, cost, $"Travel successful! Paid ${cost}");
                     return true;
                 }
                 else
                 {
-                    // Show insufficient funds feedback.
-                    ShowFeedback("Insufficient funds for travel!", Color.red);
+                    // Notify listeners of failure
+                    OnTravelPaymentProcessed?.Invoke(false, cost, "Insufficient funds for travel!");
                     return false;
                 }
             }
+            
+            // If player balance system isn't available
+            OnTravelPaymentProcessed?.Invoke(false, cost, "Payment system unavailable");
             return false;
         }
         
-        private void ShowFeedback(string message, Color color)
+        /// <summary>
+        /// Gets the default travel cost.
+        /// </summary>
+        public float GetDefaultTravelCost()
         {
-            if (feedbackText != null)
-            {
-                feedbackText.text = message;
-                feedbackText.color = color;
-                feedbackText.gameObject.SetActive(true);
-                _feedbackTimer = feedbackDisplayTime;
-            }
+            return defaultTravelCost;
         }
     }
 }
