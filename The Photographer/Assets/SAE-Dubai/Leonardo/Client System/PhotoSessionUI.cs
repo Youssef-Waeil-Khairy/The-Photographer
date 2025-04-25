@@ -136,33 +136,45 @@ namespace SAE_Dubai.Leonardo.Client_System
             {
                 Destroy(child.gameObject);
             }
-            
+    
             // Get active sessions from manager.
             List<PhotoSession> activeSessions = sessionManager.GetActiveSessions();
-            
+    
             // Create UI elements for each active session.
             foreach (var session in activeSessions)
             {
                 GameObject sessionObj = Instantiate(activeSessionPrefab, activeSessionsContent);
-                TMP_Text sessionText = sessionObj.GetComponentInChildren<TMP_Text>();
-                Button travelButton = sessionObj.GetComponentInChildren<Button>();
-                
-                // Status text.
-                string status = session.isClientSpawned ? "Status: <color=green>Client Ready</color>" : "Status: <color=yellow>Not Visited</color>";
-                
-                sessionText.text = $"<b>{session.clientName}</b>\n" +
-                                $"Location: {session.GetLocationName()}\n" +
-                                $"Shot Type: {session.GetShotTypeName()}\n" +
-                                $"Reward: ${session.reward}\n" +
-                                $"{status}";
-                
-                // Setup travel button.
-                travelButton.onClick.AddListener(() => TravelToSession(session));
-            }
-            
-            UpdateSessionCountText();
-        }
         
+                // Get the ActiveSessionItem component and initialize it
+                ActiveSessionItem sessionItem = sessionObj.GetComponent<ActiveSessionItem>();
+                if (sessionItem != null)
+                {
+                    sessionItem.Initialize(session, sessionManager);
+                }
+                else
+                {
+                    Debug.LogError("ActiveSessionItem component not found on prefab!");
+            
+                    // Fallback to the old way if the component isn't found
+                    TMP_Text sessionText = sessionObj.GetComponentInChildren<TMP_Text>();
+                    Button travelButton = sessionObj.GetComponentInChildren<Button>();
+            
+                    // Status text.
+                    string status = session.isClientSpawned ? "Status: <color=green>Client Ready</color>" : "Status: <color=yellow>Not Visited</color>";
+            
+                    sessionText.text = $"<b>{session.clientName}</b>\n" +
+                                       $"Location: {session.GetLocationName()}\n" +
+                                       $"Shot Type: {session.GetShotTypeName()}\n" +
+                                       $"Reward: ${session.reward}\n" +
+                                       $"{status}";
+            
+                    // Setup travel button.
+                    travelButton.onClick.AddListener(() => TravelToSession(session));
+                }
+            }
+    
+            UpdateSessionCountText();
+        }        
         private void UpdateSessionCountText()
         {
             if (sessionCountText != null)
