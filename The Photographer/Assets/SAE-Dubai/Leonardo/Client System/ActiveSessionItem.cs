@@ -104,7 +104,7 @@ namespace SAE_Dubai.Leonardo.Client_System
                     UpdateUI();
                     
                     // Close computer UI
-                    FindObjectOfType<ComputerUI>()?.ToggleComputerVision();
+                    FindFirstObjectByType<ComputerUI>()?.ToggleComputerVision();
                 }
             }
         }

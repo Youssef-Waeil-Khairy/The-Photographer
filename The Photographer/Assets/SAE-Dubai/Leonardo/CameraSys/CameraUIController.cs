@@ -89,7 +89,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 }
             }
 
-            CameraManager manager = FindObjectOfType<CameraManager>();
+            CameraManager manager = FindFirstObjectByType<CameraManager>();
             _overlayPanel = manager.overlayUI;
 
             if (_overlayPanel != null) {

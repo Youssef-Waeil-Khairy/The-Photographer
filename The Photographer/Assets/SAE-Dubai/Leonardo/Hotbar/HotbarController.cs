@@ -18,12 +18,12 @@ namespace SAE_Dubai.Leonardo.Hotbar
 
             if (_hotbar == null)
             {
-                _hotbar = FindObjectOfType<Hotbar>();
+                _hotbar = FindFirstObjectByType<Hotbar>();
             }
 
             if (itemDatabase == null)
             {
-                itemDatabase = FindObjectOfType<ItemDatabase>();
+                itemDatabase = FindFirstObjectByType<ItemDatabase>();
             }
             
             cameraManager = CameraManager.Instance;

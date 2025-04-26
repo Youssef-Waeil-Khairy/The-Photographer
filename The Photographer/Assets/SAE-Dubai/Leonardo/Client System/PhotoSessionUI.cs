@@ -205,7 +205,7 @@ namespace SAE_Dubai.Leonardo.Client_System
             if (success)
             {
                 // Close computer UI if successful.
-                FindObjectOfType<ComputerUI>()?.ToggleComputerVision();
+                FindFirstObjectByType<ComputerUI>()?.ToggleComputerVision();
                 UpdateActiveSessionsUI();
             }
         }

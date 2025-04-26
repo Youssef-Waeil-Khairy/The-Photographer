@@ -36,10 +36,9 @@ namespace SAE_Dubai.Leonardo.CameraSys
         /// Sets up the singleton pattern and ensures only one CameraManager exists.
         /// </summary>
         private void Awake() {
-            // Singleton setup
+            // ! Singleton setup.
             if (Instance == null) {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
             }
             else {
                 Destroy(gameObject);
@@ -64,7 +63,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
         /// </summary>
         private void Start() {
             // Find the hotbar in the scene
-            _hotbar = FindObjectOfType<Hotbar.Hotbar>();
+            _hotbar = Object.FindFirstObjectByType<Hotbar.Hotbar>();
 
             if (_hotbar == null) {
                 Debug.LogError("CameraManager.cs: No Hotbar found in the scene!");

@@ -35,7 +35,6 @@ namespace SAE_Dubai.Leonardo.Client_System
         private void Awake() {
             if (Instance == null) {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
             }
             else {
                 Destroy(gameObject);

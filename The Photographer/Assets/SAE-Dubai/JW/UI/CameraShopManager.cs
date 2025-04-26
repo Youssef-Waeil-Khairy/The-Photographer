@@ -48,7 +48,6 @@ namespace SAE_Dubai.JW.UI
             if (Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
             }
             else
             {

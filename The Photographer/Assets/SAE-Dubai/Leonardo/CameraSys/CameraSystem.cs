@@ -6,6 +6,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.Serialization;
 using FilmGrain = UnityEngine.Rendering.HighDefinition.FilmGrain;
+using Object = UnityEngine.Object;
 
 namespace SAE_Dubai.Leonardo.CameraSys
 {
@@ -113,7 +114,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
         /// Get a reference to the overlay photo panel to disable it.
         /// </summary>
         private void Awake() {
-            manager = FindObjectOfType<CameraManager>();
+            manager = FindFirstObjectByType<CameraManager>();
 
             overlayUI = manager.overlayUI;
 

@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace SAE_Dubai.JW
 {
@@ -15,7 +13,6 @@ namespace SAE_Dubai.JW
         private void Awake() {
             if (Instance == null) {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
                 Balance = startingBalance;
             }
             else {
