@@ -200,14 +200,8 @@ namespace SAE_Dubai.Leonardo.Client_System
         
         private void TravelToSession(PhotoSession session)
         {
-            bool success = sessionManager.TravelToLocation(session.locationIndex);
-            
-            if (success)
-            {
-                // Close computer UI if successful.
-                FindObjectOfType<ComputerUI>()?.ToggleComputerVision();
-                UpdateActiveSessionsUI();
-            }
+            sessionManager.RequestTravelToLocation(session.locationIndex); 
+            FindFirstObjectByType<ComputerUI>()?.ToggleComputerVision();
         }
         
         private void SwitchTab(bool showAvailableTab)

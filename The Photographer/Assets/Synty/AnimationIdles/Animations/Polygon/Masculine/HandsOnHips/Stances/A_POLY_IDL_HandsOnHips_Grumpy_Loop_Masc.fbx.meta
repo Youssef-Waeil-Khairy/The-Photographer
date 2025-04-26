@@ -1,5 +1,12 @@
 fileFormatVersion: 2
 guid: 41c98cc08f48c4a499f236fd89265190
+AssetOrigin:
+  serializedVersion: 1
+  productId: 299700
+  packageName: Synty ANIMATION - Idles
+  packageVersion: 1.1.0
+  assetPath: Assets/Synty/AnimationIdles/Animations/Polygon/Masculine/HandsOnHips/Stances/A_POLY_IDL_HandsOnHips_Grumpy_Loop_Masc.fbx
+  uploadId: 713595
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -16,8 +23,6 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -44,7 +49,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 1
       loopBlendPositionY: 1
@@ -730,8 +735,7 @@ ModelImporter:
     hasTranslationDoF: 0
     hasExtraRoot: 1
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: b6b4b9f2696465340b5168dd9e2ca6b3,
-    type: 3}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: b6b4b9f2696465340b5168dd9e2ca6b3, type: 3}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 3
   humanoidOversampling: 1
@@ -743,10 +747,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 299700
-  packageName: Synty ANIMATION - Idles
-  packageVersion: 1.1.0
-  assetPath: Assets/Synty/AnimationIdles/Animations/Polygon/Masculine/HandsOnHips/Stances/A_POLY_IDL_HandsOnHips_Grumpy_Loop_Masc.fbx
-  uploadId: 713595

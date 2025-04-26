@@ -1276,8 +1276,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.15949765, y: 0.17086613, z: 0.07788814}
+  m_Center: {x: 0.009274201, y: 0.00908879, z: 0.00022491637}
 --- !u!1 &5664780783091408619
 GameObject:
   m_ObjectHideFlags: 0
@@ -2097,12 +2097,13 @@ MonoBehaviour:
   _isFocused: 0
   photographyUI: {fileID: 6545793292740230583}
   overlayUI: {fileID: 0}
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 7970842561674125586}
   mainCamera: {fileID: 0}
   _defaultFOV: 0
   remainingPhotos: 0
   photoAlbum: []
   viewfinderCamera: {fileID: 3384195725814463880}
+  localCameraVolume: {fileID: 3114649053607239895}
   turnCameraOnKey: 99
   takePhotoKey: 323
   focusKey: 324
@@ -2258,8 +2259,10 @@ MonoBehaviour:
   isoText: {fileID: 2558647953870322508}
   focusText: {fileID: 2040908971882584288}
   focalLengthText: {fileID: 8172661189978192873}
+  sensorText: {fileID: 0}
   focusReticleImage: {fileID: 4876654453861501348}
   hideWhenCameraOff: 1
   focusingColor: {r: 1, g: 0.62324125, b: 0.015686274, a: 1}
   focusedColor: {r: 0, g: 1, b: 0, a: 1}
   unfocusedColor: {r: 1, g: 0, b: 0, a: 1}
+  apertureBladeCurvature: {x: 0.5, y: 0.5}

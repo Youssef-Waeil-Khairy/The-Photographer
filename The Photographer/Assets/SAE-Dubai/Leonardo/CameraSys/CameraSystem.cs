@@ -6,6 +6,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.Serialization;
 using FilmGrain = UnityEngine.Rendering.HighDefinition.FilmGrain;
+using Object = UnityEngine.Object;
 
 namespace SAE_Dubai.Leonardo.CameraSys
 {
@@ -43,11 +44,11 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
         [Header("- State")]
         [Tooltip("Whether the camera is currently powered on.")]
-        public bool isCameraOn = false;
+        public bool isCameraOn;
 
-        [SerializeField] private bool _isFocusing = false;
-        [SerializeField] private bool _isCapturing = false;
-        [SerializeField] private bool _isFocused = false;
+        [SerializeField] private bool _isFocusing;
+        [SerializeField] private bool _isCapturing;
+        [SerializeField] private bool _isFocused;
 
 
         [Header("- UI References")]
@@ -113,7 +114,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
         /// Get a reference to the overlay photo panel to disable it.
         /// </summary>
         private void Awake() {
-            manager = FindObjectOfType<CameraManager>();
+            manager = FindFirstObjectByType<CameraManager>();
 
             overlayUI = manager.overlayUI;
 
@@ -130,11 +131,6 @@ namespace SAE_Dubai.Leonardo.CameraSys
         /// Initializes the camera system with default settings.
         /// </summary>
         private void Start() {
-            // Set up camera references
-            if (mainCamera == null) {
-                mainCamera = Camera.main;
-            }
-
             if (audioSource == null) {
                 audioSource = GetComponent<AudioSource>();
                 if (audioSource == null) {
@@ -142,7 +138,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 }
             }
 
-            _defaultFOV = mainCamera.fieldOfView;
+            _defaultFOV = 70;
 
             // Initialize camera settings from scriptable object.
             if (cameraSettings != null) {
@@ -325,7 +321,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 manager.overlayUI.SetActive(usingViewfinder);
             }
 
-            Debug.Log("CameraSystem: Switched to " + (usingViewfinder ? "viewfinder" : "screen") + " view");
+            //Debug.Log("CameraSystem: Switched to " + (usingViewfinder ? "viewfinder" : "screen") + " view");
         }
 
         /// <summary>
@@ -430,7 +426,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
             remainingPhotos--;
 
             OnPhotoCapture?.Invoke(newPhoto);
-            
+
             // Delay before allowing another photo.
             yield return new WaitForSeconds(0.5f);
             _isCapturing = false;
@@ -470,7 +466,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 // Get the focus distance.
                 _currentFocusDistance = hit.distance;
 
-                Debug.Log($"Focus hit: {hit.collider.name} at distance {_currentFocusDistance:F2}m");
+                //Debug.Log($"Focus hit: {hit.collider.name} at distance {_currentFocusDistance:F2}m");
 
                 // Apply focus distance to cameras.
                 if (cameraRenderer != null) {
@@ -893,8 +889,9 @@ namespace SAE_Dubai.Leonardo.CameraSys
         }
 
         #endregion
-        
+
         public delegate void PhotoCapturedEvent(CapturedPhoto photo);
+
         public event PhotoCapturedEvent OnPhotoCapture;
     }
 }

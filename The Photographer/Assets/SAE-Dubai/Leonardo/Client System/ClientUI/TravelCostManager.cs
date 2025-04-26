@@ -24,7 +24,6 @@ namespace SAE_Dubai.Leonardo.Client_System
             if (Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
             }
             else
             {

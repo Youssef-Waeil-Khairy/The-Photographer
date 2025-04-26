@@ -59,10 +59,10 @@ namespace SAE_Dubai.Leonardo
             if (playerController != null)
             {
                 playerController.enabled = false;
-                Debug.Log("MpuseController.cs: Disabled player controller: " + playerController.GetType().Name);
+                //Debug.Log("MpuseController.cs: Disabled player controller: " + playerController.GetType().Name);
             }
             
-            Debug.Log("MouseController.cs: Free mouse mode enabled");
+            //Debug.Log("MouseController.cs: Free mouse mode enabled");
         }
         
         public void DisableFreeMouse()
@@ -73,10 +73,10 @@ namespace SAE_Dubai.Leonardo
             if (playerController != null)
             {
                 playerController.enabled = true;
-                Debug.Log("MouseController.cs: Enabled player controller: " + playerController.GetType().Name);
+                //Debug.Log("MouseController.cs: Enabled player controller: " + playerController.GetType().Name);
             }
             
-            Debug.Log("MouseController.cs: Free mouse mode disabled");
+           // Debug.Log("MouseController.cs: Free mouse mode disabled");
         }
         
         private void OnDisable()

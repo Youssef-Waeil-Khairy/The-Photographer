@@ -59,7 +59,7 @@ namespace SAE_Dubai.Leonardo.Items.PickUpables
                 cameraManager.RegisterCamera(cameraName, cameraClone);
 
                 // Log successful registration
-                Debug.Log($"Camera '{cameraName}' registered with camera manager");
+                //Debug.Log($"Camera '{cameraName}' registered with camera manager");
             }
             else {
                 Debug.LogError("PickupableCamera: No CameraManager found in the scene!");

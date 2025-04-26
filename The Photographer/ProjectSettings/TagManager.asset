@@ -15,10 +15,10 @@ TagManager:
   - UI
   - 
   - Pickupable
-  - PLAYER
-  - PortraitSubject
-  - CAMERA
   - 
+  - PortraitSubject
+  - Enviroment
+  - Interactable
   - 
   - 
   - 

@@ -25,7 +25,7 @@ namespace SAE_Dubai.Leonardo.Items
         {
             // Getting references.
             _playerCamera = Camera.main;
-            _hotbar = FindObjectOfType<Hotbar.Hotbar>();
+            _hotbar = FindFirstObjectByType<Hotbar.Hotbar>();
         
             // Set the pickup text to false.
             if (pickupPrompt != null)

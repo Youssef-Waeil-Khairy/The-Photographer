@@ -1,8 +1,19 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:The Photographer/Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/Hidden.meta
 guid: e22dad2728c77344f8da0d2789866a0e
 folderAsset: yes
+========
+guid: cc355dd4cf1e6173beaeb22c2858cbe1
+timeCreated: 1488828285
+>>>>>>>> 1607a1b07bbf992dca12069e68afe4b324f457a1:The Photographer/Assets/Plugins/Sirenix/Demos/Sample - RPG Editor.unitypackage.meta
 DefaultImporter:
-  externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 89041
+  packageName: Odin Inspector and Serializer
+  packageVersion: 3.3.1.12
+  assetPath: Assets/Plugins/Sirenix/Demos/Sample - RPG Editor.unitypackage
+  uploadId: 748899
