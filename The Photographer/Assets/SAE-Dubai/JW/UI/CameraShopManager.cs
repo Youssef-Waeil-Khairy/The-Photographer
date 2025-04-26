@@ -37,6 +37,8 @@ namespace SAE_Dubai.JW.UI
         [Tooltip("How long feedback is displayed")]
         public float feedbackDisplayTime = 3f;
 
+        private GameObject cameraButtonGO; // This is the GameObject of the button for the selected camera
+
         private GameObject _currentCameraPrefab;
         private float _currentCameraPrice;
         private CameraSettings _currentCameraSettings;
@@ -85,7 +87,7 @@ namespace SAE_Dubai.JW.UI
         /// <param name="cameraPrefab">The camera prefab to instantiate.</param>
         /// <param name="price">The price of the camera.</param>
         /// <param name="settings">The camera's settings.</param>
-        public void StartPurchase(GameObject cameraPrefab, float price, CameraSettings settings)
+        public void StartPurchase(GameObject cameraPrefab, float price, CameraSettings settings, GameObject cameraButtonGO)
         {
             if (_isPurchaseInProgress)
                 return;
@@ -95,6 +97,7 @@ namespace SAE_Dubai.JW.UI
             _currentCameraPrice = price;
             _currentCameraSettings = settings;
             _isPurchaseInProgress = true;
+            this.cameraButtonGO = cameraButtonGO;
     
             // * Show confirmation dialog if available.
             if (purchaseConfirmationPanel != null)
@@ -162,7 +165,10 @@ namespace SAE_Dubai.JW.UI
             
             // Hide confirmation panel.
             if (purchaseConfirmationPanel != null)
+            {
+                cameraButtonGO.SetActive(false); // This stops the camera from being purchased again by removing its purchase button as an option
                 purchaseConfirmationPanel.SetActive(false);
+            }
                 
             ShowFeedback($"Purchased {_currentCameraSettings.modelName}!", Color.green);
             _isPurchaseInProgress = false;

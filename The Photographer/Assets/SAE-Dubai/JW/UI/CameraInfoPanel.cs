@@ -14,6 +14,8 @@ namespace SAE_Dubai.JW.UI
         public float CameraPrice = 100f;
         public GameObject CameraItemPrefab;
 
+        private GameObject cameraButtonGO;
+
         [Header("- Text Fields")]
         [SerializeField] private TMP_Text cameraName;
 
@@ -38,10 +40,11 @@ namespace SAE_Dubai.JW.UI
             }
         }
 
-        public void SetCameraInfo(CameraSettings cameraSettings, float cameraPrice, GameObject cameraItemPrefab) {
+        public void SetCameraInfo(CameraSettings cameraSettings, float cameraPrice, GameObject cameraItemPrefab, GameObject cameraButtonObject) {
             CamSettings = cameraSettings;
             CameraPrice = cameraPrice;
             CameraItemPrefab = cameraItemPrefab;
+            cameraButtonGO = cameraButtonObject;
 
             ShowCameraInfo();
             UpdatePurchaseUI();
@@ -88,8 +91,11 @@ namespace SAE_Dubai.JW.UI
 
             // Use the CameraShopManager to handle the purchase.
             if (CameraShopManager.Instance != null) {
-                CameraShopManager.Instance.StartPurchase(CameraItemPrefab, CameraPrice, CamSettings);
+                CameraShopManager.Instance.StartPurchase(CameraItemPrefab, CameraPrice, CamSettings, cameraButtonGO);
 
+                // Disable the purchased camera
+                
+                
                 // Close the info panel after starting purchase.
                 gameObject.SetActive(false);
             }
