@@ -43,11 +43,11 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
         [Header("- State")]
         [Tooltip("Whether the camera is currently powered on.")]
-        public bool isCameraOn = false;
+        public bool isCameraOn;
 
-        [SerializeField] private bool _isFocusing = false;
-        [SerializeField] private bool _isCapturing = false;
-        [SerializeField] private bool _isFocused = false;
+        [SerializeField] private bool _isFocusing;
+        [SerializeField] private bool _isCapturing;
+        [SerializeField] private bool _isFocused;
 
 
         [Header("- UI References")]
@@ -130,8 +130,6 @@ namespace SAE_Dubai.Leonardo.CameraSys
         /// Initializes the camera system with default settings.
         /// </summary>
         private void Start() {
-
-
             if (audioSource == null) {
                 audioSource = GetComponent<AudioSource>();
                 if (audioSource == null) {
@@ -427,7 +425,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
             remainingPhotos--;
 
             OnPhotoCapture?.Invoke(newPhoto);
-            
+
             // Delay before allowing another photo.
             yield return new WaitForSeconds(0.5f);
             _isCapturing = false;
@@ -890,8 +888,9 @@ namespace SAE_Dubai.Leonardo.CameraSys
         }
 
         #endregion
-        
+
         public delegate void PhotoCapturedEvent(CapturedPhoto photo);
+
         public event PhotoCapturedEvent OnPhotoCapture;
     }
 }
