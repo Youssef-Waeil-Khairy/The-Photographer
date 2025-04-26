@@ -309,6 +309,30 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 29902989}
   m_CullTransparentMesh: 1
+--- !u!1 &57260864 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 943565782708136544, guid: b840dd29cbd759540b8b3102a08237ca, type: 3}
+  m_PrefabInstance: {fileID: 3615826547185579783}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &57260867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 57260864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19737d4693d944247ab01ec9e35f0a6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  randomizePoseOnStart: 0
+  poseParameterNames:
+  - Cross Arms
+  - Check Watch
+  - Normal Hand On Hips
+  - Grumpy Hands On Hips
+  animator: {fileID: 0}
 --- !u!1 &101309073
 GameObject:
   m_ObjectHideFlags: 0
@@ -10197,7 +10221,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 943565782708136544, guid: b840dd29cbd759540b8b3102a08237ca, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 57260867}
   m_SourcePrefab: {fileID: 100100000, guid: b840dd29cbd759540b8b3102a08237ca, type: 3}
 --- !u!1001 &3998803724403146803
 PrefabInstance:
