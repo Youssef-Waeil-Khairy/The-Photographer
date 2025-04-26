@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using SAE_Dubai.JW;
 using TMPro;
@@ -35,20 +36,27 @@ namespace SAE_Dubai.Leonardo.Client_System
         public Button availableTabButton;
 
         public Button activeTabButton;
+        private readonly List<PhotoSession> _availableSessions = new();
+        private PhotoSessionManager _sessionManager;
 
-        private List<PhotoSession> availableSessions = new List<PhotoSession>();
-        private PhotoSessionManager sessionManager;
+        [Header("- Feedback")]
+        public TMP_Text feedbackText;
 
         private void Start() {
-            sessionManager = PhotoSessionManager.Instance;
-            if (sessionManager == null) {
+            _sessionManager = PhotoSessionManager.Instance;
+            if (_sessionManager == null) {
                 Debug.LogError("PhotoSessionManager not found! Make sure it exists in the scene.");
                 return;
             }
 
+            if (feedbackText != null)
+            {
+                feedbackText.gameObject.SetActive(false);
+            }
+            
             // Setup event listeners.
             refreshButton.onClick.AddListener(GenerateNewSessions);
-            sessionManager.OnSessionsChanged += UpdateActiveSessionsUI;
+            _sessionManager.OnSessionsChanged += UpdateActiveSessionsUI;
 
             // Setup tab navigation.
             if (availableTabButton != null)
@@ -65,12 +73,12 @@ namespace SAE_Dubai.Leonardo.Client_System
 
         private void OnDestroy() {
             // Unsubscribe from events.
-            if (sessionManager != null)
-                sessionManager.OnSessionsChanged -= UpdateActiveSessionsUI;
+            if (_sessionManager != null)
+                _sessionManager.OnSessionsChanged -= UpdateActiveSessionsUI;
         }
 
         public void GenerateNewSessions() {
-            availableSessions.Clear();
+            _availableSessions.Clear();
 
             // Generate random sessions.
             for (int i = 0; i < maxAvailableSessions; i++) {
@@ -82,10 +90,10 @@ namespace SAE_Dubai.Leonardo.Client_System
                     clientName = clientName,
                     // Avoid Undefined (index 0).
                     requiredShotType = (PortraitShotType)Random.Range(1, 8),
-                    locationIndex = Random.Range(0, sessionManager.photoLocations.Count),
+                    locationIndex = Random.Range(0, _sessionManager.photoLocations.Count),
                     reward = Mathf.Round(Random.Range(minReward, maxReward))
                 };
-                availableSessions.Add(session);
+                _availableSessions.Add(session);
             }
 
             UpdateAvailableSessionsUI();
@@ -94,15 +102,15 @@ namespace SAE_Dubai.Leonardo.Client_System
 
         private string GenerateClientNameFromClientData() {
             // Get a random name from the ClientData scriptable objects
-            if (sessionManager == null || sessionManager.clientArchetypes == null ||
-                sessionManager.clientArchetypes.Count == 0) {
+            if (_sessionManager == null || _sessionManager.clientArchetypes == null ||
+                _sessionManager.clientArchetypes.Count == 0) {
                 // Fallback to old method if client data isn't available
                 return GenerateFallbackName();
             }
 
             // Get a random client archetype
             ClientData clientData =
-                sessionManager.clientArchetypes[Random.Range(0, sessionManager.clientArchetypes.Count)];
+                _sessionManager.clientArchetypes[Random.Range(0, _sessionManager.clientArchetypes.Count)];
 
             if (clientData == null || clientData.possibleNames == null || clientData.possibleNames.Count == 0) {
                 return GenerateFallbackName();
@@ -127,7 +135,7 @@ namespace SAE_Dubai.Leonardo.Client_System
             }
 
             // Create new buttons for each available session.
-            foreach (var session in availableSessions) {
+            foreach (var session in _availableSessions) {
                 GameObject buttonObj = Instantiate(sessionButtonPrefab, availableSessionsContent);
                 Button button = buttonObj.GetComponent<Button>();
                 TMP_Text buttonText = buttonObj.GetComponentInChildren<TMP_Text>();
@@ -136,12 +144,12 @@ namespace SAE_Dubai.Leonardo.Client_System
                                   $"Location: {session.GetLocationName()}\n" +
                                   $"Shot Type: {session.GetShotTypeName()}\n" +
                                   $"Reward: ${session.reward}\n" +
-                                  $"Travel Cost: ${sessionManager.travelCost}";
+                                  $"Travel Cost: ${_sessionManager.travelCost}";
 
                 button.onClick.AddListener(() => AcceptSession(session));
 
                 // Disable button if max sessions reached.
-                button.interactable = sessionManager.CanAddNewSession();
+                button.interactable = _sessionManager.CanAddNewSession();
             }
         }
 
@@ -152,7 +160,7 @@ namespace SAE_Dubai.Leonardo.Client_System
             }
 
             // Get active sessions from manager.
-            List<PhotoSession> activeSessions = sessionManager.GetActiveSessions();
+            List<PhotoSession> activeSessions = _sessionManager.GetActiveSessions();
 
             // Create UI elements for each active session.
             foreach (var session in activeSessions) {
@@ -161,7 +169,7 @@ namespace SAE_Dubai.Leonardo.Client_System
                 // Get the ActiveSessionItem component and initialize it
                 ActiveSessionItem sessionItem = sessionObj.GetComponent<ActiveSessionItem>();
                 if (sessionItem != null) {
-                    sessionItem.Initialize(session, sessionManager);
+                    sessionItem.Initialize(session, _sessionManager);
                 }
                 else {
                     Debug.LogError("ActiveSessionItem component not found on prefab!");
@@ -191,15 +199,34 @@ namespace SAE_Dubai.Leonardo.Client_System
 
         private void UpdateSessionCountText() {
             if (sessionCountText != null) {
-                int activeCount = sessionManager.GetActiveSessions().Count;
-                sessionCountText.text = $"Sessions: {activeCount}/{sessionManager.maxActiveSessions}";
+                int activeCount = _sessionManager.GetActiveSessions().Count;
+                sessionCountText.text = $"Sessions: {activeCount}/{_sessionManager.maxActiveSessions}";
             }
         }
 
         private void AcceptSession(PhotoSession session) {
-            if (sessionManager.CanAddNewSession()) {
-                sessionManager.AddNewSession(session);
-                availableSessions.Remove(session);
+            // Check if the location is already occupied
+            if (_sessionManager.IsLocationOccupied(session.locationIndex)) {
+                // Show feedback to the player
+                Debug.Log(
+                    $"Cannot accept session: Location '{session.GetLocationName()}' already has an active session.");
+
+                // You could add a UI feedback element here
+                // For example, you could add a feedback text field to the class and show a message
+                if (feedbackText != null) {
+                    feedbackText.text = $"Location '{session.GetLocationName()}' already occupied!";
+                    feedbackText.gameObject.SetActive(true);
+                    // Optionally hide after some time
+                    StartCoroutine(HideFeedbackAfterDelay(3.0f));
+                }
+
+                return;
+            }
+
+            // Original implementation continues below...
+            if (_sessionManager.CanAddNewSession()) {
+                _sessionManager.AddNewSession(session);
+                _availableSessions.Remove(session);
                 UpdateAvailableSessionsUI();
                 UpdateActiveSessionsUI();
 
@@ -208,8 +235,16 @@ namespace SAE_Dubai.Leonardo.Client_System
             }
         }
 
+        // Helper method for hiding feedback.
+        private IEnumerator HideFeedbackAfterDelay(float delay) {
+            yield return new WaitForSeconds(delay);
+            if (feedbackText != null) {
+                feedbackText.gameObject.SetActive(false);
+            }
+        }
+
         private void TravelToSession(PhotoSession session) {
-            sessionManager.RequestTravelToLocation(session.locationIndex);
+            _sessionManager.RequestTravelToLocation(session.locationIndex);
             FindFirstObjectByType<ComputerUI>()?.ToggleComputerVision();
         }
 

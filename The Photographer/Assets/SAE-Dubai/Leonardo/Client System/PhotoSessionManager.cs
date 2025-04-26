@@ -473,6 +473,11 @@ namespace SAE_Dubai.Leonardo.Client_System
         public void HandlePhotoCapturedDirectly(CapturedPhoto photo) {
             HandlePhotoCaptured(photo);
         }
+        
+        public bool IsLocationOccupied(int locationIndex)
+        {
+            return activeSessions.Any(session => session.locationIndex == locationIndex);
+        }
     }
 
 
