@@ -21,7 +21,7 @@ namespace SAE_Dubai.Leonardo.Client_System
         [Header("- Photo Evaluation Settings (Marker Based)")]
         [SerializeField] private LayerMask portraitSubjectLayer;
 
-        [SerializeField] private LayerMask occlusionCheckMask;
+        [SerializeField] public LayerMask occlusionCheckMask;
         [SerializeField] private bool drawVisibilityDebugLines;
         [SerializeField] private string cameraManagerTag = "CameraManager";
 
@@ -258,7 +258,7 @@ namespace SAE_Dubai.Leonardo.Client_System
                 $"<color=blue>Active camera from manager: {(newActiveCamera != null ? newActiveCamera.name : "NULL")}</color>");
 
             if (newActiveCamera == null) {
-                newActiveCamera = FindObjectOfType<CameraSystem>();
+                newActiveCamera = FindFirstObjectByType<CameraSystem>();
                 Debug.Log(
                     $"<color=blue>Attempting to find camera directly: {(newActiveCamera != null ? newActiveCamera.name : "NULL")}</color>");
             }
@@ -303,16 +303,11 @@ namespace SAE_Dubai.Leonardo.Client_System
         }
 
         private void HandlePhotoCaptured(CapturedPhoto photo) {
-            Debug.Log("<color=magenta>PHOTO CAPTURE EVENT RECEIVED IN PHOTOSESSIONMANAGER</color>");
-
             if (photo == null) {
-                Debug.LogError(
-                    "<color=red>[PhotoSessionManager] HandlePhotoCaptured received a null photo object!</color>");
+                Debug.LogError("[PhotoSessionManager] HandlePhotoCaptured received a null photo object!");
                 return;
             }
 
-            Debug.LogWarning(">>> [PhotoSessionManager] HandlePhotoCaptured method EXECUTED! <<<");
-            Debug.Log($"--- Photo Captured Debug Info (Marker Based) ---");
             Camera activeCamera = null;
             if (_currentCameraSystem != null && _currentCameraSystem.isCameraOn) {
                 activeCamera = _currentCameraSystem.usingViewfinder
@@ -325,8 +320,6 @@ namespace SAE_Dubai.Leonardo.Client_System
             if (activeCamera == null) {
                 Debug.LogError(
                     "[PhotoSessionManager] HandlePhotoCaptured: Could not find any active camera for evaluation.");
-                Debug.Log($"Photo Quality: {photo.quality:P0}");
-                Debug.Log($"------------------------------------------------------------");
                 return;
             }
 
@@ -334,130 +327,117 @@ namespace SAE_Dubai.Leonardo.Client_System
             ClientJobController targetClient = null;
 
             Ray centerRay = activeCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-            Debug.Log($"<color=yellow>Casting ray from camera {activeCamera.name} to detect subject</color>");
             bool hitAnything = Physics.Raycast(centerRay, out RaycastHit centerHit, 100f, portraitSubjectLayer);
-            Debug.Log($"<color=yellow>Ray hit anything on portrait layer: {hitAnything}</color>");
             Transform subjectTransform = null;
 
             if (hitAnything) {
                 subjectTransform = centerHit.transform;
-                Debug.Log(
-                    $"<color=yellow>Hit object: {subjectTransform.name} on layer {LayerMask.LayerToName(subjectTransform.gameObject.layer)}</color>");
-                targetClient = subjectTransform.GetComponent<ClientJobController>();
-                Debug.Log($"<color=yellow>Found ClientJobController: {(targetClient != null)}</color>");
+                targetClient = subjectTransform.GetComponentInParent<ClientJobController>();
             }
-            else {
-                Debug.Log("[Photo Eval] Initial subject check hit nothing on subject layer.");
-            }
-
 
             if (targetClient != null) {
                 bool clientIsActiveSession =
                     activeSessions.Any(s => s.isClientSpawned && s.ClientReference == targetClient);
                 if (!clientIsActiveSession) {
-                    Debug.Log(
-                        $"[Photo Eval] Subject {targetClient.name} is a client but not part of an active session.");
                     targetClient = null;
                 }
             }
 
 
             if (targetClient != null) {
-                Debug.Log($"[Photo Eval] Checking markers for client: {targetClient.clientName}");
                 int subjectLayer = targetClient.gameObject.layer;
                 List<Transform> bodyMarkers = targetClient.GetOrderedBodyMarkers();
-                int highestVisibleIndex = -1;
-                int lowestVisibleIndex = -1;
-                bool aboveHeadVisible = false;
-                bool belowFeetVisible = false;
 
-                for (int i = 0; i < bodyMarkers.Count; i++) {
-                    if (bodyMarkers[i] != null && PhotoCompositionEvaluator.IsMarkerVisible(activeCamera,
-                            bodyMarkers[i].position, occlusionCheckMask, subjectLayer, drawVisibilityDebugLines)) {
-                        Debug.Log($"[Photo Eval] Visible Marker: {bodyMarkers[i].name}");
-                        if (highestVisibleIndex == -1) {
-                            highestVisibleIndex = i;
-                        }
+                bool headVisible = false;
+                bool chestVisible = false;
+                bool hipVisible = false;
+                bool kneesVisible = false;
+                bool feetVisible = false;
 
-                        lowestVisibleIndex = i;
-                    }
-                }
+                if (bodyMarkers.Count > 0 && bodyMarkers[0] != null && PhotoCompositionEvaluator.IsMarkerVisible(
+                        activeCamera, bodyMarkers[0].position, occlusionCheckMask, subjectLayer,
+                        drawVisibilityDebugLines))
+                    headVisible = true;
+                if (bodyMarkers.Count > 1 && bodyMarkers[1] != null && PhotoCompositionEvaluator.IsMarkerVisible(
+                        activeCamera, bodyMarkers[1].position, occlusionCheckMask, subjectLayer,
+                        drawVisibilityDebugLines))
+                    chestVisible = true;
+                if (bodyMarkers.Count > 2 && bodyMarkers[2] != null && PhotoCompositionEvaluator.IsMarkerVisible(
+                        activeCamera, bodyMarkers[2].position, occlusionCheckMask, subjectLayer,
+                        drawVisibilityDebugLines))
+                    hipVisible = true;
+                if (bodyMarkers.Count > 3 && bodyMarkers[3] != null && PhotoCompositionEvaluator.IsMarkerVisible(
+                        activeCamera, bodyMarkers[3].position, occlusionCheckMask, subjectLayer,
+                        drawVisibilityDebugLines))
+                    kneesVisible = true;
+                if (bodyMarkers.Count > 4 && bodyMarkers[4] != null && PhotoCompositionEvaluator.IsMarkerVisible(
+                        activeCamera, bodyMarkers[4].position, occlusionCheckMask, subjectLayer,
+                        drawVisibilityDebugLines))
+                    feetVisible = true;
 
-                if (targetClient.aboveHeadMarker != null && PhotoCompositionEvaluator.IsMarkerVisible(activeCamera,
-                        targetClient.aboveHeadMarker.position, occlusionCheckMask, subjectLayer,
-                        drawVisibilityDebugLines)) {
-                    aboveHeadVisible = true;
-                    Debug.Log($"[Photo Eval] Visible Marker: Above Head");
-                }
+                bool aboveHeadVisible = targetClient.aboveHeadMarker != null &&
+                                        PhotoCompositionEvaluator.IsMarkerVisible(activeCamera,
+                                            targetClient.aboveHeadMarker.position, occlusionCheckMask, subjectLayer,
+                                            drawVisibilityDebugLines);
+                bool belowFeetVisible = targetClient.belowFeetMarker != null &&
+                                        PhotoCompositionEvaluator.IsMarkerVisible(activeCamera,
+                                            targetClient.belowFeetMarker.position, occlusionCheckMask, subjectLayer,
+                                            drawVisibilityDebugLines);
 
-                if (targetClient.belowFeetMarker != null && PhotoCompositionEvaluator.IsMarkerVisible(activeCamera,
-                        targetClient.belowFeetMarker.position, occlusionCheckMask, subjectLayer,
-                        drawVisibilityDebugLines)) {
-                    belowFeetVisible = true;
-                    Debug.Log($"[Photo Eval] Visible Marker: Below Feet");
-                }
+                detectedShotType = PortraitShotType.Undefined;
+                bool fullBodyVisible = headVisible && feetVisible;
 
-
-                if (highestVisibleIndex != -1) {
-                    // Index mapping (based on GetOrderedBodyMarkers): 0:Head, 1:Chest, 2:Hip, 3:Knees, 4:Feet
-                    bool headVisible = highestVisibleIndex <= 0;
-                    bool chestVisible = lowestVisibleIndex >= 1;
-                    bool hipVisible = lowestVisibleIndex >= 2;
-                    bool kneesVisible = lowestVisibleIndex >= 3;
-                    bool feetVisible = lowestVisibleIndex >= 4;
-
-                    if (aboveHeadVisible || belowFeetVisible ||
-                        (headVisible && feetVisible)) // Full body + surroundings
-                    {
-                        detectedShotType = (aboveHeadVisible && belowFeetVisible)
-                            ? PortraitShotType.ExtremeWide
-                            : PortraitShotType.Wide;
-                    }
-                    else if (headVisible && kneesVisible) // Head to at least knees.
-                    {
-                        detectedShotType = PortraitShotType.MediumWide;
-                    }
-                    else if (headVisible && hipVisible) // Head to at least hip.
-                    {
-                        detectedShotType = PortraitShotType.Medium;
-                    }
-                    else if (headVisible && chestVisible) // Head to at least chest.
-                    {
-                        detectedShotType = PortraitShotType.MediumCloseUp;
-                    }
-                    else if (headVisible) // Only head (and maybe neck/shoulders implicitly).
-                    {
-                        //!  Differentiate CloseUp vs Extreme based on *only* head vs head+chest maybe? Needs tuning.
-                        // ? Simplification: if highest is head and lowest is head -> ECU/CU.
-                        if (lowestVisibleIndex == 0) {
-                            detectedShotType = PortraitShotType.CloseUp; // Could refine to ECU.
-                        }
-                        else {
-                            // This case should be caught by chestVisible? Revisit logic if needed.
-                            detectedShotType = PortraitShotType.MediumCloseUp;
-                        }
-                    }
-                    // Add more specific rules if needed (e.g., for ECU based on single head marker).
-                }
-                else if (aboveHeadVisible || belowFeetVisible) {
-                    // Only saw above/below markers, likely very wide.
+                // ! SHOT: Extreme Wide Shot.
+                // ? Condition: Head-to-Feet visible AND Above-Head visible AND Below-Feet visible.
+                if (fullBodyVisible && aboveHeadVisible && belowFeetVisible) {
                     detectedShotType = PortraitShotType.ExtremeWide;
                 }
-                // If highestVisibleIndex remains -1, type remains Undefined.
+                // ! SHOT: Medium Wide Shot (Specific Definition).
+                // ? Condition: Head-to-Feet visible AND EITHER Above-Head OR Below-Feet is visible (but NOT both).
+                else if (fullBodyVisible &&
+                         ((aboveHeadVisible && !belowFeetVisible) || (!aboveHeadVisible && belowFeetVisible))) {
+                    detectedShotType = PortraitShotType.MediumWide;
+                }
+                // ! SHOT: Wide Shot.
+                // ? Condition: Head-to-Feet visible, BUT NEITHER Above-Head NOR Below-Feet is visible.
+                
+                else if (fullBodyVisible && !aboveHeadVisible && !belowFeetVisible) {
+                    detectedShotType = PortraitShotType.Wide;
+                }
+                // ! SHOT: Medium Wide Shot
+                // ? Condition: Head visible AND Knees visible (implies feet are likely cut off).
+                else if (headVisible && kneesVisible) {
+                    detectedShotType = PortraitShotType.MediumWide;
+                }
+                // ! SHOT : Medium Shot.
+                // ? Condition: Head visible AND Hip visible (implies knees/feet are cut off).
+                else if (headVisible && hipVisible) {
+                    detectedShotType = PortraitShotType.Medium;
+                }
+                // ! SHOT: Medium Close-Up Shot.
+                // ? Condition: Head visible AND Chest visible (implies hip/knees/feet are cut off).
+                else if (headVisible && chestVisible) {
+                    detectedShotType = PortraitShotType.MediumCloseUp;
+                }
+                // ! SHOT: Close-Up / Extreme Close-Up Shot
+                // ? Condition: Only Head visible (implies chest and lower body are cut off).
+                else if (headVisible) {
+                    detectedShotType = PortraitShotType.CloseUp;
+                }
 
                 Debug.Log(
-                    $"[Photo Eval] Result: Highest Visible Index={highestVisibleIndex}, Lowest Visible Index={lowestVisibleIndex}, Above={aboveHeadVisible}, Below={belowFeetVisible}");
+                    $"[Photo Eval] Result: Head={headVisible}, Chest={chestVisible}, Hip={hipVisible}, Knees={kneesVisible}, Feet={feetVisible}, Above={aboveHeadVisible}, Below={belowFeetVisible} => Type={detectedShotType}");
             }
             else {
-                Debug.Log("[Photo Eval] No client subject detected by initial raycast.");
+                Debug.Log("[Photo Eval] No client subject detected.");
             }
-
 
             photo.portraitShotType = detectedShotType;
 
             string detectedCompStr = PhotoCompositionEvaluator.GetShotTypeDisplayName(detectedShotType);
             Debug.Log($"Determined Composition: {detectedCompStr}");
             Debug.Log($"Photo Quality: {photo.quality:P0}");
+
 
             if (targetClient != null && detectedShotType != PortraitShotType.Undefined) {
                 if (targetClient.requiredShotTypes != null && targetClient.requiredShotTypes.Count > 0) {
@@ -469,13 +449,11 @@ namespace SAE_Dubai.Leonardo.Client_System
                     Debug.Log($"Active Client '{targetClient.clientName}' has no specific requirements listed.");
                 }
 
-                Debug.Log($"Routing photo to client '{targetClient.clientName}' for checking.");
                 targetClient.CheckPhoto(photo);
             }
             else if (targetClient != null && detectedShotType == PortraitShotType.Undefined) {
                 Debug.Log($"Photo of client '{targetClient.clientName}' taken, but composition was Undefined.");
             }
-
 
             Debug.Log($"------------------------------------------------------------");
         }
