@@ -3247,6 +3247,7 @@ Transform:
   - {fileID: 859708944}
   - {fileID: 11740613}
   - {fileID: 2140465400}
+  - {fileID: 1719483875}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &679561439
@@ -4134,6 +4135,14 @@ MonoBehaviour:
   clientPrefab: {fileID: 4894269165501738237, guid: 8172511e4ad1b404298070c5854e0cd0, type: 3}
   clientArchetypes:
   - {fileID: 11400000, guid: 05bdf26bb4a1ec5469dc7c91a932d26a, type: 2}
+  portraitSubjectLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  maxDetectionDistance: 20
+  detectionRadius: 0.1
+  showEvaluatorDebugInfo: 1
+  cameraManagerTag: CameraManager
+  cameraManager: {fileID: 1337319136}
 --- !u!1 &857241874
 GameObject:
   m_ObjectHideFlags: 0
@@ -6276,7 +6285,7 @@ GameObject:
   - component: {fileID: 1337319136}
   m_Layer: 0
   m_Name: CameraManager
-  m_TagString: Untagged
+  m_TagString: CameraManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8876,6 +8885,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1707439045}
   m_CullTransparentMesh: 1
+--- !u!1 &1719483874
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1719483875}
+  - component: {fileID: 1719483876}
+  m_Layer: 0
+  m_Name: ClientSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1719483875
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1719483874}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 647255961}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1719483876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1719483874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88f87bbd5216af342a6a9af78ff1cf5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clientPrefab: {fileID: 4894269165501738237, guid: 8172511e4ad1b404298070c5854e0cd0, type: 3}
+  clientArchetypes: []
+  spawnPoints: []
+  numberOfClientsToSpawn: 3
 --- !u!4 &1746104409 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 87990976430386877, guid: 0ea8f560ba634624a985af59d34c91f6, type: 3}
@@ -10149,6 +10206,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BigRig_01
       objectReference: {fileID: 0}
+    - target: {fileID: 8919773094631285281, guid: b246f08ad69ed6c408e08e145f47ee13, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10206,6 +10267,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PolygonSyntyCharacter
       objectReference: {fileID: 0}
+    - target: {fileID: 943565782708136544, guid: b840dd29cbd759540b8b3102a08237ca, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4607345942404167904, guid: b840dd29cbd759540b8b3102a08237ca, type: 3}
       propertyPath: m_LocalRotation.x
       value: -0.050577722
@@ -10237,6 +10302,10 @@ PrefabInstance:
     - target: {fileID: 3759854700004560525, guid: 90e11b8478b742447b02a79e5df6139c, type: 3}
       propertyPath: m_Name
       value: KidRig_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3759854700004560525, guid: 90e11b8478b742447b02a79e5df6139c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4568478790277829687, guid: 90e11b8478b742447b02a79e5df6139c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -10334,6 +10403,10 @@ PrefabInstance:
     - target: {fileID: 7347766243965258308, guid: 77319a307f3a38843a609999143c700f, type: 3}
       propertyPath: m_Name
       value: POLYGONRig_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 7347766243965258308, guid: 77319a307f3a38843a609999143c700f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
