@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using SAE_Dubai.Leonardo.Client_System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace SAE_Dubai.Leonardo.PauseSystem
 {
@@ -77,7 +78,7 @@ namespace SAE_Dubai.Leonardo.PauseSystem
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
-            Debug.Log("Game Paused");
+            Debug.Log("PauseMenuController.cs: Game Paused");
         }
 
         public void ResumeGame() {
@@ -96,48 +97,63 @@ namespace SAE_Dubai.Leonardo.PauseSystem
             Cursor.visible = false;
 
             _isPaused = false;
-            Debug.Log("Game Resumed");
+            Debug.Log("PauseMenuController.cs: Game Resumed");
         }
 
-        private void UpdateActiveSessionsDisplay() {
-            if (_sessionManager == null || activeSessionsContainer == null || sessionInfoPrefab == null) {
-                Debug.LogWarning("Cannot update active sessions display: References missing.");
-                return;
-            }
+private void UpdateActiveSessionsDisplay()
+    {
+        if (_sessionManager == null || activeSessionsContainer == null || sessionInfoPrefab == null)
+        {
+            Debug.LogWarning("PauseMenuController: Cannot update active sessions display - References missing.");
+            return;
+        }
 
-            foreach (Transform child in activeSessionsContainer) {
-                Destroy(child.gameObject);
-            }
+        // Clear previous session items
+        foreach (Transform child in activeSessionsContainer)
+        {
+            Destroy(child.gameObject);
+        }
 
-            List<PhotoSession> activeSessions = _sessionManager.GetActiveSessions();
+        // Get current active sessions
+        List<PhotoSession> activeSessions = _sessionManager.GetActiveSessions();
 
-            if (activeSessions.Count == 0) {
-                GameObject noSessionsText = new GameObject("NoSessionsText");
-                noSessionsText.transform.SetParent(activeSessionsContainer);
-                TextMeshProUGUI textComponent = noSessionsText.AddComponent<TextMeshProUGUI>();
-                textComponent.text = "No active photo sessions.";
-                textComponent.alignment = TextAlignmentOptions.Center;
-                textComponent.fontSize = 18;
-            }
-            else {
-                foreach (PhotoSession session in activeSessions) {
-                    GameObject sessionItemGo = Instantiate(sessionInfoPrefab, activeSessionsContainer);
-                    TextMeshProUGUI clientNameText =
-                        sessionItemGo.transform.Find("ClientNameText")?.GetComponent<TextMeshProUGUI>();
-                    TextMeshProUGUI compositionText =
-                        sessionItemGo.transform.Find("CompositionText")?.GetComponent<TextMeshProUGUI>();
+        if (activeSessions.Count == 0)
+        {
+            // Optional: Display a message if there are no active sessions
+             GameObject noSessionsText = new GameObject("NoSessionsText");
+            noSessionsText.transform.SetParent(activeSessionsContainer, false); // Set worldPositionStays to false
+            TextMeshProUGUI textComponent = noSessionsText.AddComponent<TextMeshProUGUI>();
+            textComponent.text = "No active photo sessions.";
+            textComponent.alignment = TextAlignmentOptions.Center;
+            textComponent.fontSize = 18;
+            LayoutElement layoutElement = noSessionsText.AddComponent<LayoutElement>();
+            layoutElement.preferredHeight = 50;
+        }
+        else
+        {
+            // Instantiate and populate UI items for each active session
+            foreach (PhotoSession session in activeSessions)
+            {
+                // Instantiate the prefab
+                GameObject sessionItemGO = Instantiate(sessionInfoPrefab, activeSessionsContainer);
 
-                    if (clientNameText != null) {
-                        clientNameText.text = $"Client: {session.clientName}";
-                    }
+                // Get the PauseSessionItemUI component attached to the prefab instance
+                PauseSessionItemUI itemUI = sessionItemGO.GetComponent<PauseSessionItemUI>();
 
-                    if (compositionText != null) {
-                        compositionText.text = $"Wants: {session.GetShotTypeName()}";
-                    }
+                if (itemUI != null)
+                {
+                    // Call the Setup method on the item's script, passing the session data
+                    itemUI.Setup(session);
+                }
+                else
+                {
+                    Debug.LogError($"PauseMenuController: Prefab '{sessionInfoPrefab.name}' is missing the PauseSessionItemUI script!", sessionInfoPrefab);
+                    // Optionally destroy the problematic instance
+                    // Destroy(sessionItemGO);
                 }
             }
         }
-
+    }
         /// <summary>
         /// Quits the game, this won't work on the editor lol.
         /// </summary>
