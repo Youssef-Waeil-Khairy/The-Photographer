@@ -302,39 +302,35 @@ namespace SAE_Dubai.Leonardo.Client_System
                 $"<color=blue>Current camera set to: {(_currentCameraSystem != null ? _currentCameraSystem.name : "NULL")}</color>");
         }
 
-// Add this within your PhotoSessionManager class in
-// SAE-Dubai/Leonardo/Client System/PhotoSessionManager.cs
-
-// Inside PhotoSessionManager.cs
-
         private void HandlePhotoCaptured(CapturedPhoto photo) {
             if (photo == null) {
                 Debug.LogError("[PhotoSessionManager] HandlePhotoCaptured received a null photo object!");
                 return;
             }
 
-            // --- Determine active camera (Same as before) ---
-            Camera activeCamera = null;
-            if (_currentCameraSystem != null && _currentCameraSystem.isCameraOn) {
-                activeCamera = _currentCameraSystem.usingViewfinder
-                    ? _currentCameraSystem.viewfinderCamera
-                    : _currentCameraSystem.cameraRenderer;
-            }
-            activeCamera ??= Camera.main; // Fallback
+            // ! --- Determine active camera using the reference from the photo data --- (FIX FOR PHOTO COMPOSITION THINGY, DON'T CHANGE!)
+            Camera activeCamera = photo.CapturingCamera;
 
             if (activeCamera == null) {
-                Debug.LogError("[PhotoSessionManager] HandlePhotoCaptured: Could not find any active camera for evaluation.");
-                return;
+                // ? If the capturing camera wasn't set in the photo object, maybe fallback or log error
+                Debug.LogError(
+                    "[PhotoSessionManager] HandlePhotoCaptured: CapturingCamera in photo data is null! Falling back to Camera.main.");
+                activeCamera = Camera.main; // Keep fallback for safety, but debug of why null.
+                if (activeCamera == null) {
+                    Debug.LogError(
+                        "[PhotoSessionManager] HandlePhotoCaptured: Fallback Camera.main is also null! Cannot evaluate.");
+                    return;
+                }
             }
-            
-            Debug.Log($"[PhotoSessionManager] Evaluating photo using camera: {activeCamera.name} (GameObject: {activeCamera.gameObject.name})");
 
+            // !--- Log the camera being used ---
+            Debug.Log(
+                $"[PhotoSessionManager] Evaluating photo using camera: {activeCamera.name} (GameObject: {activeCamera.gameObject.name})");
 
-            // --- Identify target client (Same as before) ---
+            // !--- Identify target client ---
             PortraitShotType detectedShotType = PortraitShotType.Undefined;
             ClientJobController targetClient = null;
             Ray centerRay = activeCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-            // Use the layer defined in the inspector, but only for finding the client initially
             bool hitAnything = Physics.Raycast(centerRay, out RaycastHit centerHit, 100f, portraitSubjectLayer);
             Transform subjectTransform = null;
 
@@ -343,115 +339,99 @@ namespace SAE_Dubai.Leonardo.Client_System
                 targetClient = subjectTransform.GetComponentInParent<ClientJobController>();
             }
 
-            // --- Fallback/Verification if needed (Same as before) ---
+            // !Fallback/Verification
             if (targetClient != null) {
                 bool clientIsActiveSession =
                     activeSessions.Any(s => s.isClientSpawned && s.ClientReference == targetClient);
                 if (!clientIsActiveSession) {
-                    targetClient = null; // Ignore if not part of an active session
+                    targetClient = null;
                 }
             }
-            // --- Optional: Add logic here to find closest active client if targetClient is still null ---
 
-
-            // --- Marker Visibility Check using WorldToScreenPoint (UPDATED SECTION) ---
+            // * --- Marker Visibility Check using WorldToScreenPoint (Uses the confirmed activeCamera) ---
             if (targetClient != null) {
                 List<Transform> bodyMarkers = targetClient.GetOrderedBodyMarkers();
 
-                // Use the new IsMarkerVisibleOnScreen method
-                // No occlusion mask or subject layer needed for this check
-
-                // Check visibility and store results directly in the photo object
+                // Check visibility and store results directly in the photo object.
                 photo.HeadVisible = bodyMarkers.Count > 0 && bodyMarkers[0] != null &&
-                                    PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(activeCamera, bodyMarkers[0].position);
+                                    PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(activeCamera,
+                                        bodyMarkers[0].position);
 
                 photo.ChestVisible = bodyMarkers.Count > 1 && bodyMarkers[1] != null &&
-                                     PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(activeCamera, bodyMarkers[1].position);
+                                     PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(activeCamera,
+                                         bodyMarkers[1].position);
 
                 photo.HipVisible = bodyMarkers.Count > 2 && bodyMarkers[2] != null &&
-                                   PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(activeCamera, bodyMarkers[2].position);
+                                   PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(activeCamera,
+                                       bodyMarkers[2].position);
 
                 photo.KneesVisible = bodyMarkers.Count > 3 && bodyMarkers[3] != null &&
-                                     PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(activeCamera, bodyMarkers[3].position);
+                                     PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(activeCamera,
+                                         bodyMarkers[3].position);
 
                 photo.FeetVisible = bodyMarkers.Count > 4 && bodyMarkers[4] != null &&
-                                    PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(activeCamera, bodyMarkers[4].position);
+                                    PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(activeCamera,
+                                        bodyMarkers[4].position);
 
                 photo.AboveHeadVisible = targetClient.aboveHeadMarker != null &&
-                                         PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(activeCamera, targetClient.aboveHeadMarker.position);
+                                         PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(activeCamera,
+                                             targetClient.aboveHeadMarker.position);
 
                 photo.BelowFeetVisible = targetClient.belowFeetMarker != null &&
-                                         PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(activeCamera, targetClient.belowFeetMarker.position);
+                                         PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(activeCamera,
+                                             targetClient.belowFeetMarker.position);
 
+                detectedShotType = PortraitShotType.Undefined;
+                bool fullBodyVisible = photo.HeadVisible && photo.FeetVisible;
 
-                // --- Composition Determination Logic (Same basic structure, uses updated vis results) ---
-                detectedShotType = PortraitShotType.Undefined; // Reset before evaluation
-                bool fullBodyVisible = photo.HeadVisible && photo.FeetVisible; // Use stored results
-
-                // ! SHOT: Extreme Wide Shot.
                 if (fullBodyVisible && photo.AboveHeadVisible && photo.BelowFeetVisible) {
                     detectedShotType = PortraitShotType.ExtremeWide;
                 }
-                // ! SHOT: Medium Wide Shot (Specific Definition).
-                else if (fullBodyVisible &&
-                         ((photo.AboveHeadVisible && !photo.BelowFeetVisible) || (!photo.AboveHeadVisible && photo.BelowFeetVisible))) {
-                     // This specific definition might be rare now without occlusion differences. Consider if Wide overlaps too much.
+                else if (fullBodyVisible && !photo.AboveHeadVisible && !photo.BelowFeetVisible) {
+                    detectedShotType = PortraitShotType.Wide;
+                }
+                else if (photo.HeadVisible && photo.KneesVisible && !photo.FeetVisible) {
                     detectedShotType = PortraitShotType.MediumWide;
                 }
-                 // ! SHOT: Wide Shot.
-                 else if (fullBodyVisible && !photo.AboveHeadVisible && !photo.BelowFeetVisible) {
-                     detectedShotType = PortraitShotType.Wide;
-                 }
-                // ! SHOT: Medium Wide Shot (Cowboy Shot)
-                else if (photo.HeadVisible && photo.KneesVisible && !photo.FeetVisible) { // Added !FeetVisible for clarity
-                    detectedShotType = PortraitShotType.MediumWide;
-                }
-                // ! SHOT : Medium Shot.
-                else if (photo.HeadVisible && photo.HipVisible && !photo.KneesVisible) { // Added !KneesVisible
+                else if (photo.HeadVisible && photo.HipVisible && !photo.KneesVisible) {
                     detectedShotType = PortraitShotType.Medium;
                 }
-                // ! SHOT: Medium Close-Up Shot.
-                else if (photo.HeadVisible && photo.ChestVisible && !photo.HipVisible) { // Added !HipVisible
+                else if (photo.HeadVisible && photo.ChestVisible && !photo.HipVisible) {
                     detectedShotType = PortraitShotType.MediumCloseUp;
                 }
-                // ! SHOT: Close-Up / Extreme Close-Up Shot
-                else if (photo.HeadVisible && !photo.ChestVisible) { // Added !ChestVisible
-                    // Distinction between CloseUp and ExtremeCloseUp might need different logic
-                    // (e.g., checking eye markers vs head marker visibility)
-                    // For now, grouping them:
+                else if (photo.HeadVisible && !photo.ChestVisible) {
                     detectedShotType = PortraitShotType.CloseUp;
                 }
 
-                // --- Debug Logging (Same as before, uses updated results) ---
-                 Debug.Log($"[Photo Eval WTS] Result: Head={photo.HeadVisible}, Chest={photo.ChestVisible}, Hip={photo.HipVisible}, Knees={photo.KneesVisible}, Feet={photo.FeetVisible}, Above={photo.AboveHeadVisible}, Below={photo.BelowFeetVisible} => Type={detectedShotType}");
-
-            } else {
-                 Debug.Log("[Photo Eval WTS] No client subject detected.");
-                 // Ensure visibility flags are false if no client
-                 photo.HeadVisible = false;
-                 photo.ChestVisible = false;
-                 photo.HipVisible = false;
-                 photo.KneesVisible = false;
-                 photo.FeetVisible = false;
-                 photo.AboveHeadVisible = false;
-                 photo.BelowFeetVisible = false;
+                // Debug.Log($"[Photo Eval WTS] Result: Head={photo.HeadVisible}, Chest={photo.ChestVisible}, Hip={photo.HipVisible}, Knees={photo.KneesVisible}, Feet={photo.FeetVisible}, Above={photo.AboveHeadVisible}, Below={photo.BelowFeetVisible} => Type={detectedShotType}");
+            }
+            else {
+                // !No Client Detected.
+                // Debug.Log("[Photo Eval WTS] No client subject detected.");
+                photo.HeadVisible = false;
+                photo.ChestVisible = false;
+                photo.HipVisible = false;
+                photo.KneesVisible = false;
+                photo.FeetVisible = false;
+                photo.AboveHeadVisible = false;
+                photo.BelowFeetVisible = false;
+                detectedShotType = PortraitShotType.Undefined;
             }
 
-            // --- Store result and notify client (Same as before) ---
             photo.portraitShotType = detectedShotType;
 
-            // --- Rest of the HandlePhotoCaptured method ---
+            // Final Logging & Client Check.
             string detectedCompStr = PhotoCompositionEvaluator.GetShotTypeDisplayName(detectedShotType);
             Debug.Log($"Determined Composition (WTS): {detectedCompStr}");
-            // ... (rest of the debug logs and client checking logic remains the same) ...
-             if (targetClient != null)
-             {
-                 targetClient.CheckPhoto(photo);
-             }
-             // ... etc ...
+            Debug.Log($"Photo Quality: {photo.quality:P0}");
+
+            if (targetClient != null) {
+                targetClient.CheckPhoto(photo);
+            }
+
+            // Debug.Log($"------------------------------------------------------------");
         }
 
-// --- Other methods in PhotoSessionManager ---
         public void HandlePhotoCapturedDirectly(CapturedPhoto photo) {
             HandlePhotoCaptured(photo);
         }

@@ -103,7 +103,6 @@ namespace SAE_Dubai.Leonardo.CameraSys
         [FormerlySerializedAs("toggleViewfinderKey")] [Tooltip("Key to toggle between viewfinder and screen.")]
         public KeyCode toggleViewKey = KeyCode.V;
 
-        // Internal variables for camera control.
         private int _currentISOIndex = 0;
         private int _currentApertureIndex = 4;
         private int _currentShutterSpeedIndex = 5;
@@ -225,9 +224,9 @@ namespace SAE_Dubai.Leonardo.CameraSys
             if (_currentISOIndex < 0) _currentISOIndex = 0;
 
             _currentApertureIndex = System.Array.IndexOf(cameraSettings.availableApertureStops, initialAperture);
-            if (_currentApertureIndex < 0) _currentApertureIndex = 4; // Default to middle aperture
+            if (_currentApertureIndex < 0) _currentApertureIndex = 4; // Default to middle aperture.
 
-            _currentShutterSpeedIndex = 5; // Default to 1/125
+            _currentShutterSpeedIndex = 5; // Default to 1/125 (to not have blurry pictures).
             float closestDiff = Mathf.Abs(cameraSettings.availableShutterSpeedStops[_currentShutterSpeedIndex] -
                                           initialShutterSpeed);
 
@@ -411,6 +410,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
         /// <summary>
         /// Captures a photo with the current camera settings.
+        /// Starts the coroutine that handles the capture process.
         /// </summary>
         private void CapturePhoto() {
             if (remainingPhotos <= 0) {
@@ -418,20 +418,32 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 return;
             }
 
+            if (_isCapturing) return; // * To prevent overlapping captures.
+
             _isCapturing = true;
 
-            // Play shutter sound
+            // Play shutter sound.
             if (cameraSettings != null && cameraSettings.shutterSound != null && audioSource != null) {
                 audioSource.PlayOneShot(cameraSettings.shutterSound);
             }
 
-            StartCoroutine(CapturePhotoEffect());
+            // ! --- Determine which camera is rendering NOW ---
+            Camera camBeingUsed = null;
+            if (isCameraOn) // Check if the system is on
+            {
+                camBeingUsed = usingViewfinder ? viewfinderCamera : cameraRenderer;
+            }
+
+            // ! --- Start the coroutine, passing the camera reference ---
+            StartCoroutine(CapturePhotoEffect(camBeingUsed));
         }
 
         /// <summary>
-        /// Handles the photo capture process and creates a photo record.
+        /// Handles the photo capture process, creates a photo record, and invokes the event.
+        /// Now receives the specific camera that was used.
         /// </summary>
-        private IEnumerator CapturePhotoEffect() {
+        /// <param name="capturingCamera">The Camera component used for this capture.</param>
+        private IEnumerator CapturePhotoEffect(Camera capturingCamera) {
             // Handle flash if enabled.
             if (cameraSettings != null && cameraSettings.hasBuiltInFlash) {
                 // Flash effect could be implemented here.
@@ -444,29 +456,34 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
             if (cameraSettings != null) {
                 // Record settings used for the photo.
-                newPhoto.iso = cameraSettings.availableISOStops[_currentISOIndex];
-                newPhoto.aperture = cameraSettings.availableApertureStops[_currentApertureIndex];
-                newPhoto.shutterSpeed = cameraSettings.availableShutterSpeedStops[_currentShutterSpeedIndex];
-                newPhoto.focalLength = _currentFocalLength;
+                newPhoto.iso = GetCurrentISO();
+                newPhoto.aperture = GetCurrentAperture();
+                newPhoto.shutterSpeed = GetCurrentShutterSpeed();
+                newPhoto.focalLength = GetCurrentFocalLength();
 
                 // Calculate photo quality based on current settings.
                 newPhoto.quality = CalculatePhotoQuality();
             }
 
+            // --- Assign the capturing camera reference ---
+            newPhoto.CapturingCamera = capturingCamera;
+            // -------------------------------------------
+
             // Add to album and update count.
             photoAlbum.Add(newPhoto);
             remainingPhotos--;
 
+            // --- Invoke the event AFTER setting all photo data ---
             Debug.Log(
-                $"<color=green>About to invoke OnPhotoCapture event. Listeners attached: {(OnPhotoCapture != null ? "YES" : "NO")}</color>");
+                $"<color=cyan>CameraSystem {name}: Invoking OnPhotoCapture. Photo captured by: {(capturingCamera != null ? capturingCamera.name : "NULL")}</color>");
             OnPhotoCapture?.Invoke(newPhoto);
-            Debug.Log("<color=green>OnPhotoCapture event invoked</color>");
+            Debug.Log("<color=green>CameraSystem: OnPhotoCapture event invoked</color>");
 
             // Delay before allowing another photo.
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.5f); // Consider if delay is needed
             _isCapturing = false;
 
-            Debug.Log($"Photo captured, quality: {newPhoto.quality:F2}, {remainingPhotos} photos remaining.");
+            // Debug.Log($"Photo captured, quality: {newPhoto.quality:F2}, {remainingPhotos} photos remaining.");
         }
 
         /// <summary>
