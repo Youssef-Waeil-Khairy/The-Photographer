@@ -138,6 +138,8 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 }
             }
 
+            mainCamera = Camera.main;
+            
             _defaultFOV = 70;
 
             // Initialize camera settings from scriptable object.
