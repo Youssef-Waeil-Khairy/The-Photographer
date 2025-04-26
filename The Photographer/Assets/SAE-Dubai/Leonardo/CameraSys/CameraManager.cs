@@ -21,7 +21,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
         public GameObject overlayUI;
 
         private Dictionary<string, GameObject> _cameraInstances = new();
-        private CameraSystem _activeCamera;
+        [SerializeField] private CameraSystem _activeCamera;
         private Hotbar.Hotbar _hotbar;
 
         private void Awake() {

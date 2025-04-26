@@ -382,8 +382,9 @@ public class PhotoCompositionDebugPanel : MonoBehaviour
         {
             if (bodyMarkers[i] != null)
             {
-                bool isVisible = PhotoCompositionEvaluator.IsMarkerVisible(
-                    activeCamera, bodyMarkers[i].position, occlusionMask, subjectLayer, false); // Pass actual subject layer
+                // NEW CALL using IsMarkerVisibleOnScreen
+                bool isVisible = PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(
+                    activeCamera, bodyMarkers[i].position);
 
                 string markerName = GetMarkerName(i, bodyMarkers[i].name);
                 markerVisibility[markerName] = isVisible;
@@ -393,15 +394,15 @@ public class PhotoCompositionDebugPanel : MonoBehaviour
         // Check special markers
         if (targetClient.aboveHeadMarker != null)
         {
-            bool isVisible = PhotoCompositionEvaluator.IsMarkerVisible(
-                activeCamera, targetClient.aboveHeadMarker.position, occlusionMask, subjectLayer, false);
+            bool isVisible = PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(
+                activeCamera, targetClient.aboveHeadMarker.position);
             markerVisibility["Above Head"] = isVisible;
         }
 
         if (targetClient.belowFeetMarker != null)
         {
-            bool isVisible = PhotoCompositionEvaluator.IsMarkerVisible(
-                activeCamera, targetClient.belowFeetMarker.position, occlusionMask, subjectLayer, false);
+            bool isVisible = PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(
+                activeCamera, targetClient.belowFeetMarker.position);
             markerVisibility["Below Feet"] = isVisible;
         }
 
