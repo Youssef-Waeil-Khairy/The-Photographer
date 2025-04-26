@@ -1,6 +1,6 @@
 // Create or Update this file as: CapturedPhoto.cs
 
-using SAE_Dubai.Leonardo.CameraSys.Client_System;
+using SAE_Dubai.Leonardo.Client_System;
 using UnityEngine;
 // Make sure the namespace matches the other scripts
 namespace SAE_Dubai.Leonardo.CameraSys

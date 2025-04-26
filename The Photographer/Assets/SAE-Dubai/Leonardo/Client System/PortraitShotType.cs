@@ -1,4 +1,4 @@
-namespace SAE_Dubai.Leonardo.CameraSys.Client_System
+namespace SAE_Dubai.Leonardo.Client_System
 {
     /// <summary>
     /// Defines different types of portrait composition based on framing distance.

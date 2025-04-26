@@ -1,39 +1,113 @@
-using System;
-using SAE_Dubai.JW;
 using SAE_Dubai.Leonardo;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class ComputerUI : MonoBehaviour
+namespace SAE_Dubai.JW
 {
-    [SerializeField] private MouseController  mouseController;
-    [SerializeField] Camera computerCamera;
-    [SerializeField] Camera playerCamera;
-    [SerializeField] TMP_Text balanceText;
-
-    private void Update()
+    public class ComputerUI : MonoBehaviour
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        [Header("- Camera Settings")]
+        [SerializeField] private MouseController mouseController;
+        [SerializeField] Camera computerCamera;
+        [SerializeField] Camera playerCamera;
+        [SerializeField] KeyCode interactComputerKeycode = KeyCode.Tab;
+
+        [Header("- UI Elements")]
+        [SerializeField] TMP_Text balanceText;
+        [SerializeField] GameObject photoSessionsPanel;
+        [SerializeField] GameObject cameraShopPanel;
+    
+        [Header("- Navigation")]
+        [SerializeField] Button homeTabButton;
+        [SerializeField] Button photoSessionsTabButton;
+        [SerializeField] Button cameraShopTabButton;
+        
+        private void Start()
         {
-            ToggleComputerVision();
+            // Leo: Setup tab navigation
+            if (homeTabButton != null)
+                homeTabButton.onClick.AddListener(() => SwitchTab(TabType.Home));
+            
+            if (photoSessionsTabButton != null)
+                photoSessionsTabButton.onClick.AddListener(() => SwitchTab(TabType.PhotoSessions));
+            
+            if (cameraShopTabButton != null)
+                cameraShopTabButton.onClick.AddListener(() => SwitchTab(TabType.CameraShop));
+        
+            // Leo: Show home tab by default.
+            SwitchTab(TabType.Home);
+        }
+    
+        private void Update()
+        {
+            if (Input.GetKeyDown(interactComputerKeycode))
+            {
+                ToggleComputerVision();
+            }
+
+            // ? Update balance display (we shouldn't probably do this on update lol).
+            if (balanceText != null && PlayerBalance.Instance != null)
+            {
+                balanceText.text = $"Balance: ${PlayerBalance.Instance.Balance}";
+            }
         }
 
-        balanceText.text = $"Balance: {PlayerBalance.Instance.Balance}";
-    }
-
-    private void ToggleComputerVision()
-    {
-        if (computerCamera.enabled)
+        public void ToggleComputerVision()
         {
-            computerCamera.enabled = false;
-            playerCamera.enabled = true;
-            mouseController.DisableFreeMouse();
+            if (computerCamera.enabled)
+            {
+                // Exiting computer view.
+                computerCamera.enabled = false;
+                playerCamera.enabled = true;
+                mouseController.DisableFreeMouse();
+            
+                // ? Optional: play sound effect 
+                // ! AudioManager.Instance?.PlaySound("ComputerExit");
+            }
+            else
+            {
+                // Entering computer view
+                computerCamera.enabled = true;
+                playerCamera.enabled = false;
+                mouseController.EnableFreeMouse();
+            
+                // ? Optional: play sound effect
+                // ! AudioManager.Instance?.PlaySound("ComputerEnter");
+            }
         }
-        else
+
+        /// <summary>
+        /// Better way to keep track of tabs.
+        /// </summary>
+        public enum TabType
         {
-            computerCamera.enabled = true;
-            playerCamera.enabled = false;
-            mouseController.EnableFreeMouse();
+            Home,
+            CameraShop,
+            PhotoSessions
+        }
+
+        private void SwitchTab(TabType tabType)
+        {
+            if (photoSessionsPanel != null)
+                photoSessionsPanel.SetActive(false);
+            
+            if (cameraShopPanel != null)
+                cameraShopPanel.SetActive(false);
+        
+            // Show the selected panel.
+            switch (tabType)
+            {
+                case TabType.PhotoSessions:
+                    if (photoSessionsPanel != null)
+                        photoSessionsPanel.SetActive(true);
+                    break;
+                
+                case TabType.CameraShop:
+                    if (cameraShopPanel != null)
+                        cameraShopPanel.SetActive(true);
+                    break;
+            }
         }
     }
 }

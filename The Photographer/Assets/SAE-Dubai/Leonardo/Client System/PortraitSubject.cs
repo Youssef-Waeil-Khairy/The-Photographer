@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SAE_Dubai.Leonardo.CameraSys.Client_System
+namespace SAE_Dubai.Leonardo.Client_System
 {
     /// <summary>
     /// Attaches to a game object to mark it as a portrait subject that can be photographed

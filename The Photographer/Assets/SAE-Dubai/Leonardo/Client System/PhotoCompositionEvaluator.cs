@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SAE_Dubai.Leonardo.CameraSys.Client_System
+namespace SAE_Dubai.Leonardo.Client_System
 {
     /// <summary>
     /// Provides static methods to evaluate photo composition based on subject framing.
