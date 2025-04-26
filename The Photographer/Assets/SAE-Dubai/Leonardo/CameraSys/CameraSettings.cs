@@ -32,6 +32,9 @@ namespace SAE_Dubai.Leonardo.CameraSys
     [CreateAssetMenu(fileName = "New Camera Settings", menuName = "Photography/Camera Settings")]
     public class CameraSettings : ScriptableObject
     {
+        [Header("- Unity related")]
+        public GameObject cameraPrefab;
+        
         [Header("- Basic Information")]
         [Tooltip("The name of this camera model")]
         public string modelName = "Default Camera";

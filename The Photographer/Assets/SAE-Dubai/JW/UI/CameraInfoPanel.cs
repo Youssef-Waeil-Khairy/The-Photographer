@@ -30,19 +30,11 @@ namespace SAE_Dubai.JW.UI
 
         [Header("- Purchase Controls")]
         [SerializeField] private Button purchaseButton;
-
-        [SerializeField] private TMP_Text priceText;
-        [SerializeField] private Button closeButton;
-
+        
         private void Start() {
             // Setup the purchase button.
             if (purchaseButton != null) {
                 purchaseButton.onClick.AddListener(PurchaseCamera);
-            }
-
-            // Setup close button if available.
-            if (closeButton != null) {
-                closeButton.onClick.AddListener(() => gameObject.SetActive(false));
             }
         }
 
@@ -74,10 +66,6 @@ namespace SAE_Dubai.JW.UI
         }
 
         private void UpdatePurchaseUI() {
-            // Update price text.
-            if (priceText != null) {
-                priceText.text = $"Price: ${CameraPrice}";
-            }
 
             // Enable/disable purchase button based on available funds.
             if (purchaseButton != null && PlayerBalance.Instance != null) {
