@@ -90,7 +90,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
             if (!_cameraInstances.ContainsKey(cameraName)) {
                 _cameraInstances.Add(cameraName, cameraInstance);
-                Debug.Log($"CameraManager.cs: Registered new camera: {cameraName}");
+                //Debug.Log($"CameraManager.cs: Registered new camera: {cameraName}");
             }
             else {
                 Destroy(_cameraInstances[cameraName]);
@@ -108,7 +108,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 if (!cameraObj.activeSelf) {
                     cameraObj.SetActive(true);
                     _activeCamera = cameraObj.GetComponent<CameraSystem>();
-                    Debug.Log($"CameraManager.cs: Activated camera: {cameraName}");
+                    //Debug.Log($"CameraManager.cs: Activated camera: {cameraName}");
                 }
             }
         }
@@ -121,7 +121,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
                 _activeCamera.gameObject.SetActive(false);
                 _activeCamera = null;
-                Debug.Log("CameraManager.cs: Deactivated camera");
+                //Debug.Log("CameraManager.cs: Deactivated camera");
             }
         }
 

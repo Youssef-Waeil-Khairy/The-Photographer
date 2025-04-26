@@ -32,7 +32,7 @@ namespace SAE_Dubai.Leonardo.PauseSystem
 
             _sessionManager = PhotoSessionManager.Instance;
             if (_sessionManager == null) {
-                Debug.LogError("PauseMenuController: PhotoSessionManager instance not found!");
+                //Debug.LogError("PauseMenuController: PhotoSessionManager instance not found!");
             }
 
             if (playerMovement == null) {
@@ -42,8 +42,7 @@ namespace SAE_Dubai.Leonardo.PauseSystem
 
             if (mouseController == null) {
                 mouseController = FindFirstObjectByType<MouseController>();
-                if (mouseController == null)
-                    Debug.LogWarning("PauseMenuController: Mouse Controller script not found.");
+                //if (mouseController == null) Debug.LogWarning("PauseMenuController: Mouse Controller script not found.");
             }
         }
 
@@ -78,7 +77,7 @@ namespace SAE_Dubai.Leonardo.PauseSystem
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
-            Debug.Log("PauseMenuController.cs: Game Paused");
+            //Debug.Log("PauseMenuController.cs: Game Paused");
         }
 
         public void ResumeGame() {
@@ -97,14 +96,14 @@ namespace SAE_Dubai.Leonardo.PauseSystem
             Cursor.visible = false;
 
             _isPaused = false;
-            Debug.Log("PauseMenuController.cs: Game Resumed");
+            //Debug.Log("PauseMenuController.cs: Game Resumed");
         }
 
 private void UpdateActiveSessionsDisplay()
     {
         if (_sessionManager == null || activeSessionsContainer == null || sessionInfoPrefab == null)
         {
-            Debug.LogWarning("PauseMenuController: Cannot update active sessions display - References missing.");
+            //Debug.LogWarning("PauseMenuController: Cannot update active sessions display - References missing.");
             return;
         }
 
@@ -147,7 +146,7 @@ private void UpdateActiveSessionsDisplay()
                 }
                 else
                 {
-                    Debug.LogError($"PauseMenuController: Prefab '{sessionInfoPrefab.name}' is missing the PauseSessionItemUI script!", sessionInfoPrefab);
+                    //Debug.LogError($"PauseMenuController: Prefab '{sessionInfoPrefab.name}' is missing the PauseSessionItemUI script!", sessionInfoPrefab);
                     // Optionally destroy the problematic instance
                     // Destroy(sessionItemGO);
                 }

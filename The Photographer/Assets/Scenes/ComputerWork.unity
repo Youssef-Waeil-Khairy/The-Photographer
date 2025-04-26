@@ -4138,11 +4138,11 @@ MonoBehaviour:
   portraitSubjectLayer:
     serializedVersion: 2
     m_Bits: 512
-  maxDetectionDistance: 20
-  detectionRadius: 0.1
-  showEvaluatorDebugInfo: 1
+  occlusionCheckMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  drawVisibilityDebugLines: 1
   cameraManagerTag: CameraManager
-  cameraManager: {fileID: 1337319136}
 --- !u!1 &857241874
 GameObject:
   m_ObjectHideFlags: 0
@@ -6847,7 +6847,7 @@ GameObject:
   - component: {fileID: 1385316773}
   - component: {fileID: 1385316772}
   - component: {fileID: 1385316771}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}

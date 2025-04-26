@@ -321,7 +321,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 manager.overlayUI.SetActive(usingViewfinder);
             }
 
-            Debug.Log("CameraSystem: Switched to " + (usingViewfinder ? "viewfinder" : "screen") + " view");
+            //Debug.Log("CameraSystem: Switched to " + (usingViewfinder ? "viewfinder" : "screen") + " view");
         }
 
         /// <summary>

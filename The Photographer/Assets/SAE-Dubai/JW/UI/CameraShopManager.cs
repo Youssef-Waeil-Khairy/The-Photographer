@@ -206,11 +206,11 @@ namespace SAE_Dubai.JW.UI
                 pickupable.cameraSettings = _currentCameraSettings;
             }
     
-            Debug.Log($"Spawned camera: {_currentCameraSettings.modelName}" +
+            /*/Debug.Log($"Spawned camera: {_currentCameraSettings.modelName}" +
                       $"\nAt position: {cameraSpawnPoint.position}" +
                       $"\nParent object: {cameraSpawnPoint.gameObject.name}" +
                       $"\nCamera active: {newCamera.activeSelf}" +
-                      $"\nCamera layer: {LayerMask.LayerToName(newCamera.layer)}");
+                      $"\nCamera layer: {LayerMask.LayerToName(newCamera.layer)}");*/
         }
         /// <summary>
         /// Shows feedback text for a specified duration.

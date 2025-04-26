@@ -93,11 +93,11 @@ namespace SAE_Dubai.Leonardo.Client_System
             if (!string.IsNullOrEmpty(chosenParameter) && HasParameter(chosenParameter, animator))
             {
                 animator.SetBool(chosenParameter, true);
-                Debug.Log($"StartRandomPose: Triggered pose parameter '{chosenParameter}' on {gameObject.name}");
+                //Debug.Log($"StartRandomPose: Triggered pose parameter '{chosenParameter}' on {gameObject.name}");
             }
             else if (!string.IsNullOrEmpty(chosenParameter))
             {
-                Debug.LogError($"StartRandomPose: Chosen parameter '{chosenParameter}' exists in list but NOT found in Animator Controller! Check spelling.", animator);
+                //Debug.LogError($"StartRandomPose: Chosen parameter '{chosenParameter}' exists in list but NOT found in Animator Controller! Check spelling.", animator);
             }
         }
 
