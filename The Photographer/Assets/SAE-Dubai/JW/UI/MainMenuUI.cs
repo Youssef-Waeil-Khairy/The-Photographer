@@ -1,7 +1,9 @@
 ﻿using System;
-using TMPro;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 namespace SAE_Dubai.JW.UI
 {
@@ -13,12 +15,17 @@ namespace SAE_Dubai.JW.UI
         [SerializeField] private GameObject quitPanel;
         [SerializeField] private GameObject playPanel;
         private PanelType currentPanel = PanelType.MainMenu;
-        
 
         [Header("Scene Switching")] 
+        [SerializeField] private float sceneSwitchDelay = 1f;
         [SerializeField] private int tutorialSceneIndex = 1;
         [SerializeField] private int gameSceneIndex = 2;
         private bool isTutorialSelected = false;
+        
+        [Header("Audio")]
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private List<AudioClip> audioClips;
+        [SerializeField] private Vector2 pitchRange = new Vector2(0.9f, 1.1f);
 
         private enum PanelType
         {
@@ -30,6 +37,7 @@ namespace SAE_Dubai.JW.UI
 
         public void SwitchPanel(int panelType)
         {
+            ButtonClicked();
             currentPanel = (PanelType)panelType;
             switch (currentPanel)
             {
@@ -67,11 +75,29 @@ namespace SAE_Dubai.JW.UI
         public void SetTutorialSelected(bool selected)
         {
             isTutorialSelected = selected;
+            ButtonClicked();
         }
 
         public void SwitchScenes()
         {
+            ButtonClicked();
+
+            StartCoroutine(nameof(LoadSceneAtIndex));
+        }
+
+        private IEnumerator LoadSceneAtIndex()
+        {
+            yield return new WaitForSeconds(sceneSwitchDelay);
             SceneManager.LoadScene(isTutorialSelected ? tutorialSceneIndex : gameSceneIndex, LoadSceneMode.Single);
+        }
+
+        public void ButtonClicked()
+        {
+            audioSource.Stop(); // Stop any sound in case there is one playing
+            int clipIndex = Random.Range(0, audioClips.Count); // get a random clip to play
+            audioSource.clip = audioClips[clipIndex];
+            audioSource.pitch = Random.Range(pitchRange.x, pitchRange.y); // Randomly vary the pitch
+            audioSource.Play();
         }
     }
 }
