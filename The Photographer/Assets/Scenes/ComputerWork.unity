@@ -1312,6 +1312,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1016189317}
+  - {fileID: 426797429}
   m_Father: {fileID: 1545815172}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &330585547
@@ -2385,12 +2386,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 426797428}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.531, z: 0.158}
-  m_LocalScale: {x: 0.6655435, y: 0.1464, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.158}
+  m_LocalScale: {x: 0.6655434, y: 0.1464, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1448744976}
+  m_Father: {fileID: 330585546}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &426797430
 BoxCollider:
@@ -2409,7 +2410,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -6519,7 +6520,6 @@ Transform:
   m_LocalScale: {x: 0.7247024, y: 1.0849, z: 0.65742767}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 426797429}
   - {fileID: 1545815172}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6538,6 +6538,7 @@ MonoBehaviour:
   standingPoint: {fileID: 1339096621}
   crouchPoint: {fileID: 1308660192}
   crouchSpeed: 5
+  maxCrouchLevel: 0.4
 --- !u!114 &1448744978
 MonoBehaviour:
   m_ObjectHideFlags: 0
