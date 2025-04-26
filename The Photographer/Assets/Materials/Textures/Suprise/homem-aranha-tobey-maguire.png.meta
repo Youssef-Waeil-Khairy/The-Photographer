@@ -1,0 +1,2062 @@
+fileFormatVersion: 2
+guid: ed960c89e96cfd145ad4296015fa21df
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_0
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 2827
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1e4286d97dbe23e40aac9bae549e0507
+      internalID: 22405231
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_1
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 2827
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e4b8827ec6f7da940995ae8f59903c6c
+      internalID: -691359537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_2
+      rect:
+        serializedVersion: 2
+        x: 442
+        y: 2827
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 56f01f445c40a074082198a141c8a4e5
+      internalID: 285172112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_3
+      rect:
+        serializedVersion: 2
+        x: 661
+        y: 2827
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 16526b853163dbd46a3b27dba4be4d89
+      internalID: -2067981430
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_4
+      rect:
+        serializedVersion: 2
+        x: 880
+        y: 2827
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9c1dfd07d0d1b9b44b04944f04b435ba
+      internalID: 519969980
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_5
+      rect:
+        serializedVersion: 2
+        x: 1099
+        y: 2827
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3593a146991d6364eb2608886d6d68db
+      internalID: 1575422494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_6
+      rect:
+        serializedVersion: 2
+        x: 1318
+        y: 2827
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 61a523ad7927e34449a8565234ba07a4
+      internalID: 294457262
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_7
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 2570
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7296f9d46ff17974ebc06901aab22a07
+      internalID: -396286975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_8
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 2570
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 56b9c55bca35d794296ec8fbe6f3cba0
+      internalID: 1093364881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_9
+      rect:
+        serializedVersion: 2
+        x: 442
+        y: 2570
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f8c27a5031d092149b4300ac705ed748
+      internalID: -1780487022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_10
+      rect:
+        serializedVersion: 2
+        x: 661
+        y: 2570
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5c2c9097b63abcf469de96e5a570b8ac
+      internalID: -384843330
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_11
+      rect:
+        serializedVersion: 2
+        x: 880
+        y: 2570
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ebd0b2c13e30a9a4d9162b02fcfca95a
+      internalID: -1880420317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_12
+      rect:
+        serializedVersion: 2
+        x: 1099
+        y: 2570
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f37f7c3ab17a13c4e96a17e91bef271a
+      internalID: 375811503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_13
+      rect:
+        serializedVersion: 2
+        x: 1318
+        y: 2570
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0709f4a702cddb04594175a174b2ee14
+      internalID: -522698042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_14
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 2313
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0ee98f522294dc241ab27126cd26ceb6
+      internalID: 1142613219
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_15
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 2313
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fc94427e52815714a8730b2fe0dd7677
+      internalID: 683936538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_16
+      rect:
+        serializedVersion: 2
+        x: 442
+        y: 2313
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1df44b535a71afd41bd577b552191514
+      internalID: -415430544
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_17
+      rect:
+        serializedVersion: 2
+        x: 661
+        y: 2313
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e3a0b0f46f42bb94f987c9f46b7586c8
+      internalID: 1239107829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_18
+      rect:
+        serializedVersion: 2
+        x: 880
+        y: 2313
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 867874b064360344b8ed2dcf913a56ee
+      internalID: 1635975040
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_19
+      rect:
+        serializedVersion: 2
+        x: 1099
+        y: 2313
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 52f8b66092a81b743b57d4daeb9283c4
+      internalID: -152680351
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_20
+      rect:
+        serializedVersion: 2
+        x: 1318
+        y: 2313
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2a388d717516bf8439315951becb6d13
+      internalID: -1277908679
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_21
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 2056
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 93473eea2eb740846a8109dcdac1f209
+      internalID: -1537740556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_22
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 2056
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 596042fab1f9aaa469b7c0fdf33ca95d
+      internalID: 334406203
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_23
+      rect:
+        serializedVersion: 2
+        x: 442
+        y: 2056
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8e58d4dbbcba31849bb0d5f91cc4d3ca
+      internalID: 1177748039
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_24
+      rect:
+        serializedVersion: 2
+        x: 661
+        y: 2056
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d3363f37b43350340823347b46f58a1e
+      internalID: 1004257606
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_25
+      rect:
+        serializedVersion: 2
+        x: 880
+        y: 2056
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7d31af005520d1740b0e17d7b4fdaee2
+      internalID: -1324564011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_26
+      rect:
+        serializedVersion: 2
+        x: 1099
+        y: 2056
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 30e0417215ac8b1459aae984a7e064be
+      internalID: -1578448619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_27
+      rect:
+        serializedVersion: 2
+        x: 1318
+        y: 2056
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 21999332f08056c4d8f4204fc871b574
+      internalID: 308185392
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_28
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 1799
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d6fbd2940bf7ce040ad1052ae708c988
+      internalID: 812876671
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_29
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 1799
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a4a8fe905775c07449ee479cb80a89b7
+      internalID: -2002972712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_30
+      rect:
+        serializedVersion: 2
+        x: 442
+        y: 1799
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0888d5490c62e094484450a9665d29bf
+      internalID: 1668458386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_31
+      rect:
+        serializedVersion: 2
+        x: 661
+        y: 1799
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7369447156a85fb4fa6d54ff93a7f929
+      internalID: 1827868188
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_32
+      rect:
+        serializedVersion: 2
+        x: 880
+        y: 1799
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f4c5ee22e857c114b8713b041f352e52
+      internalID: -1076464437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_33
+      rect:
+        serializedVersion: 2
+        x: 1099
+        y: 1799
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2044d5a5c8fc04a48aeb3a38a781e79e
+      internalID: -663281212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_34
+      rect:
+        serializedVersion: 2
+        x: 1318
+        y: 1799
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fe473d9e6f033014db80bac03248d147
+      internalID: 2015103071
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_35
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 1542
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1218d6ccc70e5984dbb22c56cec8386e
+      internalID: -1435245748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_36
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 1542
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f3795653c29ed7d488e0b4567c3e44c9
+      internalID: -1598452456
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_37
+      rect:
+        serializedVersion: 2
+        x: 442
+        y: 1542
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e598317242db1dd4e9f507c58e59f6e5
+      internalID: 1550839420
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_38
+      rect:
+        serializedVersion: 2
+        x: 661
+        y: 1542
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 54561e54fe9b75a4097a8e1014f9fc55
+      internalID: -1149137009
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_39
+      rect:
+        serializedVersion: 2
+        x: 880
+        y: 1542
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9de0ea6d61cce68409d3225b7128d6c5
+      internalID: 174151084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_40
+      rect:
+        serializedVersion: 2
+        x: 1099
+        y: 1542
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 129cc55825c52584b8205fdcd4ec7940
+      internalID: -514895275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_41
+      rect:
+        serializedVersion: 2
+        x: 1318
+        y: 1542
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d8ce7ea09d1c3db45a8c012752d9c6fc
+      internalID: 1627516340
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_42
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 1285
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c800be8e332665a4ea30f6c188e3b43a
+      internalID: -1938106911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_43
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 1285
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 88a33b0ba7c031f44a774d208a43dcb6
+      internalID: -1884738338
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_44
+      rect:
+        serializedVersion: 2
+        x: 442
+        y: 1285
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cfffb05322585494fa84dc4c71943256
+      internalID: 681330418
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_45
+      rect:
+        serializedVersion: 2
+        x: 661
+        y: 1285
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e37c50e69eef3834389eac2a599c549e
+      internalID: 1309717
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_46
+      rect:
+        serializedVersion: 2
+        x: 880
+        y: 1285
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f2a199e8fefd09f4d90c206f242e9d1e
+      internalID: -1618158897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_47
+      rect:
+        serializedVersion: 2
+        x: 1099
+        y: 1285
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 28c7835e0b1f3394c919ad5af5140417
+      internalID: 1722801145
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_48
+      rect:
+        serializedVersion: 2
+        x: 1318
+        y: 1285
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d2b47701a9bac3a4e81c308a65f41105
+      internalID: 178842931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_49
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 1028
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: adf86da8bfd55584988b13f396fd2292
+      internalID: -1420970683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_50
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 1028
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 347fa694ecc3ba5439adccd8bb082089
+      internalID: -1753273099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_51
+      rect:
+        serializedVersion: 2
+        x: 442
+        y: 1028
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f566ae26b58237747af94d1518f61be5
+      internalID: -692172670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_52
+      rect:
+        serializedVersion: 2
+        x: 661
+        y: 1028
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 839b2f1d731422746a64b93b551cf01e
+      internalID: 1156792468
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_53
+      rect:
+        serializedVersion: 2
+        x: 880
+        y: 1028
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2589743e455638f4682a97610b890ec4
+      internalID: 199050960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_54
+      rect:
+        serializedVersion: 2
+        x: 1099
+        y: 1028
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7e266bc4092c44d41b55da0274606d0d
+      internalID: 675222849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_55
+      rect:
+        serializedVersion: 2
+        x: 1318
+        y: 1028
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 086a6af68fad2f74ca162ba088bb32c2
+      internalID: 249245612
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_56
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 771
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d32dd7b9c297641419741f6ce7eebbed
+      internalID: 170653150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_57
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 771
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e2df5e12bb25cb04e99d7e5013c08811
+      internalID: 1914900378
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_58
+      rect:
+        serializedVersion: 2
+        x: 442
+        y: 771
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f51d066dafb944a40b7b155aa4d2fabe
+      internalID: -580832085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_59
+      rect:
+        serializedVersion: 2
+        x: 661
+        y: 771
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e9f5d9e0ba604f542aef52c11aff8717
+      internalID: -142424114
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_60
+      rect:
+        serializedVersion: 2
+        x: 880
+        y: 771
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: df39db8563039e44f9736c1ad714f763
+      internalID: -168224015
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_61
+      rect:
+        serializedVersion: 2
+        x: 1099
+        y: 771
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 98bc5f90249dbf54caa3984403de96a3
+      internalID: -1984261621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_62
+      rect:
+        serializedVersion: 2
+        x: 1318
+        y: 771
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3700ad1349bca1e49ba16993e20c17b4
+      internalID: -1758278296
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_63
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 514
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 45e5d379c34b6c84ea59abff3ed9100c
+      internalID: -339669795
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_64
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 514
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e423b6035ba2d2c488f7a07a294b33ad
+      internalID: 2021574833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_65
+      rect:
+        serializedVersion: 2
+        x: 442
+        y: 514
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4b3d32f3f15656044b80bc7a4d32bd5b
+      internalID: -1497270501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_66
+      rect:
+        serializedVersion: 2
+        x: 661
+        y: 514
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6d1b437c2e4cdf9468750105b75bb55b
+      internalID: 1834555769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_67
+      rect:
+        serializedVersion: 2
+        x: 880
+        y: 514
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 778b756563867f8459944d2695f483c0
+      internalID: -602017211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_68
+      rect:
+        serializedVersion: 2
+        x: 1099
+        y: 514
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a0f55c75b3c9454d98e64c29a707115
+      internalID: 769481030
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_69
+      rect:
+        serializedVersion: 2
+        x: 1318
+        y: 514
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 327b1b0e2ac5ba246aa43d7873203e5a
+      internalID: 915909996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_70
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 257
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dd6ae93390c6644419c55ac30c1403ee
+      internalID: 315018157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_71
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 257
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3f3b79dbf0cfd794e9dc37e34aa710c8
+      internalID: 1362041994
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_72
+      rect:
+        serializedVersion: 2
+        x: 442
+        y: 257
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: db03e217c155f624e99f8d0821e21592
+      internalID: -852846783
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_73
+      rect:
+        serializedVersion: 2
+        x: 661
+        y: 257
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 289be406d88d3984a8532b3f85791866
+      internalID: -320102283
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_74
+      rect:
+        serializedVersion: 2
+        x: 880
+        y: 257
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 777da479e9d15674ba2c648ac0987123
+      internalID: -1712356098
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_75
+      rect:
+        serializedVersion: 2
+        x: 1099
+        y: 257
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1e02469901aeaa442b8f075108e5536a
+      internalID: -1316786961
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_76
+      rect:
+        serializedVersion: 2
+        x: 1318
+        y: 257
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e2ca2ae7b0dd71448a712641939e5bc3
+      internalID: -1304836892
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_77
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 0
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a8e6f513bcb09e40bd0457319d707fb
+      internalID: -1126935158
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_78
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 0
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 28978fb8c581dc64191244ca3368bb0b
+      internalID: -381337440
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_79
+      rect:
+        serializedVersion: 2
+        x: 442
+        y: 0
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e0fd288a1755c114985a02719d2397a2
+      internalID: -372911821
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_80
+      rect:
+        serializedVersion: 2
+        x: 661
+        y: 0
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b2fb98ae34f116e4d8078b7d0319a4bf
+      internalID: 211251981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_81
+      rect:
+        serializedVersion: 2
+        x: 880
+        y: 0
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b09e1a1a3abdfe34188e658eec051e2e
+      internalID: 1658158423
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_82
+      rect:
+        serializedVersion: 2
+        x: 1099
+        y: 0
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b8e9ce142fe69454f976350c87726c8e
+      internalID: 977090806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: homem-aranha-tobey-maguire_83
+      rect:
+        serializedVersion: 2
+        x: 1318
+        y: 0
+        width: 219
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 622fd83872c65a04f838f7c2e9cf7de8
+      internalID: -1874241172
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: a253075b030e3bf43a67500a6951d8ef
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      homem-aranha-tobey-maguire_0: 22405231
+      homem-aranha-tobey-maguire_1: -691359537
+      homem-aranha-tobey-maguire_10: -384843330
+      homem-aranha-tobey-maguire_11: -1880420317
+      homem-aranha-tobey-maguire_12: 375811503
+      homem-aranha-tobey-maguire_13: -522698042
+      homem-aranha-tobey-maguire_14: 1142613219
+      homem-aranha-tobey-maguire_15: 683936538
+      homem-aranha-tobey-maguire_16: -415430544
+      homem-aranha-tobey-maguire_17: 1239107829
+      homem-aranha-tobey-maguire_18: 1635975040
+      homem-aranha-tobey-maguire_19: -152680351
+      homem-aranha-tobey-maguire_2: 285172112
+      homem-aranha-tobey-maguire_20: -1277908679
+      homem-aranha-tobey-maguire_21: -1537740556
+      homem-aranha-tobey-maguire_22: 334406203
+      homem-aranha-tobey-maguire_23: 1177748039
+      homem-aranha-tobey-maguire_24: 1004257606
+      homem-aranha-tobey-maguire_25: -1324564011
+      homem-aranha-tobey-maguire_26: -1578448619
+      homem-aranha-tobey-maguire_27: 308185392
+      homem-aranha-tobey-maguire_28: 812876671
+      homem-aranha-tobey-maguire_29: -2002972712
+      homem-aranha-tobey-maguire_3: -2067981430
+      homem-aranha-tobey-maguire_30: 1668458386
+      homem-aranha-tobey-maguire_31: 1827868188
+      homem-aranha-tobey-maguire_32: -1076464437
+      homem-aranha-tobey-maguire_33: -663281212
+      homem-aranha-tobey-maguire_34: 2015103071
+      homem-aranha-tobey-maguire_35: -1435245748
+      homem-aranha-tobey-maguire_36: -1598452456
+      homem-aranha-tobey-maguire_37: 1550839420
+      homem-aranha-tobey-maguire_38: -1149137009
+      homem-aranha-tobey-maguire_39: 174151084
+      homem-aranha-tobey-maguire_4: 519969980
+      homem-aranha-tobey-maguire_40: -514895275
+      homem-aranha-tobey-maguire_41: 1627516340
+      homem-aranha-tobey-maguire_42: -1938106911
+      homem-aranha-tobey-maguire_43: -1884738338
+      homem-aranha-tobey-maguire_44: 681330418
+      homem-aranha-tobey-maguire_45: 1309717
+      homem-aranha-tobey-maguire_46: -1618158897
+      homem-aranha-tobey-maguire_47: 1722801145
+      homem-aranha-tobey-maguire_48: 178842931
+      homem-aranha-tobey-maguire_49: -1420970683
+      homem-aranha-tobey-maguire_5: 1575422494
+      homem-aranha-tobey-maguire_50: -1753273099
+      homem-aranha-tobey-maguire_51: -692172670
+      homem-aranha-tobey-maguire_52: 1156792468
+      homem-aranha-tobey-maguire_53: 199050960
+      homem-aranha-tobey-maguire_54: 675222849
+      homem-aranha-tobey-maguire_55: 249245612
+      homem-aranha-tobey-maguire_56: 170653150
+      homem-aranha-tobey-maguire_57: 1914900378
+      homem-aranha-tobey-maguire_58: -580832085
+      homem-aranha-tobey-maguire_59: -142424114
+      homem-aranha-tobey-maguire_6: 294457262
+      homem-aranha-tobey-maguire_60: -168224015
+      homem-aranha-tobey-maguire_61: -1984261621
+      homem-aranha-tobey-maguire_62: -1758278296
+      homem-aranha-tobey-maguire_63: -339669795
+      homem-aranha-tobey-maguire_64: 2021574833
+      homem-aranha-tobey-maguire_65: -1497270501
+      homem-aranha-tobey-maguire_66: 1834555769
+      homem-aranha-tobey-maguire_67: -602017211
+      homem-aranha-tobey-maguire_68: 769481030
+      homem-aranha-tobey-maguire_69: 915909996
+      homem-aranha-tobey-maguire_7: -396286975
+      homem-aranha-tobey-maguire_70: 315018157
+      homem-aranha-tobey-maguire_71: 1362041994
+      homem-aranha-tobey-maguire_72: -852846783
+      homem-aranha-tobey-maguire_73: -320102283
+      homem-aranha-tobey-maguire_74: -1712356098
+      homem-aranha-tobey-maguire_75: -1316786961
+      homem-aranha-tobey-maguire_76: -1304836892
+      homem-aranha-tobey-maguire_77: -1126935158
+      homem-aranha-tobey-maguire_78: -381337440
+      homem-aranha-tobey-maguire_79: -372911821
+      homem-aranha-tobey-maguire_8: 1093364881
+      homem-aranha-tobey-maguire_80: 211251981
+      homem-aranha-tobey-maguire_81: 1658158423
+      homem-aranha-tobey-maguire_82: 977090806
+      homem-aranha-tobey-maguire_83: -1874241172
+      homem-aranha-tobey-maguire_9: -1780487022
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
