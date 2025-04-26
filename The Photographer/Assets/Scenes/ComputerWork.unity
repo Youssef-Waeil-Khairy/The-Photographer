@@ -1216,7 +1216,7 @@ GameObject:
   - component: {fileID: 270800573}
   m_Layer: 5
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: MainCanvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1501,6 +1501,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 151334351560574589, guid: 8172511e4ad1b404298070c5854e0cd0, type: 3}
+      propertyPath: mainCanvas
+      value: 
+      objectReference: {fileID: 270800575}
     - target: {fileID: 3987246434404242525, guid: 8172511e4ad1b404298070c5854e0cd0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1544,10 +1548,6 @@ PrefabInstance:
     - target: {fileID: 4894269165501738237, guid: 8172511e4ad1b404298070c5854e0cd0, type: 3}
       propertyPath: m_Name
       value: Client Subject
-      objectReference: {fileID: 0}
-    - target: {fileID: 4894269165501738237, guid: 8172511e4ad1b404298070c5854e0cd0, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -336,6 +336,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa536ffe27446af4ea5771eb3698787b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  completionSound: {fileID: 8300000, guid: 98ab063161c16214abbe1be8bcd3aa77, type: 3}
+  mainCanvas: {fileID: 0}
+  completionParticles: {fileID: 3576924614362489592, guid: 4a919ff208278c347a4582e77e55ed83, type: 3}
+  rewardTextPrefab: {fileID: 505031980287792588, guid: 1cf63dec0a096d347bc93b1978f64fd6, type: 3}
+  rewardTextDuration: 2
+  rewardTextHeight: 2
   clientName: Default Client
   rewardAmount: 100
   isJobActive: 0
@@ -855,4 +861,5 @@ MonoBehaviour:
   - Check Watch
   - Normal Hand On Hips
   - Grumpy Hands On Hips
+  completionTriggerName: Completed
   animator: {fileID: 0}

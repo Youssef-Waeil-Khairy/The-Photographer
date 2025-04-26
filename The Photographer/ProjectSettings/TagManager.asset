@@ -6,6 +6,7 @@ TagManager:
   tags:
   - OverlayCameraUI
   - CameraManager
+  - MainCanvas
   layers:
   - Default
   - TransparentFX
