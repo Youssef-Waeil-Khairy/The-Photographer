@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40aff62cdb3172f4daceac3cd7116138, type: 3}
   m_Name: Basic Camera
   m_EditorClassIdentifier: 
+  cameraPrefab: {fileID: 8164753298345851315, guid: 0ea8f560ba634624a985af59d34c91f6, type: 3}
   modelName: Default Camera
   manufacturer: Epic leo cameras
   description: A basic camera.

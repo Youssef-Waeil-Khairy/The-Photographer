@@ -130,10 +130,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
         /// Initializes the camera system with default settings.
         /// </summary>
         private void Start() {
-            // Set up camera references
-            if (mainCamera == null) {
-                mainCamera = Camera.main;
-            }
+
 
             if (audioSource == null) {
                 audioSource = GetComponent<AudioSource>();
@@ -142,7 +139,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 }
             }
 
-            _defaultFOV = mainCamera.fieldOfView;
+            _defaultFOV = 70;
 
             // Initialize camera settings from scriptable object.
             if (cameraSettings != null) {

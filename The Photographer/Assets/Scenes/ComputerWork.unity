@@ -168,7 +168,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   purchaseConfirmationPanel: {fileID: 426265333}
-  confirmationText: {fileID: 1379029616}
+  confirmationText: {fileID: 1359073473}
   confirmButton: {fileID: 252296089}
   cancelButton: {fileID: 131239418}
   feedbackText: {fileID: 1100786410}

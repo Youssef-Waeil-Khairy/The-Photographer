@@ -90,18 +90,18 @@ namespace SAE_Dubai.JW.UI
         {
             if (_isPurchaseInProgress)
                 return;
-                
-            // Store the purchase details.
-            _currentCameraPrefab = cameraPrefab;
+        
+            // Store the purchase details - use the prefab from settings instead of the passed parameter.
+            _currentCameraPrefab = settings.cameraPrefab;
             _currentCameraPrice = price;
             _currentCameraSettings = settings;
             _isPurchaseInProgress = true;
-            
-            // Show confirmation dialog if available.
+    
+            // * Show confirmation dialog if available.
             if (purchaseConfirmationPanel != null)
             {
                 purchaseConfirmationPanel.SetActive(true);
-                
+        
                 if (confirmationText != null)
                 {
                     confirmationText.text = $"Purchase {settings.modelName}\nPrice: ${price}\n\nAre you sure?";
@@ -110,6 +110,7 @@ namespace SAE_Dubai.JW.UI
             else
             {
                 // If no confirmation panel, proceed directly.
+                // ! I'm adding this just so we don't run into problems later in development.
                 ConfirmPurchase();
             }
         }
@@ -170,38 +171,48 @@ namespace SAE_Dubai.JW.UI
 
         private void SpawnCamera()
         {
-            if (_currentCameraPrefab == null || cameraSpawnPoint == null)
+            if (_currentCameraSettings == null || cameraSpawnPoint == null)
+            {
+                Debug.LogError("Cannot spawn camera: missing settings or spawn point");
                 return;
-                
-            // Instantiate the camera at the spawn point.
-            GameObject newCamera = Instantiate(_currentCameraPrefab, cameraSpawnPoint.position, cameraSpawnPoint.rotation);
-            
-            // Set the layer for pickup system.
-            //newCamera.layer = pickupableLayer;
-            
-            PickupableCamera pickupable = newCamera.GetComponent<PickupableCamera>();
-            
-            /* if (pickupable == null)
-            {
-                // ! If it doesn't have the component, add one.
-                pickupable = newCamera.AddComponent<PickupableCamera>();
-            }*/
-            
-            // Set the correct camera settings.
-            pickupable.cameraSettings = _currentCameraSettings;
-            
-            /* ? Make sure it has a collider for pickup.
-            Collider col = newCamera.GetComponent<Collider>();
-            if (col == null)
-            {
-                BoxCollider boxCol = newCamera.AddComponent<BoxCollider>();
-                boxCol.size = new Vector3(0.3f, 0.2f, 0.1f);
-                boxCol.center = Vector3.zero;
-            }*/
-            
-            Debug.Log($"Spawned camera: {_currentCameraSettings.modelName} at {cameraSpawnPoint.position}, {cameraSpawnPoint.gameObject.name}");
-        }
+            }
 
+            if (_currentCameraSettings.cameraPrefab == null)
+            {
+                Debug.LogError($"Cannot spawn camera: {_currentCameraSettings.modelName} has no prefab assigned!");
+                return;
+            }
+        
+            // Instantiate the camera at the spawn point.
+            GameObject newCamera = Instantiate(_currentCameraSettings.cameraPrefab, cameraSpawnPoint.position, cameraSpawnPoint.rotation);
+    
+            // Make sure the GameObject is active.
+            newCamera.SetActive(true);
+    
+            // ? Set the layer to Pickupable (dummy proofing)
+            if (pickupableLayer.value > 0)
+            {
+                int layerIndex = (int)Mathf.Log(pickupableLayer.value, 2);
+                newCamera.layer = layerIndex;
+            }
+    
+            PickupableCamera pickupable = newCamera.GetComponent<PickupableCamera>();
+    
+            if (pickupable == null)
+            {
+                Debug.LogWarning($"Camera prefab {_currentCameraSettings.modelName} doesn't have a PickupableCamera component!");
+            }
+            else
+            {
+                pickupable.cameraSettings = _currentCameraSettings;
+            }
+    
+            Debug.Log($"Spawned camera: {_currentCameraSettings.modelName}" +
+                      $"\nAt position: {cameraSpawnPoint.position}" +
+                      $"\nParent object: {cameraSpawnPoint.gameObject.name}" +
+                      $"\nCamera active: {newCamera.activeSelf}" +
+                      $"\nCamera layer: {LayerMask.LayerToName(newCamera.layer)}");
+        }
         /// <summary>
         /// Shows feedback text for a specified duration.
         /// </summary>
