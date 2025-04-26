@@ -11,6 +11,7 @@ namespace SAE_Dubai.Leonardo.Client_System
     {
         [Header("- Client Instance Info")]
         public string clientName = "Default Client";
+
         public int rewardAmount = 100;
         public bool isJobActive;
 
@@ -18,75 +19,102 @@ namespace SAE_Dubai.Leonardo.Client_System
         [HideInInspector] public List<PortraitShotType> completedShotTypes = new();
 
         public delegate void JobCompletedAction(ClientJobController completedClient);
+
         public event JobCompletedAction OnJobCompleted;
 
         [Header("Composition Markers")]
         [Tooltip("Marker placed slightly above the head.")]
         public Transform aboveHeadMarker;
+
         [Tooltip("Marker placed at the top/center of the head.")]
         public Transform headMarker;
+
         [Tooltip("Marker placed at the center of the chest.")]
         public Transform chestMarker;
+
         [Tooltip("Marker placed around the hip/waist area.")]
         public Transform hipMarker;
+
         [Tooltip("Marker placed around the knee level.")]
         public Transform kneesMarker;
+
         [Tooltip("Marker placed at the feet level.")]
         public Transform feetMarker;
-         [Tooltip("Marker placed slightly below the feet.")]
+
+        [Tooltip("Marker placed slightly below the feet.")]
         public Transform belowFeetMarker;
-        // Add more markers if needed (e.g., Neck, Shoulders)
-        // --- End New ---
 
 
-        public void SetupJob(ClientData archetype, List<PortraitShotType> specificRequirements, int reward) {
-            clientName = archetype.GetRandomName();
+        public void SetupJob(ClientData archetype, List<PortraitShotType> specificRequirements, int reward,
+            string predefinedClientName = null) {
+            clientName = predefinedClientName ?? archetype.GetRandomName();
+
             requiredShotTypes = specificRequirements ?? new List<PortraitShotType>();
             requiredShotTypes = requiredShotTypes.Where(st => st != PortraitShotType.Undefined).Distinct().ToList();
             rewardAmount = reward;
             completedShotTypes = new List<PortraitShotType>();
             isJobActive = true;
             gameObject.name = $"Client_{clientName}";
-            Debug.Log($"Client '{clientName}' spawned. Requires: {string.Join(", ", requiredShotTypes.Select(PhotoCompositionEvaluator.GetShotTypeDisplayName))}");
-            // UpdateUI(); // TODO: Implement client UI if needed
+            Debug.Log(
+                $"Client '{clientName}' spawned. Requires: {string.Join(", ", requiredShotTypes.Select(PhotoCompositionEvaluator.GetShotTypeDisplayName))}");
+            // UpdateUI(); // TODO: Implement client UI.
         }
 
         public void CheckPhoto(CapturedPhoto photo) {
-            if (!isJobActive || !photo.portraitShotType.HasValue || photo.portraitShotType.Value == PortraitShotType.Undefined) {
-                return; // Job not active or photo has no valid evaluated composition
+            if (!isJobActive || !photo.portraitShotType.HasValue ||
+                photo.portraitShotType.Value == PortraitShotType.Undefined) {
+                Debug.Log(
+                    $"<color=yellow>[{clientName} Photo Debug]</color> No valid composition detected or job not active");
+                return; // ! Job not active or photo has no valid evaluated composition.
             }
 
             PortraitShotType capturedType = photo.portraitShotType.Value;
+
+            Debug.Log($"<color=cyan>=== PHOTO COMPOSITION DEBUG: {clientName} ===</color>");
+            Debug.Log(
+                $"<color=cyan>Photo Captured:</color> {PhotoCompositionEvaluator.GetShotTypeDisplayName(capturedType)}");
+            Debug.Log(
+                $"<color=cyan>Required Shot Types:</color> {string.Join(", ", requiredShotTypes.Select(PhotoCompositionEvaluator.GetShotTypeDisplayName))}");
+            Debug.Log(
+                $"<color=cyan>Already Completed:</color> {string.Join(", ", completedShotTypes.Select(PhotoCompositionEvaluator.GetShotTypeDisplayName))}");
+            Debug.Log(
+                $"<color=cyan>Match Found:</color> {requiredShotTypes.Contains(capturedType) && !completedShotTypes.Contains(capturedType)}");
+
             if (requiredShotTypes.Contains(capturedType) && !completedShotTypes.Contains(capturedType)) {
                 completedShotTypes.Add(capturedType);
                 Debug.Log(
-                    $"Client '{clientName}' received required shot: {PhotoCompositionEvaluator.GetShotTypeDisplayName(capturedType)}. Progress: {completedShotTypes.Count}/{requiredShotTypes.Count}");
-                // UpdateUI(); // Update client UI
+                    $"<color=green>[SUCCESS]</color> Client '{clientName}' received required shot: {PhotoCompositionEvaluator.GetShotTypeDisplayName(capturedType)}. Progress: {completedShotTypes.Count}/{requiredShotTypes.Count}");
 
                 if (completedShotTypes.Count >= requiredShotTypes.Count) {
+                    Debug.Log(
+                        $"<color=green>[JOB COMPLETE]</color> All required shots for '{clientName}' have been captured!");
                     CompleteJob();
                 }
-            } else {
-                 Debug.Log($"Client '{clientName}' received photo type {PhotoCompositionEvaluator.GetShotTypeDisplayName(capturedType)}, which was not needed or already completed.");
+            }
+            else if (completedShotTypes.Contains(capturedType)) {
+                Debug.Log(
+                    $"<color=yellow>[DUPLICATE]</color> Client '{clientName}' already received this shot type: {PhotoCompositionEvaluator.GetShotTypeDisplayName(capturedType)}");
+            }
+            else {
+                Debug.Log(
+                    $"<color=red>[MISMATCH]</color> Client '{clientName}' received photo type {PhotoCompositionEvaluator.GetShotTypeDisplayName(capturedType)}, but needs {string.Join(", ", requiredShotTypes.Except(completedShotTypes).Select(PhotoCompositionEvaluator.GetShotTypeDisplayName))}");
             }
         }
 
-        // private void UpdateUI() { /* TODO */ }
+        // private void UpdateUI() TODO
 
         private void CompleteJob() {
             isJobActive = false;
             Debug.Log($"Client '{clientName}' job completed! Reward: {rewardAmount}");
             PlayerBalance.Instance?.AddBalance(rewardAmount);
             OnJobCompleted?.Invoke(this);
-            // Consider adding feedback before destroying
-            Destroy(gameObject, 5.0f); // Destroy after delay
+            Destroy(gameObject, 3.0f); // Destroy after delay.
         }
 
-        // This helps determine the highest/lowest visible standard body part
-         public List<Transform> GetOrderedBodyMarkers()
-         {
-              // Order matters: from top to bottom.
-              return new List<Transform> { headMarker, chestMarker, hipMarker, kneesMarker, feetMarker }.Where(t => t != null).ToList();
-         }
+        public List<Transform> GetOrderedBodyMarkers() {
+            // Order matters: from top to bottom.
+            return new List<Transform> { headMarker, chestMarker, hipMarker, kneesMarker, feetMarker }
+                .Where(t => t != null).ToList();
+        }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using SAE_Dubai.Leonardo.Client_System;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
@@ -127,10 +128,42 @@ namespace SAE_Dubai.Leonardo.CameraSys
             }
         }
 
+        private void DebugCheckEventConnections() {
+            Debug.Log($"<color=cyan>CameraSystem {name} checking event connections</color>");
+
+            PhotoSessionManager sessionManager = FindFirstObjectByType<PhotoSessionManager>();
+            if (sessionManager != null) {
+                Debug.Log("<color=cyan>Found PhotoSessionManager, attempting manual connection</color>");
+
+                if (OnPhotoCapture == null) {
+                    OnPhotoCapture += sessionManager.HandlePhotoCapturedDirectly;
+                    Debug.Log(
+                        "<color=green>Connected PhotoSessionManager.HandlePhotoCapturedDirectly to OnPhotoCapture event</color>");
+                }
+                else {
+                    Debug.Log("<color=yellow>OnPhotoCapture already has listeners, not modifying</color>");
+                }
+            }
+            else {
+                Debug.LogWarning("<color=yellow>Could not find PhotoSessionManager in scene</color>");
+            }
+        }
+
         /// <summary>
         /// Initializes the camera system with default settings.
         /// </summary>
         private void Start() {
+            if (mainCamera == null) {
+                Debug.LogWarning("CameraSystem.cs: mainCamera reference not set, attempting to find Camera.main");
+                mainCamera = Camera.main;
+                if (mainCamera == null) {
+                    Debug.LogError("CameraSystem.cs: Could not find main camera! Some functionality may be limited.");
+                }
+                else {
+                    Debug.Log($"CameraSystem.cs: Successfully found and assigned main camera: {mainCamera.name}");
+                }
+            }
+
             if (audioSource == null) {
                 audioSource = GetComponent<AudioSource>();
                 if (audioSource == null) {
@@ -140,16 +173,13 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
             _defaultFOV = 70;
 
-            // Initialize camera settings from scriptable object.
             if (cameraSettings != null) {
                 remainingPhotos = cameraSettings.photoCapacity;
                 _autoExposureEnabled = cameraSettings.hasAutoISO || cameraSettings.hasAutoShutterSpeed ||
                                        cameraSettings.hasAutoAperture;
 
-                // Find initial indices for settings.
                 FindInitialSettingsIndices();
 
-                // Set initial focal length.
                 _currentFocalLength = cameraSettings.minFocalLength;
             }
             else {
@@ -171,6 +201,8 @@ namespace SAE_Dubai.Leonardo.CameraSys
             // Get post-processing object.
             localCameraVolume.profile.TryGet(out localFilmGrain);
             localCameraVolume.profile.TryGet(out localDepthOfField);
+
+            DebugCheckEventConnections();
         }
 
         /// <summary>
@@ -425,7 +457,10 @@ namespace SAE_Dubai.Leonardo.CameraSys
             photoAlbum.Add(newPhoto);
             remainingPhotos--;
 
+            Debug.Log(
+                $"<color=green>About to invoke OnPhotoCapture event. Listeners attached: {(OnPhotoCapture != null ? "YES" : "NO")}</color>");
             OnPhotoCapture?.Invoke(newPhoto);
+            Debug.Log("<color=green>OnPhotoCapture event invoked</color>");
 
             // Delay before allowing another photo.
             yield return new WaitForSeconds(0.5f);
