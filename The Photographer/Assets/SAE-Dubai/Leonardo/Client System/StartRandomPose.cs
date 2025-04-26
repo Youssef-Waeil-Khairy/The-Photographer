@@ -14,7 +14,7 @@ namespace SAE_Dubai.Leonardo.Client_System
 
         [Title("- Animator Parameters")]
         [Tooltip("List of BOOLEAN parameter names in the Animator Controller that trigger poses.")]
-        [ListDrawerSettings(ShowIndexLabels = true, DraggableItems = true, Expanded = true)]
+        [ListDrawerSettings(ShowIndexLabels = true, DraggableItems = true, ShowFoldout = true)]
         [ShowIf("randomizePoseOnStart")]
         [SerializeField]
         private List<string> poseParameterNames = new() {

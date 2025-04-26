@@ -466,7 +466,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 // Get the focus distance.
                 _currentFocusDistance = hit.distance;
 
-                Debug.Log($"Focus hit: {hit.collider.name} at distance {_currentFocusDistance:F2}m");
+                //Debug.Log($"Focus hit: {hit.collider.name} at distance {_currentFocusDistance:F2}m");
 
                 // Apply focus distance to cameras.
                 if (cameraRenderer != null) {

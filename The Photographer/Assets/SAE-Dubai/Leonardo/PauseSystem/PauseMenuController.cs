@@ -36,12 +36,12 @@ namespace SAE_Dubai.Leonardo.PauseSystem
             }
 
             if (playerMovement == null) {
-                playerMovement = FindObjectOfType<MovementSystem>();
+                playerMovement = FindFirstObjectByType<MovementSystem>();
                 if (playerMovement == null) Debug.LogWarning("PauseMenuController: Player Movement script not found.");
             }
 
             if (mouseController == null) {
-                mouseController = FindObjectOfType<MouseController>();
+                mouseController = FindFirstObjectByType<MouseController>();
                 if (mouseController == null)
                     Debug.LogWarning("PauseMenuController: Mouse Controller script not found.");
             }
