@@ -381,29 +381,62 @@ namespace SAE_Dubai.Leonardo.Client_System
                                          PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(activeCamera,
                                              targetClient.belowFeetMarker.position);
 
+                // Check new facial and shoulder markers
+                photo.EyesVisible = targetClient.eyesMarker != null &&
+                                    PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(activeCamera,
+                                        targetClient.eyesMarker.position);
+
+                photo.MouthVisible = targetClient.mouthMarker != null &&
+                                     PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(activeCamera,
+                                         targetClient.mouthMarker.position);
+
+                photo.ChinVisible = targetClient.chinMarker != null &&
+                                    PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(activeCamera,
+                                        targetClient.chinMarker.position);
+
+                photo.ShoulderLVisible = targetClient.shoulderLMarker != null &&
+                                         PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(activeCamera,
+                                             targetClient.shoulderLMarker.position);
+
+                photo.ShoulderRVisible = targetClient.shoulderRMarker != null &&
+                                         PhotoCompositionEvaluator.IsMarkerVisibleOnScreen(activeCamera,
+                                             targetClient.shoulderRMarker.position);
+
                 detectedShotType = PortraitShotType.Undefined;
                 bool fullBodyVisible = photo.HeadVisible && photo.FeetVisible;
+                bool shouldersVisible = photo.ShoulderLVisible && photo.ShoulderRVisible;
 
-                if (fullBodyVisible && photo.AboveHeadVisible && photo.BelowFeetVisible) {
+                // ! Extreme Close-Up detection (Eyes + Mouth only).
+                if (photo.EyesVisible && photo.MouthVisible && !photo.ChestVisible) {
+                    detectedShotType = PortraitShotType.ExtremeCloseUp;
+                }
+                // ! Close-Up detection (Head visible but no Chest, Shoulders not visible).
+                else if (photo.HeadVisible && !photo.ChestVisible && !shouldersVisible) {
+                    detectedShotType = PortraitShotType.CloseUp;
+                }
+                // ! Medium Close-Up detection (Head + Chest + Shoulders visible, but no Hips).
+                else if (photo.HeadVisible && photo.ChestVisible && shouldersVisible && !photo.HipVisible) {
+                    detectedShotType = PortraitShotType.MediumCloseUp;
+                }
+                // ! Extreme Wide Shot (Full body + Above + Below).
+                else if (fullBodyVisible && photo.AboveHeadVisible && photo.BelowFeetVisible) {
                     detectedShotType = PortraitShotType.ExtremeWide;
                 }
+                // ! Wide Shot (Full body inside frame, no Above/Below space).
                 else if (fullBodyVisible && !photo.AboveHeadVisible && !photo.BelowFeetVisible) {
                     detectedShotType = PortraitShotType.Wide;
                 }
+                // ! Medium Wide (Cowboy shot) — Head to Knees.
                 else if (photo.HeadVisible && photo.KneesVisible && !photo.FeetVisible) {
                     detectedShotType = PortraitShotType.MediumWide;
                 }
+                // ! Medium Shot — Head to Hip.
                 else if (photo.HeadVisible && photo.HipVisible && !photo.KneesVisible) {
                     detectedShotType = PortraitShotType.Medium;
                 }
-                else if (photo.HeadVisible && photo.ChestVisible && !photo.HipVisible) {
-                    detectedShotType = PortraitShotType.MediumCloseUp;
-                }
-                else if (photo.HeadVisible && !photo.ChestVisible) {
-                    detectedShotType = PortraitShotType.CloseUp;
-                }
 
-                // Debug.Log($"[Photo Eval WTS] Result: Head={photo.HeadVisible}, Chest={photo.ChestVisible}, Hip={photo.HipVisible}, Knees={photo.KneesVisible}, Feet={photo.FeetVisible}, Above={photo.AboveHeadVisible}, Below={photo.BelowFeetVisible} => Type={detectedShotType}");
+                Debug.Log(
+                    $"[Photo Eval WTS] Result: Head={photo.HeadVisible}, Eyes={photo.EyesVisible}, Mouth={photo.MouthVisible}, Chin={photo.ChinVisible}, Chest={photo.ChestVisible}, Hip={photo.HipVisible}, Knees={photo.KneesVisible}, Feet={photo.FeetVisible}, Above={photo.AboveHeadVisible}, Below={photo.BelowFeetVisible}, ShL={photo.ShoulderLVisible}, ShR={photo.ShoulderRVisible} => Type={detectedShotType}");
             }
             else {
                 // !No Client Detected.
@@ -415,6 +448,11 @@ namespace SAE_Dubai.Leonardo.Client_System
                 photo.FeetVisible = false;
                 photo.AboveHeadVisible = false;
                 photo.BelowFeetVisible = false;
+                photo.EyesVisible = false;
+                photo.MouthVisible = false;
+                photo.ChinVisible = false;
+                photo.ShoulderLVisible = false;
+                photo.ShoulderRVisible = false;
                 detectedShotType = PortraitShotType.Undefined;
             }
 

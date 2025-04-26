@@ -29,20 +29,35 @@ namespace SAE_Dubai.Leonardo.Client_System
         [Tooltip("Marker placed at the top/center of the head.")]
         public Transform headMarker;
 
+        [Tooltip("Marker placed between the eyes or center forehead.")]
+        public Transform eyesMarker;
+        
+        [Tooltip("Marker placed at the mouth level.")]
+        public Transform mouthMarker;
+        
+        [Tooltip("Marker placed at the chin level.")]
+        public Transform chinMarker;
+        
         [Tooltip("Marker placed at the center of the chest.")]
         public Transform chestMarker;
-
+        
         [Tooltip("Marker placed around the hip/waist area.")]
         public Transform hipMarker;
-
+        
         [Tooltip("Marker placed around the knee level.")]
         public Transform kneesMarker;
-
+        
         [Tooltip("Marker placed at the feet level.")]
         public Transform feetMarker;
-
+        
         [Tooltip("Marker placed slightly below the feet.")]
         public Transform belowFeetMarker;
+        
+        [Tooltip("Marker placed at the left shoulder.")]
+        public Transform shoulderLMarker;
+        
+        [Tooltip("Marker placed at the right shoulder.")]
+        public Transform shoulderRMarker;
 
 
         public void SetupJob(ClientData archetype, List<PortraitShotType> specificRequirements, int reward,
@@ -113,6 +128,7 @@ namespace SAE_Dubai.Leonardo.Client_System
 
         public List<Transform> GetOrderedBodyMarkers() {
             // Order matters: from top to bottom.
+            // Only return the main vertical body markers
             return new List<Transform> { headMarker, chestMarker, hipMarker, kneesMarker, feetMarker }
                 .Where(t => t != null).ToList();
         }

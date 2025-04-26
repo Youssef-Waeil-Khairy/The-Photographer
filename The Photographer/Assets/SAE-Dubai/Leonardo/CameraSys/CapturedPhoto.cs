@@ -15,12 +15,17 @@ namespace SAE_Dubai.Leonardo.CameraSys
         public float quality;
         public Texture2D photoTexture; // TODO: Add?
         public bool HeadVisible;
+        public bool EyesVisible;
+        public bool MouthVisible;
+        public bool ChinVisible;
         public bool ChestVisible;
         public bool HipVisible;
         public bool KneesVisible;
         public bool FeetVisible;
         public bool AboveHeadVisible;
         public bool BelowFeetVisible;
+        public bool ShoulderLVisible;
+        public bool ShoulderRVisible;
 
         /// <summary>
         /// Reference to the specific Camera component that captured this photo.
