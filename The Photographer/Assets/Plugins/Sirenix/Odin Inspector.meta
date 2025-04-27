@@ -1,8 +1,19 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:The Photographer/Assets/Plugins/Sirenix/Odin Inspector.meta
 guid: fe4970195facd664dbd38d1cbf2100c3
 folderAsset: yes
+========
+guid: f597f19f656ba56eae4f6a3a7cc528f4
+timeCreated: 1488828285
+>>>>>>>> 1607a1b07bbf992dca12069e68afe4b324f457a1:The Photographer/Assets/Plugins/Sirenix/Demos/Custom Attribute Processors.unitypackage.meta
 DefaultImporter:
-  externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 89041
+  packageName: Odin Inspector and Serializer
+  packageVersion: 3.3.1.12
+  assetPath: Assets/Plugins/Sirenix/Demos/Custom Attribute Processors.unitypackage
+  uploadId: 748899

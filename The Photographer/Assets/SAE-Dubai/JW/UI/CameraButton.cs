@@ -35,7 +35,7 @@ namespace SAE_Dubai.JW.UI
                     _cameraInfoPanel.gameObject.SetActive(true);
                 }
             }
-            _cameraInfoPanel.SetCameraInfo(cameraSettings, price, item);
+            _cameraInfoPanel.SetCameraInfo(cameraSettings, price, item, gameObject);
         }
     }
 }
