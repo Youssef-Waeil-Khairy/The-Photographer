@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using SAE_Dubai.Leonardo.Client_System;
@@ -7,7 +6,6 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.Serialization;
 using FilmGrain = UnityEngine.Rendering.HighDefinition.FilmGrain;
-using Object = UnityEngine.Object;
 
 namespace SAE_Dubai.Leonardo.CameraSys
 {
@@ -19,7 +17,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
     /// </summary>
     public class CameraSystem : MonoBehaviour
     {
-        private CameraManager manager;
+        private CameraManager _manager;
 
         [Header("- Camera Configuration")]
         [Tooltip("Reference to the scriptable object containing all settings for this camera.")]
@@ -69,7 +67,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
         [Tooltip("Reference to the main player camera.")]
         public Camera mainCamera;
 
-        [SerializeField] private float _defaultFOV;
+        [SerializeField] private float defaultFOV;
 
 
         [Header("- Photo Storage")]
@@ -91,6 +89,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
         private FilmGrain localFilmGrain;
         private DepthOfField localDepthOfField;
+        private MotionBlur localMotionBlur;
 
         [Header("- Input Keys")]
         [Tooltip("Key to turn the camera on/off.")]
@@ -114,9 +113,9 @@ namespace SAE_Dubai.Leonardo.CameraSys
         /// Get a reference to the overlay photo panel to disable it.
         /// </summary>
         private void Awake() {
-            manager = FindFirstObjectByType<CameraManager>();
+            _manager = FindFirstObjectByType<CameraManager>();
 
-            overlayUI = manager.overlayUI;
+            overlayUI = _manager.overlayUI;
 
             if (overlayUI != null) {
                 // Initially disable it.
@@ -170,7 +169,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 }
             }
 
-            _defaultFOV = 70;
+            defaultFOV = 70;
 
             if (cameraSettings != null) {
                 remainingPhotos = cameraSettings.photoCapacity;
@@ -200,6 +199,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
             // Get post-processing object.
             localCameraVolume.profile.TryGet(out localFilmGrain);
             localCameraVolume.profile.TryGet(out localDepthOfField);
+            localCameraVolume.profile.TryGet(out localMotionBlur);
 
             DebugCheckEventConnections();
         }
@@ -301,8 +301,8 @@ namespace SAE_Dubai.Leonardo.CameraSys
                     photographyUI.SetActive(false);
                 }
 
-                if (manager != null && manager.overlayUI != null) {
-                    manager.overlayUI.SetActive(false);
+                if (_manager != null && _manager.overlayUI != null) {
+                    _manager.overlayUI.SetActive(false);
                 }
 
                 // Turn off all camera displays
@@ -319,7 +319,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 }
 
                 // Reset main camera.
-                mainCamera.fieldOfView = _defaultFOV;
+                mainCamera.fieldOfView = defaultFOV;
             }
         }
 
@@ -680,13 +680,12 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 Debug.Log($"Shutter speed changed to {FormatShutterSpeed(speed)}");
             }
         }
-        
+
         /// <summary>
         /// Returns the number of photos taken with this camera.
         /// Used by the tutorial system to check if the player has taken a photo.
         /// </summary>
-        public int GetPhotoCount()
-        {
+        public int GetPhotoCount() {
             return photoAlbum != null ? photoAlbum.Count : 0;
         }
 
@@ -770,9 +769,10 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 viewfinderCamera.focusDistance = _currentFocusDistance;
             }
 
-            // Apply post-processing effects for camera settings.
+            // ! Apply post-processing effects for camera settings.
             ApplyIsoBasedGrain();
             ApplyApertureBasedDepthOfField();
+            ApplyShutterSpeedBasedMotionBlur(); 
         }
 
         /// <summary>
@@ -948,6 +948,45 @@ namespace SAE_Dubai.Leonardo.CameraSys
             // Apply quality settings.
             localDepthOfField.nearMaxBlur = nearMaxRadius;
             localDepthOfField.farMaxBlur = farMaxRadius;
+        }
+
+        /// <summary>
+        /// Adjusts the Motion Blur post-processing effect based on shutter speed.
+        /// Slower shutter speeds result in higher motion blur intensity.
+        /// </summary>
+        private void ApplyShutterSpeedBasedMotionBlur() {
+            if (localMotionBlur == null || cameraSettings == null ||
+                cameraSettings.availableShutterSpeedStops.Length <= 1) {
+                if (localMotionBlur != null) localMotionBlur.active = false;
+                return;
+            }
+
+            // --- Intensity Mapping based on Shutter Speed Index ---
+            int maxIndex = cameraSettings.availableShutterSpeedStops.Length - 1;
+
+            // Normalize the index (0 = fastest, 1 = slowest).
+            float normalizedIndex = maxIndex > 0 ? (float)_currentShutterSpeedIndex / maxIndex : 0f;
+
+            // Define the min/max intensity range for motion blur.
+            // Adjust these values to control the effect strength.
+            float minBlurIntensity = 0.0f; // Intensity for the fastest shutter speed.
+            float maxBlurIntensity = 20.0f; // Max intensity for the slowest shutter speed.
+
+            // Calculate the target intensity using Lerp.
+            float targetIntensity = Mathf.Lerp(minBlurIntensity, maxBlurIntensity, normalizedIndex);
+                
+            // Apply the intensity to the Motion Blur override.
+            localMotionBlur.intensity.value = targetIntensity;
+
+            // Activate the effect only if the intensity is noticeable.
+            localMotionBlur.active = targetIntensity > 0.01f;
+
+            // ? Todo: 
+            // int baseSampleCount = 8; // Match your Volume Profile setting
+            // int maxSampleCount = 12;
+            // localMotionBlur.sampleCount.value = Mathf.RoundToInt(Mathf.Lerp(baseSampleCount, maxSampleCount, normalizedIndex));
+
+            // Debug.Log($"Shutter Index: {_currentShutterSpeedIndex}/{maxIndex}, Norm: {normalizedIndex:F2}, Blur Intensity: {targetIntensity:F2}");
         }
 
         #endregion

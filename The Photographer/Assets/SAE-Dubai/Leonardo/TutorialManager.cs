@@ -133,7 +133,6 @@ namespace SAE_Dubai.Leonardo.Tutorial
             //* Done.
             objectives.Add(new TutorialObjective(
                 "Find Your Computer",
-                "Look around your room and locate your computer. Approach it and press E to interact.",
                 () => computerUI != null && computerUI.IsPlayerUsingComputer(),
                 "Movement: WASD | Look: Mouse | Interact: E"
             ));
@@ -141,7 +140,6 @@ namespace SAE_Dubai.Leonardo.Tutorial
             //* Done.
             objectives.Add(new TutorialObjective(
                 "Visit Camera Shop",
-                "Click on the Camera Shop tab in your computer interface.",
                 () => computerUI != null && computerUI.IsShopTabActive(),
                 "Navigate to the Camera Shop tab in the computer interface"
             ));
@@ -149,7 +147,6 @@ namespace SAE_Dubai.Leonardo.Tutorial
             //* Done.
             objectives.Add(new TutorialObjective(
                 "Purchase Your First Camera",
-                "Select a camera and click 'Purchase' to buy it.",
                 () => boughtCamera,
                 "Select a camera model and click the Purchase button"
             ));
@@ -157,7 +154,6 @@ namespace SAE_Dubai.Leonardo.Tutorial
             //* Done.
             objectives.Add(new TutorialObjective(
                 "Exit Computer",
-                "Close the computer interface to return to the game world.",
                 () => computerUI != null && !computerUI.IsPlayerUsingComputer(),
                 "Confirm the purchase and press E or ESC to exit the computer interface"
             ));
@@ -165,14 +161,12 @@ namespace SAE_Dubai.Leonardo.Tutorial
             //* Done.
             objectives.Add(new TutorialObjective(
                 "Pick Up Your Camera",
-                "Approach your new camera and hold E to pick it up.",
                 () => playerHotbar != null && playerHotbar.HasAnyEquipment(),
                 "Approach the camera and hold E to pick it up"
             ));
 
             objectives.Add(new TutorialObjective(
                 "Turn On The Camera",
-                "To work, the camera needs to be turned on.",
                 () => cameraManager.GetActiveCamera() != null && Input.GetKeyDown(KeyCode.C),
                 "Press C to turn on the camera while equipped."
             ));
@@ -183,35 +177,30 @@ namespace SAE_Dubai.Leonardo.Tutorial
             
             objectives.Add(new TutorialObjective(
                 "Focus and Take a Photo",
-                "Right-click to focus, then left-click to take a photo.",
                 () => cameraManager.GetActiveCamera() != null && cameraManager.GetActiveCamera().GetPhotoCount() > 0,
                 "Focus: Right Mouse Button | Take photo: Left Mouse Button"
             ));
 
             objectives.Add(new TutorialObjective(
                 "Return to Computer",
-                "Go back to your computer and press E to use it.",
                 () => computerUI != null && computerUI.IsPlayerUsingComputer(),
                 "Move back to your computer and press E"
             ));
 
             objectives.Add(new TutorialObjective(
                 "Find Photo Sessions",
-                "Go back to the menu and click on the Photo Sessions tab in your computer.",
                 () => computerUI != null && computerUI.IsSessionsTabActive(),
                 "Go back to the menu and click on the Customer App in your computer."
             ));
 
             objectives.Add(new TutorialObjective(
                 "Accept a Photo Session",
-                "Click on the client to accept the session.",
                 () => sessionManager != null && sessionManager.GetActiveSessions().Count > 0,
                 "Review available clients and click Accept on one you like. Remember to check each clients necessities!"
             ));
             
             objectives.Add(new TutorialObjective(
                 "Travel To The Client's Location",
-                "Select a client job and click 'Accept' to start the session.",
                 () => {
                     if (sessionManager == null) return false;
 
@@ -223,14 +212,29 @@ namespace SAE_Dubai.Leonardo.Tutorial
 
                     return tutorialSession != null && tutorialSession.isClientSpawned;
                 },
-                "Click on the travel button in the Active Sessions tab in your customer app to travel to where the client is waiting for you!"
+                "Click on the travel button in the Active Sessions tab in your customer app to travel to where the client is waiting for you! DON'T FORGET YOUR CAMERA!"
+            ));
+            
+            objectives.Add(new TutorialObjective(
+                "Travel To The Client's Location",
+                () => {
+                    if (sessionManager == null) return false;
+
+                    List<PhotoSession> activeSessions = sessionManager.GetActiveSessions();
+
+                    if (activeSessions.Count == 0) return false;
+
+                    PhotoSession tutorialSession = activeSessions[0];
+
+                    return tutorialSession != null && tutorialSession.isClientSpawned;
+                },
+                "Click on the travel button in the Active Sessions tab in your customer app to travel to where the client is waiting for you! DON'T FORGET YOUR CAMERA!"
             ));
 
             // ? Auto-complete this step? .
             // Todo: "Complete tutorial button".
             objectives.Add(new TutorialObjective(
                 "Complete Tutorial",
-                "Congratulations! You've completed the tutorial. You can now travel to your client by clicking 'Travel'.",
                 () => true, 
                 "Press ESC to open pause menu anytime to see your objectives\nPress " + toggleTutorialKey + " to show/hide this panel"
             ));
@@ -449,14 +453,12 @@ namespace SAE_Dubai.Leonardo.Tutorial
     public class TutorialObjective
     {
         public string Title { get; private set; }
-        public string Description { get; private set; }
         public string Instructions { get; private set; }
         private Func<bool> CompletionCheck { get; set; }
 
-        public TutorialObjective(string title, string description, Func<bool> completionCheck, string instructions)
+        public TutorialObjective(string title, Func<bool> completionCheck, string instructions)
         {
             Title = title;
-            Description = description;
             CompletionCheck = completionCheck;
             Instructions = instructions;
         }
