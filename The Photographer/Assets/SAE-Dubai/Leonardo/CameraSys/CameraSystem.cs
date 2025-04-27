@@ -680,6 +680,16 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 Debug.Log($"Shutter speed changed to {FormatShutterSpeed(speed)}");
             }
         }
+        
+        /// <summary>
+        /// Returns the number of photos taken with this camera.
+        /// Used by the tutorial system to check if the player has taken a photo.
+        /// </summary>
+        public int GetPhotoCount()
+        {
+            return photoAlbum != null ? photoAlbum.Count : 0;
+        }
+
 
         /// <summary>
         /// Decreases the camera's shutter speed (shorter exposure).

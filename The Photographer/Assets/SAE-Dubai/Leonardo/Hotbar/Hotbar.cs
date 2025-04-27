@@ -218,6 +218,24 @@ namespace SAE_Dubai.Leonardo.Hotbar
         {
             return selectedSlot;
         }
+        
+        /// <summary>
+        /// Checks if the player has any equipment in the hotbar.
+        /// Used by the tutorial system to check if the player has picked up a camera.
+        /// </summary>
+        public bool HasAnyEquipment()
+        {
+            if (_equipmentSlots == null)
+                return false;
+        
+            foreach (string item in _equipmentSlots)
+            {
+                if (!string.IsNullOrEmpty(item))
+                    return true;
+            }
+    
+            return false;
+        }
 
         #endregion
     }

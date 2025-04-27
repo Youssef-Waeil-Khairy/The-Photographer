@@ -24,6 +24,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
         [SerializeField] private CameraSystem _activeCamera;
         private Hotbar.Hotbar _hotbar;
 
+        #region Unity Lifecycle Methods
         private void Awake() {
             if (overlayUI == null) {
                 overlayUI = GameObject.FindWithTag("OverlayCameraUI");
@@ -71,7 +72,9 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 }
             }
         }
+        #endregion
 
+        #region Public Methods
         /// <summary>
         /// Registers a camera instance with the manager, making it available for use.
         /// </summary>
@@ -99,6 +102,22 @@ namespace SAE_Dubai.Leonardo.CameraSys
             }
         }
 
+        public CameraSystem GetActiveCamera() {
+            return _activeCamera;
+        }
+        
+        /// <summary>
+        /// Returns the number of cameras registered with the manager.
+        /// Used by the tutorial system to check if the player has purchased a camera.
+        /// </summary>
+        public int GetCameraCount()
+        {
+            return _cameraInstances.Count;
+        }
+        
+        #endregion
+
+        #region Private Methods
         private void ShowCamera(string cameraName) {
             if (_activeCamera != null && _activeCamera.cameraSettings.modelName != cameraName) {
                 HideActiveCamera();
@@ -124,9 +143,6 @@ namespace SAE_Dubai.Leonardo.CameraSys
                 //Debug.Log("CameraManager.cs: Deactivated camera");
             }
         }
-
-        public CameraSystem GetActiveCamera() {
-            return _activeCamera;
-        }
+        #endregion
     }
 }

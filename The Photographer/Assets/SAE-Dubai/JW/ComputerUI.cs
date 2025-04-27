@@ -40,10 +40,12 @@ namespace SAE_Dubai.JW
 
         #region Private Variables
 
-        private bool canInteract;
-        private float lastInteractionTime;
-        private bool isTransitioning;
-        private bool wasKeyPressed;
+        private bool _canInteract;
+        private float _lastInteractionTime;
+        private bool _isTransitioning;
+        private bool _wasKeyPressed;
+        private bool _isUsingComputer = false;
+        private TabType _currentActiveTab = TabType.Home;
 
         #endregion
 
@@ -93,11 +95,11 @@ namespace SAE_Dubai.JW
                 computerCamera.enabled = false;
                 
             // Initialize the interaction time to allow immediate first use.
-            lastInteractionTime = -interactionCooldown;
+            _lastInteractionTime = -interactionCooldown;
             
             // Initialize state flags.
-            isTransitioning = false;
-            wasKeyPressed = false;
+            _isTransitioning = false;
+            _wasKeyPressed = false;
         }
 
         #endregion
@@ -107,33 +109,33 @@ namespace SAE_Dubai.JW
         private void HandleInput()
         {
             // Prevent actions during transitions.
-            if (isTransitioning)
+            if (_isTransitioning)
                 return;
                 
             // Get cooldown state.
-            bool cooledDown = Time.time - lastInteractionTime >= interactionCooldown;
+            bool cooledDown = Time.time - _lastInteractionTime >= interactionCooldown;
             if (!cooledDown)
                 return;
                 
             // Detect key press (not held down).
             bool keyDown = Input.GetKey(interactKey);
-            bool keyPressed = keyDown && !wasKeyPressed;
-            wasKeyPressed = keyDown;
+            bool keyPressed = keyDown && !_wasKeyPressed;
+            _wasKeyPressed = keyDown;
             
             // Handle opening computer.
-            if (canInteract && keyPressed && !computerCamera.enabled)
+            if (_canInteract && keyPressed && !computerCamera.enabled)
             {
-                isTransitioning = true;
+                _isTransitioning = true;
                 StartCoroutine(TransitionToComputerView());
-                lastInteractionTime = Time.time;
+                _lastInteractionTime = Time.time;
             }
             
             // Handle exiting computer.
             if (computerCamera.enabled && (keyPressed || Input.GetKeyDown(KeyCode.Escape)))
             {
-                isTransitioning = true;
+                _isTransitioning = true;
                 StartCoroutine(TransitionToPlayerView());
-                lastInteractionTime = Time.time;
+                _lastInteractionTime = Time.time;
             }
         }
 
@@ -143,7 +145,7 @@ namespace SAE_Dubai.JW
             if (computerCamera != null && computerCamera.enabled)
                 return;
 
-            canInteract = false;
+            _canInteract = false;
                 
             // Make sure a camera is available.
             Camera rayCamera = playerCamera != null ? playerCamera : Camera.main;
@@ -160,7 +162,7 @@ namespace SAE_Dubai.JW
                 // Check if hit object is this computer.
                 if (hit.collider.gameObject == gameObject)
                 {
-                    canInteract = true;
+                    _canInteract = true;
                     
                     // Show interaction prompt.
                     if (interactionText != null)
@@ -203,7 +205,7 @@ namespace SAE_Dubai.JW
                 
             // Allow input again after short delay.
             yield return new WaitForSeconds(0.1f);
-            isTransitioning = false;
+            _isTransitioning = false;
         }
         
         private IEnumerator TransitionToPlayerView()
@@ -220,7 +222,7 @@ namespace SAE_Dubai.JW
             
             // Allow input again after short delay.
             yield return new WaitForSeconds(0.1f);
-            isTransitioning = false;
+            _isTransitioning = false;
             
             // Double check if still looking at the computer.
             CheckForInteraction();
@@ -236,14 +238,14 @@ namespace SAE_Dubai.JW
         /// </summary>
         public void ToggleComputerVision()
         {
-            if (isTransitioning)
+            if (_isTransitioning)
                 return;
         
             // Check if we need to exit or enter.
             if (computerCamera != null && computerCamera.enabled)
             {
                 // We're in computer view, so exit.
-                isTransitioning = true;
+                _isTransitioning = true;
                 StartCoroutine(TransitionToPlayerView());
             }
             else
@@ -251,9 +253,9 @@ namespace SAE_Dubai.JW
                 // We're not in computer view, try to enter.
                 // Only enter if player is looking at the computer or if called externally.
                 // ? The frameCount check allows external calls to work.
-                if (canInteract || Time.frameCount > 10) 
+                if (_canInteract || Time.frameCount > 10) 
                 {
-                    isTransitioning = true;
+                    _isTransitioning = true;
                     StartCoroutine(TransitionToComputerView());
                 }
             }
@@ -279,10 +281,13 @@ namespace SAE_Dubai.JW
             // Hide all panels first.
             if (photoSessionsPanel != null)
                 photoSessionsPanel.SetActive(false);
-            
+    
             if (cameraShopPanel != null)
                 cameraShopPanel.SetActive(false);
-        
+
+            // Track which tab is active.
+            _currentActiveTab = tabType;
+    
             // Show the selected panel.
             switch (tabType)
             {
@@ -290,14 +295,45 @@ namespace SAE_Dubai.JW
                     if (photoSessionsPanel != null)
                         photoSessionsPanel.SetActive(true);
                     break;
-                
+        
                 case TabType.CameraShop:
                     if (cameraShopPanel != null)
                         cameraShopPanel.SetActive(true);
                     break;
-                
+        
                 // ! Home tab (default) doesn't have a dedicated panel.
             }
+        }
+
+        #endregion
+
+        #region Tutorial Methods
+        
+        /// <summary>
+        /// Returns whether the player is currently using the computer.
+        /// Used by the tutorial system to track progress.
+        /// </summary>
+        public bool IsPlayerUsingComputer()
+        {
+            return computerCamera != null && computerCamera.enabled;
+        }
+
+        /// <summary>
+        /// Returns whether the Camera Shop tab is currently active.
+        /// Used by the tutorial system to track progress.
+        /// </summary>
+        public bool IsShopTabActive()
+        {
+            return IsPlayerUsingComputer() && _currentActiveTab == TabType.CameraShop;
+        }
+
+        /// <summary>
+        /// Returns whether the Photo Sessions tab is currently active.
+        /// Used by the tutorial system to track progress.
+        /// </summary>
+        public bool IsSessionsTabActive()
+        {
+            return IsPlayerUsingComputer() && _currentActiveTab == TabType.PhotoSessions;
         }
 
         #endregion
