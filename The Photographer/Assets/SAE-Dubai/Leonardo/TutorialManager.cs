@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using SAE_Dubai.JW;
+using SAE_Dubai.JW.UI;
 using SAE_Dubai.Leonardo.CameraSys;
 using SAE_Dubai.Leonardo.Client_System;
 using TMPro;
@@ -21,7 +22,6 @@ namespace SAE_Dubai.Leonardo
 
         [Header("UI References")]
         [SerializeField] private GameObject tutorialPanel;
-
         [SerializeField] private TextMeshProUGUI objectiveText;
         [SerializeField] private TextMeshProUGUI instructionText;
         [SerializeField] private Button skipTutorialButton;
@@ -29,9 +29,6 @@ namespace SAE_Dubai.Leonardo
         [SerializeField] private CanvasGroup panelCanvasGroup;
 
         [Header("Tutorial Settings")]
-        [Tooltip("Whether to show the tutorial")] [SerializeField]
-        private bool enableTutorial = true;
-
         [SerializeField] private float objectiveCompleteDelay = 1.5f;
 
         [Header("Objective Completion Feedback")]
@@ -50,10 +47,9 @@ namespace SAE_Dubai.Leonardo
 
         private Color originalBackgroundColor;
         private Coroutine hideCoroutine;
-        
+
         [Header("Animation Settings")]
         [SerializeField] private float fadeInDuration = 0.5f;
-
         [SerializeField] private float fadeOutDuration = 0.3f;
         [SerializeField] private Ease fadeInEase = Ease.OutQuad;
         [SerializeField] private Ease fadeOutEase = Ease.InQuad;
@@ -61,7 +57,6 @@ namespace SAE_Dubai.Leonardo
 
         [Header("Toggle Settings")]
         [SerializeField] private KeyCode toggleTutorialKey = KeyCode.F1;
-
         [SerializeField] private bool hideAfterCompleting = true;
 
         private Hotbar.Hotbar playerHotbar;
@@ -70,15 +65,15 @@ namespace SAE_Dubai.Leonardo
         private ComputerUI computerUI;
 
         private int currentObjectiveIndex = -1;
-        private bool tutorialActive;
-        private bool tutorialCompleted;
+        private bool tutorialActive = false;
+        private bool tutorialCompleted = true;
         private bool currentObjectiveComplete;
         private bool isPanelVisible;
         private RectTransform panelRectTransform;
         private bool boughtCamera;
         private bool hasCompletedFirstJob = false;
         private bool hasReturnedToApartment = false;
-        
+
         private List<TutorialObjective> objectives = new();
 
         private void Awake() {
@@ -103,10 +98,10 @@ namespace SAE_Dubai.Leonardo
         }
 
         private void Start() {
-            playerHotbar = FindObjectOfType<Hotbar.Hotbar>();
-            cameraManager = FindObjectOfType<CameraManager>();
-            sessionManager = FindObjectOfType<PhotoSessionManager>();
-            computerUI = FindObjectOfType<ComputerUI>();
+            playerHotbar = FindFirstObjectByType<Hotbar.Hotbar>();
+            cameraManager = FindFirstObjectByType<CameraManager>();
+            sessionManager = FindFirstObjectByType<PhotoSessionManager>();
+            computerUI = FindFirstObjectByType<ComputerUI>();
 
             if (skipTutorialButton != null) {
                 skipTutorialButton.onClick.AddListener(SkipTutorial);
@@ -138,12 +133,26 @@ namespace SAE_Dubai.Leonardo
                 isPanelVisible = false;
             }
 
-            if (enableTutorial) {
+            bool shouldStartTutorial = PlayerPrefs.GetInt(MainMenuUI.tutorialPreferenceKey, 0) == 1;
+            Debug.Log("TutorialManager Read Preference: " + shouldStartTutorial);
+
+            if (shouldStartTutorial) {
                 StartTutorial();
+            } else {
+                tutorialActive = false;
+                tutorialCompleted = true;
+                if (tutorialPanel != null) tutorialPanel.SetActive(false);
+                isPanelVisible = false;
+                Debug.Log("Tutorial explicitly disabled by Main Menu selection.");
             }
+
+            PlayerPrefs.DeleteKey(MainMenuUI.tutorialPreferenceKey);
+            PlayerPrefs.Save();
+
 
             Debug.Log($"ComputerUI found: {computerUI != null}");
         }
+
 
         private void SetupTutorialObjectives() {
             // ! Tutorials must be in sequential order.
@@ -184,7 +193,7 @@ namespace SAE_Dubai.Leonardo
                 () => cameraManager.GetActiveCamera() != null && Input.GetKeyDown(KeyCode.C),
                 "Press C to turn on the camera while equipped."
             ));
-            
+
             objectives.Add(new TutorialObjective(
                 "Toggle Camera Viewfinder",
                 () => {
@@ -222,9 +231,9 @@ namespace SAE_Dubai.Leonardo
                 },
                 "Press K for a slower speed (more light/blur) or L for a faster speed (less light/blur). Give it a try!"
             ));
-            
+
             // Todo: ZOOOOOOOOOOOOOOOOOOOOOOOOM
-            
+
             objectives.Add(new TutorialObjective(
                 "Focus and Take a Photo",
                 () => cameraManager.GetActiveCamera() != null && cameraManager.GetActiveCamera().GetPhotoCount() > 0,
@@ -264,12 +273,13 @@ namespace SAE_Dubai.Leonardo
                 },
                 "Click on the travel button in the Active Sessions tab in your customer app to travel to where the client is waiting for you! DON'T FORGET YOUR CAMERA!"
             ));
-            
-            objectives.Add(new TutorialObjective(
-                "Check Your GuideBook",
-                () => Input.GetKeyDown(FindFirstObjectByType<GuideBookController>().toggleKey), // ? Dummy proofing again, probably not optimized.
-                $"You've arrived! Press '{FindFirstObjectByType<GuideBookController>().toggleKey}' at any time to open your GuideBook for reminders on controls or shot types."
-            ));
+
+             var guideBookController = FindFirstObjectByType<GuideBookController>();
+             objectives.Add(new TutorialObjective(
+                 "Check Your GuideBook",
+                 () => guideBookController != null && Input.GetKeyDown(guideBookController.toggleKey),
+                 $"You've arrived! Press '{ (guideBookController != null ? guideBookController.toggleKey.ToString() : "G") }' at any time to open your GuideBook for reminders on controls or shot types."
+             ));
 
             objectives.Add(new TutorialObjective(
                 "Complete the Photo Session",
@@ -284,24 +294,27 @@ namespace SAE_Dubai.Leonardo
                 () => hasReturnedToApartment,
                 "Great job! Find the Teleporter nearby (look for the interaction prompt) and press E to return to your apartment."
             ));
-            
+
             // ? Auto-complete this step? .
             // Todo: "Complete tutorial button".
             objectives.Add(new TutorialObjective(
                 "Complete Tutorial",
                 () => true,
-                "Press ESC to open pause menu anytime to see your objectives\nPress " + toggleTutorialKey +
+                "Tutorial finished! Press ESC to open pause menu anytime to see your objectives\nPress " + toggleTutorialKey +
                 " to show/hide this panel"
             ));
         }
+
 
         private void Update() {
             if (Input.GetKeyDown(toggleTutorialKey)) {
                 ToggleTutorialPanel();
             }
 
-            if (!tutorialActive || currentObjectiveIndex < 0 || currentObjectiveIndex >= objectives.Count)
-                return;
+             // Only run update logic if the tutorial is actually active.
+             if (!tutorialActive || tutorialCompleted || currentObjectiveIndex < 0 || currentObjectiveIndex >= objectives.Count)
+                 return;
+
 
             // Check if current objective is complete.
             TutorialObjective currentObjective = objectives[currentObjectiveIndex];
@@ -310,7 +323,7 @@ namespace SAE_Dubai.Leonardo
                 StartCoroutine(AdvanceToNextObjective());
             }
 
-            // Update UI.
+            // Update UI (only if active and not completed).
             UpdateTutorialUI();
         }
 
@@ -320,7 +333,7 @@ namespace SAE_Dubai.Leonardo
             {
                 PlayObjectiveCompleteFeedback();
             }
-            
+
             yield return new WaitForSeconds(objectiveCompleteDelay);
 
             if (currentObjectiveIndex < objectives.Count - 1)
@@ -333,7 +346,6 @@ namespace SAE_Dubai.Leonardo
                 }
                 UpdateTutorialUI();
 
-                // ? probably removing this.
                 if (panelCanvasGroup != null) {
                     panelCanvasGroup.DOKill();
                     Sequence flashSequence = DOTween.Sequence();
@@ -346,7 +358,7 @@ namespace SAE_Dubai.Leonardo
                 CompleteTutorial();
             }
         }
-        
+
         private void PlayObjectiveCompleteFeedback()
         {
             if (audioSource != null && objectiveCompleteSound != null)
@@ -364,10 +376,12 @@ namespace SAE_Dubai.Leonardo
                 flashSequence.Play();
             }
         }
-        
+
         private void UpdateTutorialUI() {
-            if (currentObjectiveIndex < 0 || currentObjectiveIndex >= objectives.Count)
-                return;
+             // Ensure tutorial is active and we have valid objectives,,
+             if (!tutorialActive || currentObjectiveIndex < 0 || currentObjectiveIndex >= objectives.Count)
+                 return;
+
 
             TutorialObjective objective = objectives[currentObjectiveIndex];
 
@@ -388,25 +402,39 @@ namespace SAE_Dubai.Leonardo
             }
         }
 
-        public void StartTutorial() {
-            tutorialActive = true;
-            tutorialCompleted = false;
-            currentObjectiveIndex = 0;
-            currentObjectiveComplete = false;
-            ShowTutorialPanel();
-            UpdateTutorialUI();
+         // Modified StartTutorial to set flags correctly.
+         public void StartTutorial() {
+             if (tutorialActive) return; // Don't restart if already active.
 
-            Debug.Log("Tutorial started");
-        }
+             tutorialActive = true;
+             tutorialCompleted = false;
+             currentObjectiveIndex = 0;
+             currentObjectiveComplete = false;
+             boughtCamera = false; // Reset specific tutorial flags if needed.
+             hasCompletedFirstJob = false;
+             hasReturnedToApartment = false;
+             ShowTutorialPanel();
+             UpdateTutorialUI();
+
+             Debug.Log("Tutorial started");
+         }
 
         public void CompleteTutorial()
         {
+            if (!tutorialActive || tutorialCompleted) return; // Prevent multiple completions.
+
             tutorialActive = false;
             tutorialCompleted = true;
 
             PlayObjectiveCompleteFeedback();
 
-            UpdateTutorialUI();
+            // Update UI one last time to show completion state or final message.
+             if (objectives.Count > 0) {
+                 currentObjectiveIndex = objectives.Count - 1; // Ensure progress bar is full.
+                 UpdateTutorialUI();
+                 if (objectiveText != null) objectiveText.text = "Tutorial Complete!";
+                 if (instructionText != null) instructionText.text = "You're ready to explore! Press " + toggleTutorialKey + " to hide this.";
+             }
 
             if (!isPanelVisible && tutorialPanel != null)
             {
@@ -429,10 +457,12 @@ namespace SAE_Dubai.Leonardo
         {
             yield return new WaitForSecondsRealtime(delay);
 
-            if (hideAfterCompleting && tutorialCompleted && isPanelVisible)
-            {
-                HideTutorialPanel();
-            }
+             // Only hide if still completed and visible.
+             if (hideAfterCompleting && tutorialCompleted && isPanelVisible)
+             {
+                 HideTutorialPanel();
+             }
+
             hideCoroutine = null;
         }
 
@@ -445,7 +475,7 @@ namespace SAE_Dubai.Leonardo
                 Debug.Log("Tutorial skipped (completion sequence initiated)");
             }
         }
-        
+
         /// <summary>
         /// Called by PhotoSessionManager when the first tutorial job is completed.
         /// </summary>
@@ -471,23 +501,23 @@ namespace SAE_Dubai.Leonardo
         }
 
         private void ShowTutorialPanel() {
-            if (tutorialPanel == null) return;
+            if (tutorialPanel == null || isPanelVisible) return;
 
-            // Ensure the panel is active before animating
+            // Ensure the panel is active before animating.
             tutorialPanel.SetActive(true);
 
-            // Reset position if using slide animation
+            // Reset position if using slide animation.
             if (panelRectTransform != null) {
                 Vector2 originalPosition = panelRectTransform.anchoredPosition;
                 Vector2 startPosition = originalPosition + slideOffset;
                 panelRectTransform.anchoredPosition = startPosition;
 
-                // Animate slide in
+                // Animate slide in.
                 panelRectTransform.DOAnchorPos(originalPosition, fadeInDuration)
                     .SetEase(fadeInEase);
             }
 
-            // Fade in
+            // Fade in.
             if (panelCanvasGroup != null) {
                 panelCanvasGroup.alpha = 0;
                 panelCanvasGroup.DOFade(1f, fadeInDuration)
@@ -498,7 +528,8 @@ namespace SAE_Dubai.Leonardo
         }
 
         private void HideTutorialPanel() {
-            if (tutorialPanel == null) return;
+             if (tutorialPanel == null || !isPanelVisible) return;
+
 
             if (panelRectTransform != null) {
                 Vector2 endPosition = panelRectTransform.anchoredPosition + slideOffset;
@@ -509,7 +540,12 @@ namespace SAE_Dubai.Leonardo
             if (panelCanvasGroup != null) {
                 panelCanvasGroup.DOFade(0f, fadeOutDuration)
                     .SetEase(fadeOutEase)
-                    .OnComplete(() => tutorialPanel.SetActive(false));
+                    .OnComplete(() => {
+                         // Only set inactive if still hidden and not meant to be visible.
+                         if (!isPanelVisible && tutorialPanel != null)
+                             tutorialPanel.SetActive(false);
+                     });
+
             }
             else {
                 StartCoroutine(DeactivateAfterDelay(fadeOutDuration));
@@ -525,8 +561,9 @@ namespace SAE_Dubai.Leonardo
 
         private IEnumerator DeactivateAfterDelay(float delay) {
             yield return new WaitForSeconds(delay);
-            if (tutorialPanel != null)
-                tutorialPanel.SetActive(false);
+             if (tutorialPanel != null && !isPanelVisible) // Check visibility flag again.
+                 tutorialPanel.SetActive(false);
+
         }
 
         public void ToggleTutorialPanel()
@@ -542,24 +579,21 @@ namespace SAE_Dubai.Leonardo
             }
             else
             {
-                ShowTutorialPanel();
-            }
-        }
+                // Only show if the tutorial is active or completed (to allow viewing final state).
+                 if (tutorialActive || tutorialCompleted)
+                 {
+                     ShowTutorialPanel();
+                 }
 
-        // Toggle tutorial visibility (can be called from other scripts if needed)
-        public void SetTutorialEnabled(bool enabled) {
-            enableTutorial = enabled;
-
-            if (enabled && !tutorialActive && !tutorialCompleted) {
-                StartTutorial();
-            }
-            else if (!enabled && tutorialActive) {
-                CompleteTutorial();
             }
         }
 
         public void SetCameraBoughtFlag() {
-            boughtCamera = true;
+             if (tutorialActive)
+             {
+                 boughtCamera = true;
+             }
+
         }
     }
 
@@ -580,7 +614,7 @@ namespace SAE_Dubai.Leonardo
         }
 
         public bool IsComplete() {
-            return CompletionCheck != null && CompletionCheck();
+             return CompletionCheck != null && CompletionCheck();
         }
     }
 }
