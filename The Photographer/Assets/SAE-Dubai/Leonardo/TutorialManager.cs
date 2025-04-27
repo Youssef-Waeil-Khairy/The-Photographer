@@ -1,16 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 using DG.Tweening;
-using SAE_Dubai.Leonardo.Hotbar;
+using SAE_Dubai.JW;
 using SAE_Dubai.Leonardo.CameraSys;
 using SAE_Dubai.Leonardo.Client_System;
-using SAE_Dubai.JW;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
-namespace SAE_Dubai.Leonardo.Tutorial
+namespace SAE_Dubai.Leonardo
 {
     /// <summary>
     /// Manages the tutorial flow and objectives for new players.
