@@ -29,6 +29,13 @@ namespace SAE_Dubai.Leonardo.Items.PickUpables
         }
 
         /// <summary>
+        /// Gets the icon for this camera from its settings.
+        /// </summary>
+        public Sprite GetItemIcon() {
+            return cameraSettings != null ? cameraSettings.cameraIcon : null;
+        }
+
+        /// <summary>
         /// Called when the player picks up this camera. Creates a usable camera instance
         /// and registers it with the CameraManager.
         /// </summary>
@@ -57,6 +64,12 @@ namespace SAE_Dubai.Leonardo.Items.PickUpables
                 // Pass the camera settings during registration.
                 string cameraName = GetItemName();
                 cameraManager.RegisterCamera(cameraName, cameraClone);
+
+                // Store the camera icon for future reference
+                if (cameraSettings != null && cameraSettings.cameraIcon != null) {
+                    // The icon will be stored with the camera settings
+                    // CameraManager already has access to these settings
+                }
 
                 // Log successful registration
                 //Debug.Log($"Camera '{cameraName}' registered with camera manager");

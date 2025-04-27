@@ -135,7 +135,24 @@ namespace SAE_Dubai.Leonardo.Items
             {
                 // Get the item name.
                 string itemName = _currentTarget.GetItemName();
-                bool added = _hotbar.AddEquipment(itemName);
+                
+                // Get the item icon if available
+                Sprite itemIcon = _currentTarget.GetItemIcon();
+                
+                // Add to the hotbar
+                int emptySlot = _hotbar.FindEmptySlot();
+                bool added = false;
+                
+                if (emptySlot >= 0)
+                {
+                    _hotbar.AddItemWithIcon(itemName, itemIcon, emptySlot);
+                    added = true;
+                }
+                else
+                {
+                    // Fallback to original method if our custom one doesn't work
+                    added = _hotbar.AddEquipment(itemName);
+                }
 
                 if (added)
                 {
