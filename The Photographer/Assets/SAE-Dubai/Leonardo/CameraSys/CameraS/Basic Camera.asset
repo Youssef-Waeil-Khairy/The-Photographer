@@ -70,6 +70,6 @@ MonoBehaviour:
   hasBuiltInFlash: 0
   photoCapacity: 50
   cameraIcon: {fileID: 21300000, guid: bfb2a3f6d0360e34780688217fa58b8f, type: 3}
-  shutterSound: {fileID: 0}
-  focusSound: {fileID: 0}
-  zoomSound: {fileID: 0}
+  shutterSound: {fileID: 8300000, guid: e3fb75261a15b4641a7e9b33b96ae787, type: 3}
+  focusSound: {fileID: 8300000, guid: 71060a4eaee4a75499df6c70a2c06b7c, type: 3}
+  zoomSound: {fileID: 8300000, guid: 09d828f6c2193f6469aa6f7300a490d8, type: 3}
