@@ -151,10 +151,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 686071648}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 480, y: 270}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &27347690
 MonoBehaviour:
@@ -176,7 +176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: The Photograppher
+  m_text: PhotoSensitive
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 95aa6767f7a64ac47ac6ecd834bbf072, type: 2}
   m_sharedMaterial: {fileID: -2055251804730013382, guid: 95aa6767f7a64ac47ac6ecd834bbf072, type: 2}
@@ -203,7 +203,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 55.5
+  m_fontSize: 54
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1679,14 +1679,11 @@ MonoBehaviour:
   quitPanel: {fileID: 429771983}
   playPanel: {fileID: 1397914980}
   sceneSwitchDelay: 1
-  tutorialSceneIndex: 1
   gameSceneIndex: 1
   audioSource: {fileID: 824307193}
   audioClips:
-  - {fileID: 8300000, guid: c86c20a3e670da1469e22a740ab64e75, type: 3}
-  - {fileID: 8300000, guid: a38a5a77e2d792b4ea46c79905da44ff, type: 3}
-  - {fileID: 8300000, guid: 93a433b724c1e2a4cba62de26fcda128, type: 3}
-  - {fileID: 8300000, guid: 93a433b724c1e2a4cba62de26fcda128, type: 3}
+  - {fileID: 8300000, guid: 5f077cf2b7cb92040bbc1e9a091e8189, type: 3}
+  - {fileID: 8300000, guid: 34837abfb48bbd94291fad6d9dca660d, type: 3}
   pitchRange: {x: 0.9, y: 1.1}
 --- !u!82 &824307193
 AudioSource:
@@ -2921,8 +2918,8 @@ RectTransform:
   m_GameObject: {fileID: 1255774736}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 450716512}
   - {fileID: 1864914097}
