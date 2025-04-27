@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40aff62cdb3172f4daceac3cd7116138, type: 3}
+  m_Name: Ultra-Pro Camera
+  m_EditorClassIdentifier: 
+  cameraPrefab: {fileID: 8164753298345851315, guid: 0ea8f560ba634624a985af59d34c91f6, type: 3}
+  modelName: Alpha Pro Ultra
+  manufacturer: MasterCraft Photography
+  description: Professional-grade camera with full-frame sensor, superior low-light
+    performance, and extensive dynamic range. Ideal for all photography genres from
+    landscape to portraits and action photography.
+  sensorType: 14
+  customSensorSize: {x: 36, y: 24}
+  baseISO: 50
+  minISO: 50
+  maxISO: 51200
+  availableISOStops: 3200000064000000c8000000900100002003000040060000800c000000190000003200000064000000c8000000900100
+  hasAutoISO: 1
+  minAperture: 1.2
+  maxAperture: 22
+  availableApertureStops:
+  - 1.2
+  - 1.4
+  - 1.8
+  - 2
+  - 2.8
+  - 4
+  - 5.6
+  - 8
+  - 11
+  - 16
+  - 22
+  hasAutoAperture: 1
+  minShutterSpeed: 0.0001
+  maxShutterSpeed: 60
+  availableShutterSpeedStops:
+  - 0.0001
+  - 0.00025
+  - 0.0005
+  - 0.001
+  - 0.002
+  - 0.004
+  - 0.008
+  - 0.016666668
+  - 0.033333335
+  - 0.06666667
+  - 0.125
+  - 0.25
+  - 0.5
+  - 1
+  - 2
+  - 4
+  - 8
+  - 15
+  - 30
+  - 60
+  hasAutoShutterSpeed: 1
+  hasZoom: 1
+  minFocalLength: 16
+  maxFocalLength: 200
+  hasAutoFocus: 1
+  apertureBladeCount: 11
+  apertureBladeCurvature: {x: 0.8, y: 0.8}
+  apertureBarrelClipping: 0.1
+  apertureAnamorphism: 0
+  hasImageStabilization: 1
+  hasBuiltInFlash: 1
+  photoCapacity: 200
+  cameraIcon: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
+  shutterSound: {fileID: 0}
+  focusSound: {fileID: 0}
+  zoomSound: {fileID: 0}

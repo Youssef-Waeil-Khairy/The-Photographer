@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using SAE_Dubai.JW;
 using TMPro;
 using UnityEngine;
@@ -80,6 +81,12 @@ namespace SAE_Dubai.Leonardo.Client_System
         public void GenerateNewSessions() {
             _availableSessions.Clear();
 
+            // Generate all valid shot types once (outside the loop)
+            PortraitShotType[] validShotTypes = System.Enum.GetValues(typeof(PortraitShotType))
+                .Cast<PortraitShotType>()
+                .Where(type => type != PortraitShotType.Undefined)
+                .ToArray();
+
             // Generate random sessions.
             for (int i = 0; i < maxAvailableSessions; i++) {
                 // Generate a client name from the available predefined client names
@@ -88,8 +95,8 @@ namespace SAE_Dubai.Leonardo.Client_System
                 // Create the session.
                 PhotoSession session = new PhotoSession {
                     clientName = clientName,
-                    // Avoid Undefined (index 0).
-                    requiredShotType = (PortraitShotType)Random.Range(1, 8),
+                    // Select a random valid shot type
+                    requiredShotType = validShotTypes[Random.Range(0, validShotTypes.Length)],
                     locationIndex = Random.Range(0, _sessionManager.photoLocations.Count),
                     reward = Mathf.Round(Random.Range(minReward, maxReward))
                 };

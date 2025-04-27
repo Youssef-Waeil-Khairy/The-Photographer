@@ -4,6 +4,7 @@ using System.Linq;
 using SAE_Dubai.JW;
 using UnityEngine;
 using SAE_Dubai.Leonardo.CameraSys;
+using Random = UnityEngine.Random;
 
 namespace SAE_Dubai.Leonardo.Client_System
 {
@@ -120,6 +121,19 @@ namespace SAE_Dubai.Leonardo.Client_System
         }
 
         public void AddNewSession(PhotoSession session) {
+            // Validate that the shot type is not Undefined.
+            if (session.requiredShotType == PortraitShotType.Undefined) {
+                Debug.LogWarning($"Attempting to add a session with Undefined shot type. Fixing to a random valid type.");
+        
+                // Fix the invalid shot type with a random valid one.
+                var validShotTypes = System.Enum.GetValues(typeof(PortraitShotType))
+                    .Cast<PortraitShotType>()
+                    .Where(type => type != PortraitShotType.Undefined)
+                    .ToArray();
+            
+                session.requiredShotType = validShotTypes[Random.Range(0, validShotTypes.Length)];
+            }
+    
             if (CanAddNewSession()) {
                 activeSessions.Add(session);
                 OnSessionsChanged?.Invoke();
