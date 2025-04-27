@@ -113,49 +113,51 @@ namespace SAE_Dubai.Leonardo
             // ! Tutorials must be in sequential order.
             objectives.Clear();
 
-            //* Done.
             objectives.Add(new TutorialObjective(
                 "Find Your Computer",
                 () => computerUI != null && computerUI.IsPlayerUsingComputer(),
                 "Movement: WASD | Look: Mouse | Interact: E"
             ));
 
-            //* Done.
             objectives.Add(new TutorialObjective(
                 "Visit Camera Shop",
                 () => computerUI != null && computerUI.IsShopTabActive(),
                 "Navigate to the Camera Shop tab in the computer interface"
             ));
 
-            //* Done.
             objectives.Add(new TutorialObjective(
                 "Purchase Your First Camera",
                 () => boughtCamera,
                 "Select a camera model and click the Purchase button"
             ));
 
-            //* Done.
             objectives.Add(new TutorialObjective(
                 "Exit Computer",
                 () => computerUI != null && !computerUI.IsPlayerUsingComputer(),
                 "Confirm the purchase and press E or ESC to exit the computer interface"
             ));
 
-            //* Done.
             objectives.Add(new TutorialObjective(
                 "Pick Up Your Camera",
                 () => playerHotbar != null && playerHotbar.HasAnyEquipment(),
                 "Approach the camera and hold E to pick it up"
             ));
 
-            //* Done.
             objectives.Add(new TutorialObjective(
                 "Turn On The Camera",
                 () => cameraManager.GetActiveCamera() != null && Input.GetKeyDown(KeyCode.C),
                 "Press C to turn on the camera while equipped."
             ));
+            
+            objectives.Add(new TutorialObjective(
+                "Toggle Camera Viewfinder",
+                () => {
+                    CameraSystem activeCam = cameraManager?.GetActiveCamera();
+                    return activeCam != null && activeCam.isCameraOn && activeCam.usingViewfinder;
+                },
+                "Press V to toggle the viewfinder mode. This gives you a more immersive view through the camera lens."
+            ));
 
-            //* Done.
             objectives.Add(new TutorialObjective(
                 "Adjust ISO",
                 () => {
@@ -165,7 +167,6 @@ namespace SAE_Dubai.Leonardo
                 "Use the I key to increase ISO until it reaches 6400. Use U to decrease if you go too far."
             ));
 
-            //* Done.
             objectives.Add(new TutorialObjective(
                 "Adjust Aperture",
                 () => {
@@ -176,7 +177,6 @@ namespace SAE_Dubai.Leonardo
                 "Press O for a smaller opening (higher f-number, more in focus) or P for a larger opening (lower f-number, shallower focus). Try changing it!"
             ));
 
-            //* Done.
             objectives.Add(new TutorialObjective(
                 "Adjust Shutter Speed",
                 () => {
@@ -187,35 +187,32 @@ namespace SAE_Dubai.Leonardo
                 "Press K for a slower speed (more light/blur) or L for a faster speed (less light/blur). Give it a try!"
             ));
             
-            //* Done.
+            // Todo: ZOOOOOOOOOOOOOOOOOOOOOOOOM
+            
             objectives.Add(new TutorialObjective(
                 "Focus and Take a Photo",
                 () => cameraManager.GetActiveCamera() != null && cameraManager.GetActiveCamera().GetPhotoCount() > 0,
                 "Focus: Right Mouse Button | Take photo: Left Mouse Button"
             ));
 
-            //* Done.
             objectives.Add(new TutorialObjective(
                 "Return to Computer",
                 () => computerUI != null && computerUI.IsPlayerUsingComputer(),
                 "Move back to your computer and press E"
             ));
 
-            //* Done.
             objectives.Add(new TutorialObjective(
                 "Find Photo Sessions",
                 () => computerUI != null && computerUI.IsSessionsTabActive(),
                 "Go back to the menu and click on the Customer App in your computer."
             ));
 
-            //* Done.
             objectives.Add(new TutorialObjective(
                 "Accept a Photo Session",
                 () => sessionManager != null && sessionManager.GetActiveSessions().Count > 0,
                 "Review available clients and click Accept on one you like. Remember to check each clients necessities!"
             ));
 
-            //* Done.
             objectives.Add(new TutorialObjective(
                 "Travel To The Client's Location",
                 () => {
@@ -232,7 +229,6 @@ namespace SAE_Dubai.Leonardo
                 "Click on the travel button in the Active Sessions tab in your customer app to travel to where the client is waiting for you! DON'T FORGET YOUR CAMERA!"
             ));
             
-            //* Done.
             objectives.Add(new TutorialObjective(
                 "Check Your GuideBook",
                 () => Input.GetKeyDown(FindFirstObjectByType<GuideBookController>().toggleKey), // ? Dummy proofing again, probably not optimized.
@@ -246,7 +242,6 @@ namespace SAE_Dubai.Leonardo
                 "Approach the client. Use your camera ('C'), adjust settings if needed (I/U, O/P, K/L), focus (Right Mouse), and take the required photo (Left Mouse). Check needs via Pause Menu (ESC) or GuideBook (G)."
             ));
 
-            // --- NEW OBJECTIVE: Return Home ---
             objectives.Add(new TutorialObjective(
                 "Return to Your Apartment",
                 // ! Completion Check: Wait for the flag to be set by the Teleporter.

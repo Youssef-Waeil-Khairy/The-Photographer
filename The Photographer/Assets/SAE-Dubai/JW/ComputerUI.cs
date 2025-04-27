@@ -36,6 +36,14 @@ namespace SAE_Dubai.JW
         [SerializeField] private Button photoSessionsTabButton;
         [SerializeField] private Button cameraShopTabButton;
 
+        [Header("- Audio")]
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip computerStartSound;
+        [SerializeField] private AudioClip computerShutdownSound;
+        [SerializeField] private AudioClip tabSwitchSound;
+        [SerializeField] private AudioClip buttonClickSound;
+        [SerializeField] private float volumeScale = 1.0f;
+
         #endregion
 
         #region Private Variables
@@ -68,6 +76,7 @@ namespace SAE_Dubai.JW
             
             InitializeUI();
             InitializeState();
+            InitializeAudio();
         }
     
         private void Update()
@@ -113,6 +122,23 @@ namespace SAE_Dubai.JW
             // Initialize state flags.
             _isTransitioning = false;
             _wasKeyPressed = false;
+        }
+
+        private void InitializeAudio()
+        {
+            // Create audio source if not assigned
+            if (audioSource == null)
+            {
+                audioSource = gameObject.GetComponent<AudioSource>();
+                if (audioSource == null)
+                {
+                    audioSource = gameObject.AddComponent<AudioSource>();
+                    audioSource.playOnAwake = false;
+                    audioSource.spatialBlend = 1.0f; // 3D sound
+                    audioSource.minDistance = 1.0f;
+                    audioSource.maxDistance = 10.0f;
+                }
+            }
         }
 
         #endregion
@@ -205,6 +231,9 @@ namespace SAE_Dubai.JW
             // Small delay to ensure no double toggles occur.
             yield return new WaitForEndOfFrame();
             
+            // Play computer startup sound
+            PlaySound(computerStartSound);
+            
             // Entering computer view.
             computerCamera.enabled = true;
             playerCamera.enabled = false;
@@ -225,6 +254,9 @@ namespace SAE_Dubai.JW
         {
             // Small delay to ensure no double toggles occur.
             yield return new WaitForEndOfFrame();
+            
+            // Play computer shutdown sound
+            PlaySound(computerShutdownSound);
             
             // Exiting computer view.
             computerCamera.enabled = false;
@@ -292,6 +324,12 @@ namespace SAE_Dubai.JW
         private void SwitchTab(TabType tabType)
         {
             Debug.Log($"Switching to tab: {tabType}");
+            
+            if (_currentActiveTab != tabType)
+            {
+                PlaySound(tabSwitchSound);
+            }
+            
             _currentActiveTab = tabType;
             
             // Hide all panels first.
@@ -355,6 +393,30 @@ namespace SAE_Dubai.JW
             return IsPlayerUsingComputer() && _currentActiveTab == TabType.PhotoSessions;
         }
 
+        #endregion
+        
+        #region Audio Methods
+        
+        /// <summary>
+        /// Plays the specified sound clip.
+        /// </summary>
+        /// <param name="clip">The audio clip to play.</param>
+        private void PlaySound(AudioClip clip)
+        {
+            if (audioSource != null && clip != null)
+            {
+                audioSource.PlayOneShot(clip, volumeScale);
+            }
+        }
+        
+        /// <summary>
+        /// Plays a button click sound, useful for UI buttons.
+        /// </summary>
+        public void PlayButtonClickSound()
+        {
+            PlaySound(buttonClickSound);
+        }
+        
         #endregion
     }
 }
