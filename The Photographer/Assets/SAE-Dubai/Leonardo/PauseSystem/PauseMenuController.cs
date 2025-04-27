@@ -48,7 +48,12 @@ namespace SAE_Dubai.Leonardo.PauseSystem
 
         void Update() {
             if (Input.GetKeyDown(pauseKey)) {
-                TogglePause();
+                // If game is already paused, resume it, otherwise pause it
+                if (_isPaused) {
+                    ResumeGame();
+                } else {
+                    TogglePause();
+                }
             }
         }
 
@@ -77,6 +82,7 @@ namespace SAE_Dubai.Leonardo.PauseSystem
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
+            _isPaused = true;
             //Debug.Log("PauseMenuController.cs: Game Paused");
         }
 
@@ -130,18 +136,14 @@ private void UpdateActiveSessionsDisplay()
         }
         else
         {
-            // Instantiate and populate UI items for each active session
             foreach (PhotoSession session in activeSessions)
             {
-                // Instantiate the prefab
                 GameObject sessionItemGO = Instantiate(sessionInfoPrefab, activeSessionsContainer);
 
-                // Get the PauseSessionItemUI component attached to the prefab instance
                 PauseSessionItemUI itemUI = sessionItemGO.GetComponent<PauseSessionItemUI>();
 
                 if (itemUI != null)
                 {
-                    // Call the Setup method on the item's script, passing the session data
                     itemUI.Setup(session);
                 }
                 else
