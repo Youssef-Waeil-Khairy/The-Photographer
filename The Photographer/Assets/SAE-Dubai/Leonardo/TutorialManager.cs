@@ -159,7 +159,7 @@ namespace SAE_Dubai.Leonardo.Tutorial
                 "Exit Computer",
                 "Close the computer interface to return to the game world.",
                 () => computerUI != null && !computerUI.IsPlayerUsingComputer(),
-                "Press E or ESC to exit the computer interface"
+                "Confirm the purchase and press E or ESC to exit the computer interface"
             ));
             
             //* Done.
@@ -176,6 +176,10 @@ namespace SAE_Dubai.Leonardo.Tutorial
                 () => cameraManager.GetActiveCamera() != null && Input.GetKeyDown(KeyCode.C),
                 "Press C to turn on the camera while equipped."
             ));
+            
+            // Todo: Teach ISO, Aperture and Shutter Speed controls.
+            
+            // Todo: Tell the player that they can open their guide when pressing "J" and add the actual canvas.
             
             objectives.Add(new TutorialObjective(
                 "Focus and Take a Photo",
@@ -195,34 +199,45 @@ namespace SAE_Dubai.Leonardo.Tutorial
                 "Find Photo Sessions",
                 "Go back to the menu and click on the Photo Sessions tab in your computer.",
                 () => computerUI != null && computerUI.IsSessionsTabActive(),
-                "Click on the Photo Sessions tab"
+                "Go back to the menu and click on the Customer App in your computer."
             ));
 
             objectives.Add(new TutorialObjective(
                 "Accept a Photo Session",
                 "Click on the client to accept the session.",
                 () => sessionManager != null && sessionManager.GetActiveSessions().Count > 0,
-                "Review available clients and click Accept on one you like"
+                "Review available clients and click Accept on one you like. Remember to check each clients necessities!"
             ));
             
             objectives.Add(new TutorialObjective(
                 "Travel To The Client's Location",
                 "Select a client job and click 'Accept' to start the session.",
-                () => sessionManager != null && sessionManager.,
-                "Review available clients and click Accept on one you like"
+                () => {
+                    if (sessionManager == null) return false;
+
+                    List<PhotoSession> activeSessions = sessionManager.GetActiveSessions();
+
+                    if (activeSessions.Count == 0) return false;
+
+                    PhotoSession tutorialSession = activeSessions[0];
+
+                    return tutorialSession != null && tutorialSession.isClientSpawned;
+                },
+                "Click on the travel button in the Active Sessions tab in your customer app to travel to where the client is waiting for you!"
             ));
 
+            // ? Auto-complete this step? .
+            // Todo: "Complete tutorial button".
             objectives.Add(new TutorialObjective(
                 "Complete Tutorial",
                 "Congratulations! You've completed the tutorial. You can now travel to your client by clicking 'Travel'.",
-                () => true, // Auto-complete this step
-                "Press ESC to open pause menu anytime to see your objectives\nPress " + toggleTutorialKey.ToString() + " to show/hide this panel"
+                () => true, 
+                "Press ESC to open pause menu anytime to see your objectives\nPress " + toggleTutorialKey + " to show/hide this panel"
             ));
         }
 
         private void Update()
         {
-            // Handle toggle key press
             if (Input.GetKeyDown(toggleTutorialKey))
             {
                 ToggleTutorialPanel();
@@ -231,7 +246,7 @@ namespace SAE_Dubai.Leonardo.Tutorial
             if (!tutorialActive || currentObjectiveIndex < 0 || currentObjectiveIndex >= objectives.Count)
                 return;
 
-            // Check if current objective is complete
+            // Check if current objective is complete.
             TutorialObjective currentObjective = objectives[currentObjectiveIndex];
             if (!currentObjectiveComplete && currentObjective.IsComplete())
             {
@@ -239,7 +254,7 @@ namespace SAE_Dubai.Leonardo.Tutorial
                 StartCoroutine(AdvanceToNextObjective());
             }
 
-            // Update UI
+            // Update UI.
             UpdateTutorialUI();
         }
 
@@ -288,15 +303,15 @@ namespace SAE_Dubai.Leonardo.Tutorial
             if (instructionText != null)
                 instructionText.text = objective.Instructions;
 
-            // Update progress bar
+            // Update progress bar.
             if (progressBar != null)
             {
                 float targetProgress = (float)(currentObjectiveIndex) / (float)(objectives.Count - 1);
-                // Smooth progress bar animation
+                // Smooth progress bar animation.
                 DOTween.To(() => progressBar.fillAmount, 
                            x => progressBar.fillAmount = x, 
                            targetProgress, 0.5f)
-                       .SetEase(Ease.OutQuad);
+                       .SetEase(Ease.OutQuad);  
             }
         }
 
