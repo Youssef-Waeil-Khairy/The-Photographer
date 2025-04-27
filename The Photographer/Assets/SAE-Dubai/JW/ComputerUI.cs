@@ -53,6 +53,19 @@ namespace SAE_Dubai.JW
         
         private void Start()
         {
+            if (cameraShopTabButton != null)
+            {
+                Debug.Log("ComputerUI.cs: Camera Shop Tab button is connected");
+                cameraShopTabButton.onClick.AddListener(() => {
+                    Debug.Log("ComputerUI.cs: Camera Shop Tab button clicked");
+                    SwitchTab(TabType.CameraShop);
+                });
+            }
+            else
+            {
+                Debug.LogError("ComputerUI.cs: Camera Shop Tab button is not assigned!");
+            }
+            
             InitializeUI();
             InitializeState();
         }
@@ -278,6 +291,9 @@ namespace SAE_Dubai.JW
 
         private void SwitchTab(TabType tabType)
         {
+            Debug.Log($"Switching to tab: {tabType}");
+            _currentActiveTab = tabType;
+            
             // Hide all panels first.
             if (photoSessionsPanel != null)
                 photoSessionsPanel.SetActive(false);
@@ -324,7 +340,10 @@ namespace SAE_Dubai.JW
         /// </summary>
         public bool IsShopTabActive()
         {
-            return IsPlayerUsingComputer() && _currentActiveTab == TabType.CameraShop;
+            bool isUsing = IsPlayerUsingComputer();
+            bool isShopTab = _currentActiveTab == TabType.CameraShop;
+            Debug.Log($"IsShopTabActive: IsUsingComputer={isUsing}, CurrentTab={_currentActiveTab}, Result={isUsing && isShopTab}");
+            return isUsing && isShopTab;
         }
 
         /// <summary>

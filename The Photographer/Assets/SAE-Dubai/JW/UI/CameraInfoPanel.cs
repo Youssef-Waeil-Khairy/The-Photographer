@@ -84,16 +84,22 @@ namespace SAE_Dubai.JW.UI
         }
 
         private void PurchaseCamera() {
-            if (CameraItemPrefab == null || CamSettings == null) {
-                Debug.LogError("Cannot purchase: Missing camera prefab or settings.");
+            if (CameraItemPrefab == null) {
+                Debug.LogError($"Cannot purchase: Missing camera prefab in {gameObject.name}");
                 return;
+            }
+
+            if (CamSettings == null) {
+                CamSettings = GetComponent<CameraSystem>().cameraSettings;
+                if (CamSettings == null) {
+                    Debug.LogError($"Cannot purchase: Missing camera settings in {gameObject.name}");
+                    return;
+                }
             }
 
             // Use the CameraShopManager to handle the purchase.
             if (CameraShopManager.Instance != null) {
                 CameraShopManager.Instance.StartPurchase(CameraItemPrefab, CameraPrice, CamSettings, cameraButtonGO);
-
-                // Disable the purchased camera
                 
                 
                 // Close the info panel after starting purchase.

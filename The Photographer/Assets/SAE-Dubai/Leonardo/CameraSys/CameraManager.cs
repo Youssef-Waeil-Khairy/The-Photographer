@@ -112,6 +112,7 @@ namespace SAE_Dubai.Leonardo.CameraSys
         /// </summary>
         public int GetCameraCount()
         {
+            Debug.Log($"TutorialManager: Camera count: {_cameraInstances.Count}");
             return _cameraInstances.Count;
         }
         
