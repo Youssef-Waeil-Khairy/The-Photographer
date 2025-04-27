@@ -253,6 +253,7 @@ namespace SAE_Dubai.Leonardo.Client_System
         private void HandleClientJobCompleted(PhotoSession session) {
             if (session != null) {
                 session.IsCompleted = true;
+                TutorialManager.Instance?.NotifyFirstJobCompleted();
                 RemoveSession(session);
             }
         }

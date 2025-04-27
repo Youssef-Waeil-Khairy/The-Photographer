@@ -47,26 +47,24 @@ namespace SAE_Dubai.Leonardo
 
         [SerializeField] private bool hideAfterCompleting = true;
 
-        // Reference to other systems
         private Hotbar.Hotbar playerHotbar;
         private CameraManager cameraManager;
         private PhotoSessionManager sessionManager;
         private ComputerUI computerUI;
 
-        // Tutorial state
         private int currentObjectiveIndex = -1;
-        private bool tutorialActive = false;
-        private bool tutorialCompleted = false;
-        private bool currentObjectiveComplete = false;
-        private bool isPanelVisible = false;
+        private bool tutorialActive;
+        private bool tutorialCompleted;
+        private bool currentObjectiveComplete;
+        private bool isPanelVisible;
         private RectTransform panelRectTransform;
-        private bool boughtCamera = false;
-
-        // Define all tutorial objectives
-        private List<TutorialObjective> objectives = new List<TutorialObjective>();
+        private bool boughtCamera;
+        private bool hasCompletedFirstJob = false;
+        private bool hasReturnedToApartment = false;
+        
+        private List<TutorialObjective> objectives = new();
 
         private void Awake() {
-            // Singleton setup
             if (Instance == null) {
                 Instance = this;
             }
@@ -75,12 +73,10 @@ namespace SAE_Dubai.Leonardo
                 return;
             }
 
-            // Get the RectTransform for animations
             if (tutorialPanel != null) {
                 panelRectTransform = tutorialPanel.GetComponent<RectTransform>();
             }
 
-            // Make sure we have a CanvasGroup for fading
             if (panelCanvasGroup == null && tutorialPanel != null) {
                 panelCanvasGroup = tutorialPanel.GetComponent<CanvasGroup>();
                 if (panelCanvasGroup == null) {
@@ -90,27 +86,22 @@ namespace SAE_Dubai.Leonardo
         }
 
         private void Start() {
-            // Find references to needed components
             playerHotbar = FindObjectOfType<Hotbar.Hotbar>();
             cameraManager = FindObjectOfType<CameraManager>();
             sessionManager = FindObjectOfType<PhotoSessionManager>();
             computerUI = FindObjectOfType<ComputerUI>();
 
-            // Setup skip button
             if (skipTutorialButton != null) {
                 skipTutorialButton.onClick.AddListener(SkipTutorial);
             }
 
-            // Define tutorial objectives (order matters)
             SetupTutorialObjectives();
 
-            // Initialize UI to hidden state
             if (tutorialPanel != null) {
                 tutorialPanel.SetActive(false);
                 isPanelVisible = false;
             }
 
-            // Start tutorial if enabled in editor
             if (enableTutorial) {
                 StartTutorial();
             }
@@ -174,6 +165,7 @@ namespace SAE_Dubai.Leonardo
                 "Use the I key to increase ISO until it reaches 6400. Use U to decrease if you go too far."
             ));
 
+            //* Done.
             objectives.Add(new TutorialObjective(
                 "Adjust Aperture",
                 () => {
@@ -184,6 +176,7 @@ namespace SAE_Dubai.Leonardo
                 "Press O for a smaller opening (higher f-number, more in focus) or P for a larger opening (lower f-number, shallower focus). Try changing it!"
             ));
 
+            //* Done.
             objectives.Add(new TutorialObjective(
                 "Adjust Shutter Speed",
                 () => {
@@ -194,32 +187,35 @@ namespace SAE_Dubai.Leonardo
                 "Press K for a slower speed (more light/blur) or L for a faster speed (less light/blur). Give it a try!"
             ));
             
-            // Todo: Tell the player that they can open their guide when pressing "J" and add the actual canvas.
-
+            //* Done.
             objectives.Add(new TutorialObjective(
                 "Focus and Take a Photo",
                 () => cameraManager.GetActiveCamera() != null && cameraManager.GetActiveCamera().GetPhotoCount() > 0,
                 "Focus: Right Mouse Button | Take photo: Left Mouse Button"
             ));
 
+            //* Done.
             objectives.Add(new TutorialObjective(
                 "Return to Computer",
                 () => computerUI != null && computerUI.IsPlayerUsingComputer(),
                 "Move back to your computer and press E"
             ));
 
+            //* Done.
             objectives.Add(new TutorialObjective(
                 "Find Photo Sessions",
                 () => computerUI != null && computerUI.IsSessionsTabActive(),
                 "Go back to the menu and click on the Customer App in your computer."
             ));
 
+            //* Done.
             objectives.Add(new TutorialObjective(
                 "Accept a Photo Session",
                 () => sessionManager != null && sessionManager.GetActiveSessions().Count > 0,
                 "Review available clients and click Accept on one you like. Remember to check each clients necessities!"
             ));
 
+            //* Done.
             objectives.Add(new TutorialObjective(
                 "Travel To The Client's Location",
                 () => {
@@ -235,23 +231,29 @@ namespace SAE_Dubai.Leonardo
                 },
                 "Click on the travel button in the Active Sessions tab in your customer app to travel to where the client is waiting for you! DON'T FORGET YOUR CAMERA!"
             ));
-
+            
+            //* Done.
             objectives.Add(new TutorialObjective(
-                "Travel To The Client's Location",
-                () => {
-                    if (sessionManager == null) return false;
-
-                    List<PhotoSession> activeSessions = sessionManager.GetActiveSessions();
-
-                    if (activeSessions.Count == 0) return false;
-
-                    PhotoSession tutorialSession = activeSessions[0];
-
-                    return tutorialSession != null && tutorialSession.isClientSpawned;
-                },
-                "Click on the travel button in the Active Sessions tab in your customer app to travel to where the client is waiting for you! DON'T FORGET YOUR CAMERA!"
+                "Check Your GuideBook",
+                () => Input.GetKeyDown(FindFirstObjectByType<GuideBookController>().toggleKey), // ? Dummy proofing again, probably not optimized.
+                $"You've arrived! Press '{FindFirstObjectByType<GuideBookController>().toggleKey}' at any time to open your GuideBook for reminders on controls or shot types."
             ));
 
+            objectives.Add(new TutorialObjective(
+                "Complete the Photo Session",
+                // ! Completion Check: Wait for the flag to be set by PhotoSessionManager.
+                () => hasCompletedFirstJob,
+                "Approach the client. Use your camera ('C'), adjust settings if needed (I/U, O/P, K/L), focus (Right Mouse), and take the required photo (Left Mouse). Check needs via Pause Menu (ESC) or GuideBook (G)."
+            ));
+
+            // --- NEW OBJECTIVE: Return Home ---
+            objectives.Add(new TutorialObjective(
+                "Return to Your Apartment",
+                // ! Completion Check: Wait for the flag to be set by the Teleporter.
+                () => hasReturnedToApartment,
+                "Great job! Find the Teleporter nearby (look for the interaction prompt) and press E to return to your apartment."
+            ));
+            
             // ? Auto-complete this step? .
             // Todo: "Complete tutorial button".
             objectives.Add(new TutorialObjective(
@@ -355,6 +357,30 @@ namespace SAE_Dubai.Leonardo
 
         public void SkipTutorial() {
             CompleteTutorial();
+        }
+        
+        /// <summary>
+        /// Called by PhotoSessionManager when the first tutorial job is completed.
+        /// </summary>
+        public void NotifyFirstJobCompleted()
+        {
+            if (tutorialActive && !hasCompletedFirstJob)
+            {
+                Debug.Log("TutorialManager: First job completed flag set.");
+                hasCompletedFirstJob = true;
+            }
+        }
+
+        /// <summary>
+        /// Called by the specific Teleporter that returns the player home during the tutorial.
+        /// </summary>
+        public void NotifyReturnedToApartment()
+        {
+            if (tutorialActive && hasCompletedFirstJob && !hasReturnedToApartment)
+            {
+                Debug.Log("TutorialManager: Returned to apartment flag set.");
+                hasReturnedToApartment = true;
+            }
         }
 
         private void ShowTutorialPanel() {

@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace SAE_Dubai.Leonardo
 {
+    [RequireComponent(typeof(AudioSource))]
     public class GuideBookController : MonoBehaviour
     {
         [Header("UI References")]
@@ -11,11 +12,17 @@ namespace SAE_Dubai.Leonardo
 
         [Header("Settings")]
         [Tooltip("The key to press to open/close the guide book.")]
-        [SerializeField] private KeyCode toggleKey = KeyCode.G;
+        [SerializeField] public KeyCode toggleKey = KeyCode.G;
         [Tooltip("How long the fade animation takes.")]
         [SerializeField] private float fadeDuration = 0.3f;
         [Tooltip("Should opening the guide pause the game time?")]
-        [SerializeField] private bool pauseTime;
+        [SerializeField] private bool pauseTime = false;
+
+        [Header("Audio Effects")]
+        [Tooltip("Sound effect to play when opening the guide book.")]
+        [SerializeField] private AudioClip openSound;
+        [Tooltip("Sound effect to play when closing the guide book.")]
+        [SerializeField] private AudioClip closeSound;
 
         [Header("Player Control References (Optional)")]
         [Tooltip("Assign the player's MovementSystem script here (optional).")]
@@ -23,10 +30,10 @@ namespace SAE_Dubai.Leonardo
         [Tooltip("Assign the player's MouseController script here (optional).")]
         [SerializeField] private MouseController mouseController;
 
-
-        private CanvasGroup panelCanvasGroup;
-        private bool isPanelVisible;
-        private float previousTimeScale = 1f;
+        private CanvasGroup _panelCanvasGroup;
+        private AudioSource _audioSource;
+        private bool _isPanelVisible;
+        private float _previousTimeScale = 1f;
 
         void Awake()
         {
@@ -37,44 +44,36 @@ namespace SAE_Dubai.Leonardo
                 return;
             }
 
-            panelCanvasGroup = guideBookPanel.GetComponent<CanvasGroup>();
-            if (panelCanvasGroup == null)
+            _panelCanvasGroup = guideBookPanel.GetComponent<CanvasGroup>();
+            if (_panelCanvasGroup == null)
             {
-                panelCanvasGroup = guideBookPanel.AddComponent<CanvasGroup>();
+                _panelCanvasGroup = guideBookPanel.AddComponent<CanvasGroup>();
             }
 
-            if (playerMovement == null)
-            {
-                playerMovement = FindObjectOfType<MovementSystem>();
-                 // if (playerMovement == null) Debug.LogWarning("GuideBookController: Player Movement script not found.");
-            }
-            if (mouseController == null)
-            {
-                mouseController = FindObjectOfType<MouseController>();
-                // if (mouseController == null) Debug.LogWarning("GuideBookController: Mouse Controller script not found.");.
-            }
+            _audioSource = GetComponent<AudioSource>();
+            _audioSource.playOnAwake = false;
+
+            if (playerMovement == null) playerMovement = FindObjectOfType<MovementSystem>();
+            if (mouseController == null) mouseController = FindObjectOfType<MouseController>();
         }
 
         void Start()
         {
-            // Start with the panel hidden.
             guideBookPanel.SetActive(false);
-            panelCanvasGroup.alpha = 0f;
-            panelCanvasGroup.interactable = false;
-            panelCanvasGroup.blocksRaycasts = false;
-            isPanelVisible = false;
+            _panelCanvasGroup.alpha = 0f;
+            _panelCanvasGroup.interactable = false;
+            _panelCanvasGroup.blocksRaycasts = false;
+            _isPanelVisible = false;
         }
 
         void Update()
         {
-            // Check for the toggle key press.
             if (Input.GetKeyDown(toggleKey))
             {
                 TogglePanel();
             }
 
-            // Allow closing with ESCAPE if the panel is visible.
-            if (isPanelVisible && Input.GetKeyDown(KeyCode.Escape))
+            if (_isPanelVisible && Input.GetKeyDown(KeyCode.Escape))
             {
                  HidePanel();
             }
@@ -82,7 +81,7 @@ namespace SAE_Dubai.Leonardo
 
         public void TogglePanel()
         {
-            if (isPanelVisible)
+            if (_isPanelVisible)
             {
                 HidePanel();
             }
@@ -94,28 +93,30 @@ namespace SAE_Dubai.Leonardo
 
         private void ShowPanel()
         {
-            if (guideBookPanel == null || panelCanvasGroup == null) return;
+            if (guideBookPanel == null || _panelCanvasGroup == null || _isPanelVisible) return;
 
-            isPanelVisible = true;
+            _isPanelVisible = true;
+
+            if (openSound != null && _audioSource != null)
+            {
+                _audioSource.PlayOneShot(openSound);
+            }
+
             guideBookPanel.SetActive(true);
 
-            // Fade In Animation.
-            panelCanvasGroup.DOKill(); // Kill any previous tween.
-            panelCanvasGroup.DOFade(1f, fadeDuration).SetUpdate(true); // Use unscaled time if pausing.
+            _panelCanvasGroup.DOKill();
+            _panelCanvasGroup.DOFade(1f, fadeDuration).SetUpdate(true);
 
-            // Make panel interactive
-            panelCanvasGroup.interactable = true;
-            panelCanvasGroup.blocksRaycasts = true;
+            _panelCanvasGroup.interactable = true;
+            _panelCanvasGroup.blocksRaycasts = true;
 
-            // Handle Player Controls & Cursor.
             SetPlayerControlsActive(false);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
-             // ? Pause time.
             if (pauseTime)
             {
-                previousTimeScale = Time.timeScale;
+                _previousTimeScale = Time.timeScale;
                 Time.timeScale = 0f;
             }
 
@@ -124,34 +125,36 @@ namespace SAE_Dubai.Leonardo
 
         private void HidePanel()
         {
-            if (guideBookPanel == null || panelCanvasGroup == null) return;
+            if (guideBookPanel == null || _panelCanvasGroup == null || !_isPanelVisible) return;
 
-            isPanelVisible = false;
+            _isPanelVisible = false;
 
-            // Fade Out Animation.
-            panelCanvasGroup.DOKill();
-            panelCanvasGroup.DOFade(0f, fadeDuration)
+            if (closeSound != null && _audioSource != null)
+            {
+                _audioSource.PlayOneShot(closeSound);
+            }
+
+            _panelCanvasGroup.interactable = false;
+            _panelCanvasGroup.blocksRaycasts = false;
+
+            _panelCanvasGroup.DOKill();
+            _panelCanvasGroup.DOFade(0f, fadeDuration)
                 .SetUpdate(true)
                 .OnComplete(() => {
-                     if (!isPanelVisible) 
+                     if (!_isPanelVisible)
                      {
                          guideBookPanel.SetActive(false);
                      }
-                 });
+                });
 
-            // Make panel non-interactive immediately.
-            panelCanvasGroup.interactable = false;
-            panelCanvasGroup.blocksRaycasts = false;
 
-            // Handle Player Controls & Cursor.
             SetPlayerControlsActive(true);
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
-            // Optional: Resume time.
             if (pauseTime)
             {
-                Time.timeScale = previousTimeScale;
+                Time.timeScale = _previousTimeScale;
             }
 
             Debug.Log("GuideBook Closed");
@@ -159,11 +162,8 @@ namespace SAE_Dubai.Leonardo
 
          private void SetPlayerControlsActive(bool isActive)
         {
-            // Enable/disable player movement and look scripts if they are assigned.
             if (playerMovement != null) playerMovement.enabled = isActive;
             if (mouseController != null) mouseController.enabled = isActive;
-
-            // Debug.Log($"GuideBook: Player controls set to {isActive}");
         }
     }
 }

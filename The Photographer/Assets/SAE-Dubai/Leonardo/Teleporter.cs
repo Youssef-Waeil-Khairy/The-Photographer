@@ -19,10 +19,13 @@ namespace SAE_Dubai.Leonardo
         public float interactionRange = 3f;
         [Tooltip("The key to press to activate the teleporter.")]
         public KeyCode interactKey = KeyCode.E;
-    
         [Tooltip("Assign the TextMeshProUGUI component within the panel.")]
         public TextMeshProUGUI interactionPromptText;
 
+        [Header("- Tutorial Integration")]
+        [Tooltip("Check this box ONLY for the teleporter that returns the player to the apartment.")]
+        public bool isReturnToApartmentTeleporter = false;
+        
         private Transform _playerTransform;
         private Camera _playerCamera;
         private CharacterController _characterController;
@@ -153,15 +156,20 @@ namespace SAE_Dubai.Leonardo
                 _playerTransform.position = destination.position;
                 _playerTransform.rotation = destination.rotation;
                 _characterController.enabled = true;
-                Debug.Log($"Teleporter: Player moved to {destination.position}");
+                isReturnToApartmentTeleporter = true;
+                //Debug.Log($"Teleporter: Player moved to {destination.position}");
             }
-            else if (_playerTransform != null) // Fallback if no CharacterController.
+            else if (_playerTransform != null) // ? Fallback if no CharacterController.
             {
                 _playerTransform.position = destination.position;
                 _playerTransform.rotation = destination.rotation;
-                Debug.Log($"Teleporter: Player moved to {destination.position} (using Transform directly)");
+                isReturnToApartmentTeleporter = true;
+                //Debug.Log($"Teleporter: Player moved to {destination.position} (using Transform directly)");
             }
-            
+            if (isReturnToApartmentTeleporter)
+            {
+                TutorialManager.Instance?.NotifyReturnedToApartment();
+            }
         }
 
         void SetPlayerControlsActive(bool isActive)
