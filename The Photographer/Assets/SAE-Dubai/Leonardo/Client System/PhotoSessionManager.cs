@@ -25,6 +25,11 @@ namespace SAE_Dubai.Leonardo.Client_System
         [SerializeField] public LayerMask occlusionCheckMask;
         [SerializeField] private bool drawVisibilityDebugLines;
         [SerializeField] private string cameraManagerTag = "CameraManager";
+        
+        [Header("- Travel Audio")]
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip travelSound;
+        [SerializeField, Range(0f, 1f)] private float travelVolume = 0.8f;
 
         private CameraManager _cameraManager;
         private CameraSystem _currentCameraSystem;
@@ -43,8 +48,17 @@ namespace SAE_Dubai.Leonardo.Client_System
         }
 
         private void Start() {
-            Debug.Log("[PhotoSessionManager] Start: Initializing...");
+            //Debug.Log("[PhotoSessionManager] Start: Initializing...");
 
+            if (audioSource == null)
+            {
+                audioSource = GetComponent<AudioSource>();
+                if (audioSource == null)
+                {
+                    audioSource = gameObject.AddComponent<AudioSource>();
+                }
+            }
+            
             _cameraManager = FindFirstObjectByType<CameraManager>();
             if (_cameraManager == null) {
                 Debug.LogError("[PhotoSessionManager] Start: Could not find CameraManager in the scene!");
@@ -161,8 +175,17 @@ namespace SAE_Dubai.Leonardo.Client_System
             if (_isTraveling) return;
             if (locationIndex < 0 || locationIndex >= photoLocations.Count ||
                 photoLocations[locationIndex] == null) return;
+                
             if (TravelCostManager.Instance != null &&
                 TravelCostManager.Instance.AttemptTravelPayment((int)travelCost)) {
+                
+                // Play travel sound when successfully paying for travel
+                if (audioSource != null && travelSound != null)
+                {
+                    audioSource.volume = travelVolume;
+                    audioSource.PlayOneShot(travelSound);
+                }
+                
                 _isTraveling = true;
                 ScreenFader fader = ScreenFader.Instance;
                 if (fader != null) fader.StartFadeOut(onComplete: () => TeleportAndFadeIn(locationIndex));
