@@ -34,6 +34,23 @@ namespace SAE_Dubai.Leonardo
 
         [SerializeField] private float objectiveCompleteDelay = 1.5f;
 
+        [Header("Objective Completion Feedback")]
+        [Tooltip("The Image component for the tutorial panel's background.")]
+        [SerializeField] private Image tutorialBackground;
+        [Tooltip("AudioSource to play tutorial sounds.")]
+        [SerializeField] private AudioSource audioSource;
+        [Tooltip("Sound effect played when an objective is completed.")]
+        [SerializeField] private AudioClip objectiveCompleteSound;
+        [Tooltip("The color the background flashes to on completion.")]
+        [SerializeField] private Color flashColor = new Color(0.1f, 0.5f, 0.1f, 1f);
+        [Tooltip("How long the color flash effect takes (total in and out).")]
+        [SerializeField] private float flashDuration = 0.6f;
+        [Tooltip("How long to keep the panel visible after the final step.")]
+        [SerializeField] private float completionDisplayDuration = 5.0f;
+
+        private Color originalBackgroundColor;
+        private Coroutine hideCoroutine;
+        
         [Header("Animation Settings")]
         [SerializeField] private float fadeInDuration = 0.5f;
 
@@ -93,6 +110,25 @@ namespace SAE_Dubai.Leonardo
 
             if (skipTutorialButton != null) {
                 skipTutorialButton.onClick.AddListener(SkipTutorial);
+            }
+
+            if (audioSource == null)
+            {
+                audioSource = GetComponent<AudioSource>();
+                if (audioSource == null)
+                {
+                    audioSource = gameObject.AddComponent<AudioSource>();
+                    audioSource.playOnAwake = false;
+                }
+            }
+
+            if (tutorialBackground != null)
+            {
+                originalBackgroundColor = tutorialBackground.color;
+            }
+            else
+            {
+                Debug.LogWarning("TutorialManager: Tutorial Background Image not assigned.", this);
             }
 
             SetupTutorialObjectives();
@@ -278,33 +314,57 @@ namespace SAE_Dubai.Leonardo
             UpdateTutorialUI();
         }
 
-        private IEnumerator AdvanceToNextObjective() {
-            // Wait a moment before advancing to next objective
+        private IEnumerator AdvanceToNextObjective()
+        {
+            if (currentObjectiveIndex < objectives.Count - 1)
+            {
+                PlayObjectiveCompleteFeedback();
+            }
+            
             yield return new WaitForSeconds(objectiveCompleteDelay);
 
-            if (currentObjectiveIndex < objectives.Count - 1) {
+            if (currentObjectiveIndex < objectives.Count - 1)
+            {
                 currentObjectiveIndex++;
                 currentObjectiveComplete = false;
 
-                // Show panel with new objective
                 if (!isPanelVisible) {
                     ShowTutorialPanel();
                 }
+                UpdateTutorialUI();
 
-                // Flash the panel to indicate a new objective
+                // ? probably removing this.
                 if (panelCanvasGroup != null) {
-                    // Brief flash effect
                     panelCanvasGroup.DOKill();
                     Sequence flashSequence = DOTween.Sequence();
-                    flashSequence.Append(panelCanvasGroup.DOFade(0.2f, 0.2f))
-                        .Append(panelCanvasGroup.DOFade(1f, 0.3f));
+                    flashSequence.Append(panelCanvasGroup.DOFade(0.7f, 0.2f))
+                                 .Append(panelCanvasGroup.DOFade(1f, 0.3f));
                 }
             }
-            else {
+            else
+            {
                 CompleteTutorial();
             }
         }
+        
+        private void PlayObjectiveCompleteFeedback()
+        {
+            if (audioSource != null && objectiveCompleteSound != null)
+            {
+                audioSource.PlayOneShot(objectiveCompleteSound);
+            }
 
+            if (tutorialBackground != null)
+            {
+                tutorialBackground.DOKill();
+
+                Sequence flashSequence = DOTween.Sequence();
+                flashSequence.Append(tutorialBackground.DOColor(flashColor, flashDuration / 2).SetEase(Ease.OutQuad));
+                flashSequence.Append(tutorialBackground.DOColor(originalBackgroundColor, flashDuration / 2).SetEase(Ease.InQuad));
+                flashSequence.Play();
+            }
+        }
+        
         private void UpdateTutorialUI() {
             if (currentObjectiveIndex < 0 || currentObjectiveIndex >= objectives.Count)
                 return;
@@ -339,19 +399,51 @@ namespace SAE_Dubai.Leonardo
             Debug.Log("Tutorial started");
         }
 
-        public void CompleteTutorial() {
+        public void CompleteTutorial()
+        {
             tutorialActive = false;
             tutorialCompleted = true;
 
-            if (hideAfterCompleting) {
-                HideTutorialPanel();
+            PlayObjectiveCompleteFeedback();
+
+            UpdateTutorialUI();
+
+            if (!isPanelVisible && tutorialPanel != null)
+            {
+                ShowTutorialPanel();
             }
 
             Debug.Log("Tutorial completed");
+
+            if (hideAfterCompleting)
+            {
+                if (hideCoroutine != null)
+                {
+                    StopCoroutine(hideCoroutine);
+                }
+                hideCoroutine = StartCoroutine(HidePanelAfterDelay(completionDisplayDuration));
+            }
         }
 
-        public void SkipTutorial() {
-            CompleteTutorial();
+        private IEnumerator HidePanelAfterDelay(float delay)
+        {
+            yield return new WaitForSecondsRealtime(delay);
+
+            if (hideAfterCompleting && tutorialCompleted && isPanelVisible)
+            {
+                HideTutorialPanel();
+            }
+            hideCoroutine = null;
+        }
+
+        public void SkipTutorial()
+        {
+            if (!tutorialCompleted)
+            {
+                currentObjectiveIndex = objectives.Count - 1;
+                CompleteTutorial();
+                Debug.Log("Tutorial skipped (completion sequence initiated)");
+            }
         }
         
         /// <summary>
@@ -408,26 +500,28 @@ namespace SAE_Dubai.Leonardo
         private void HideTutorialPanel() {
             if (tutorialPanel == null) return;
 
-            // Animate slide out
             if (panelRectTransform != null) {
                 Vector2 endPosition = panelRectTransform.anchoredPosition + slideOffset;
                 panelRectTransform.DOAnchorPos(endPosition, fadeOutDuration)
                     .SetEase(fadeOutEase);
             }
 
-            // Fade out and deactivate at the end
             if (panelCanvasGroup != null) {
                 panelCanvasGroup.DOFade(0f, fadeOutDuration)
                     .SetEase(fadeOutEase)
                     .OnComplete(() => tutorialPanel.SetActive(false));
             }
             else {
-                // If no canvas group, deactivate after animation time
                 StartCoroutine(DeactivateAfterDelay(fadeOutDuration));
             }
 
-            isPanelVisible = false;
-        }
+            if (tutorialBackground != null)
+            {
+                tutorialBackground.DOKill();
+                tutorialBackground.color = originalBackgroundColor;
+            }
+
+            isPanelVisible = false;        }
 
         private IEnumerator DeactivateAfterDelay(float delay) {
             yield return new WaitForSeconds(delay);
@@ -435,11 +529,19 @@ namespace SAE_Dubai.Leonardo
                 tutorialPanel.SetActive(false);
         }
 
-        public void ToggleTutorialPanel() {
-            if (isPanelVisible) {
+        public void ToggleTutorialPanel()
+        {
+            if (isPanelVisible)
+            {
                 HideTutorialPanel();
+                if (hideCoroutine != null)
+                {
+                    StopCoroutine(hideCoroutine);
+                    hideCoroutine = null;
+                }
             }
-            else {
+            else
+            {
                 ShowTutorialPanel();
             }
         }
