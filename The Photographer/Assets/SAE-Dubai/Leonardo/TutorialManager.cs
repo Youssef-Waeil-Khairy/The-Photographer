@@ -127,9 +127,10 @@ namespace SAE_Dubai.Leonardo.Tutorial
 
         private void SetupTutorialObjectives()
         {
+            // ! Tutorials must be in sequential order.
             objectives.Clear();
 
-            // ! Tutorials must be in sequential order.
+            //* Done.
             objectives.Add(new TutorialObjective(
                 "Find Your Computer",
                 "Look around your room and locate your computer. Approach it and press E to interact.",
@@ -137,6 +138,7 @@ namespace SAE_Dubai.Leonardo.Tutorial
                 "Movement: WASD | Look: Mouse | Interact: E"
             ));
 
+            //* Done.
             objectives.Add(new TutorialObjective(
                 "Visit Camera Shop",
                 "Click on the Camera Shop tab in your computer interface.",
@@ -144,6 +146,7 @@ namespace SAE_Dubai.Leonardo.Tutorial
                 "Navigate to the Camera Shop tab in the computer interface"
             ));
 
+            //* Done.
             objectives.Add(new TutorialObjective(
                 "Purchase Your First Camera",
                 "Select a camera and click 'Purchase' to buy it.",
@@ -151,13 +154,15 @@ namespace SAE_Dubai.Leonardo.Tutorial
                 "Select a camera model and click the Purchase button"
             ));
             
+            //* Done.
             objectives.Add(new TutorialObjective(
                 "Exit Computer",
                 "Close the computer interface to return to the game world.",
-                () => computerUI != null && !computerUI.IsPlayerUsingComputer() && cameraManager.GetCameraCount() > 0,
+                () => computerUI != null && !computerUI.IsPlayerUsingComputer(),
                 "Press E or ESC to exit the computer interface"
             ));
-
+            
+            //* Done.
             objectives.Add(new TutorialObjective(
                 "Pick Up Your Camera",
                 "Approach your new camera and hold E to pick it up.",
@@ -165,6 +170,13 @@ namespace SAE_Dubai.Leonardo.Tutorial
                 "Approach the camera and hold E to pick it up"
             ));
 
+            objectives.Add(new TutorialObjective(
+                "Turn On The Camera",
+                "To work, the camera needs to be turned on.",
+                () => cameraManager.GetActiveCamera() != null && Input.GetKeyDown(KeyCode.C),
+                "Press C to turn on the camera while equipped."
+            ));
+            
             objectives.Add(new TutorialObjective(
                 "Focus and Take a Photo",
                 "Right-click to focus, then left-click to take a photo.",
@@ -181,15 +193,22 @@ namespace SAE_Dubai.Leonardo.Tutorial
 
             objectives.Add(new TutorialObjective(
                 "Find Photo Sessions",
-                "Click on the Photo Sessions tab in your computer.",
+                "Go back to the menu and click on the Photo Sessions tab in your computer.",
                 () => computerUI != null && computerUI.IsSessionsTabActive(),
                 "Click on the Photo Sessions tab"
             ));
 
             objectives.Add(new TutorialObjective(
                 "Accept a Photo Session",
-                "Select a client job and click 'Accept' to start the session.",
+                "Click on the client to accept the session.",
                 () => sessionManager != null && sessionManager.GetActiveSessions().Count > 0,
+                "Review available clients and click Accept on one you like"
+            ));
+            
+            objectives.Add(new TutorialObjective(
+                "Travel To The Client's Location",
+                "Select a client job and click 'Accept' to start the session.",
+                () => sessionManager != null && sessionManager.,
                 "Review available clients and click Accept on one you like"
             ));
 
