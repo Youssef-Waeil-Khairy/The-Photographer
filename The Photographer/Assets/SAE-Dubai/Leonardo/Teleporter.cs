@@ -27,6 +27,12 @@ namespace SAE_Dubai.Leonardo
         [Tooltip("Check this box ONLY for the teleporter that returns the player to the apartment.")]
         public bool isReturnToApartmentTeleporter = false;
         
+        [Header("- Audio")]
+        [Tooltip("Sound played when teleporting")]
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip teleportSound;
+        [SerializeField, Range(0f, 1f)] private float teleportVolume = 0.8f;
+        
         private Transform _playerTransform;
         private Camera _playerCamera;
         private CharacterController _characterController;
@@ -54,6 +60,15 @@ namespace SAE_Dubai.Leonardo
             }
 
             _playerCamera = Camera.main;
+
+            if (audioSource == null)
+            {
+                audioSource = GetComponent<AudioSource>();
+                if (audioSource == null)
+                {
+                    audioSource = gameObject.AddComponent<AudioSource>();
+                }
+            }
 
             if (destination == null) Debug.LogError($"Teleporter '{gameObject.name}': Destination is not assigned!", this);
             if (interactionPromptText == null) Debug.LogWarning($"Teleporter '{gameObject.name}': Interaction Prompt Text not assigned.", this);
@@ -123,6 +138,13 @@ namespace SAE_Dubai.Leonardo
             Debug.Log($"Teleporter '{gameObject.name}': Initiating teleport to '{destination.name}'.");
             _isTeleporting = true;
             HideInteractionPrompt();
+
+            // Play teleport sound
+            if (audioSource != null && teleportSound != null)
+            {
+                audioSource.volume = teleportVolume;
+                audioSource.PlayOneShot(teleportSound);
+            }
 
             ScreenFader fader = ScreenFader.Instance;
 
