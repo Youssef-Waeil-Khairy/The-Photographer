@@ -1,15 +1,14 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using SAE_Dubai.JW;
 using SAE_Dubai.Leonardo.CameraSys;
 using UnityEngine;
 using DG.Tweening;
-
+using TMPro;
 
 namespace SAE_Dubai.Leonardo.Client_System
 {
-    [RequireComponent(typeof(PortraitSubject))]
+    [RequireComponent(typeof(PortraitSubject), typeof(ClientFeedbackText))]
     public class ClientJobController : MonoBehaviour
     {
         [Header("- Completion Effects")]
@@ -30,6 +29,13 @@ namespace SAE_Dubai.Leonardo.Client_System
 
         [Tooltip("How high above the client the text should appear")]
         public float rewardTextHeight = 2f;
+
+        // --- Added Reference ---
+        [Header("- Feedback System")]
+        [Tooltip("Reference to the feedback text display system")]
+        [SerializeField] // Optional: SerializeField to assign in Inspector if needed
+        private ClientFeedbackText clientFeedback;
+        // ---------------------
 
         [Header("- Client Instance Info")]
         public string clientName = "Default Client";
@@ -80,12 +86,30 @@ namespace SAE_Dubai.Leonardo.Client_System
         [Tooltip("Marker placed at the right shoulder.")]
         public Transform shoulderRMarker;
 
-        private void Start() {
-            mainCanvas = GameObject.FindGameObjectWithTag("MainCanvas")?.GetComponent<Canvas>();
+        private void Awake()
+        {
+            clientFeedback = GetComponent<ClientFeedbackText>();
+            if (clientFeedback == null)
+            {
+                Debug.LogError($"ClientFeedbackText component not found on {gameObject.name}. Please add it.", this);
+            }
+        }
+
+        private void Start()
+        {
+            if (mainCanvas == null)
+            {
+                GameObject canvasGO = GameObject.FindWithTag("MainCanvas");
+                if (canvasGO != null)
+                {
+                     mainCanvas = canvasGO.GetComponent<Canvas>();
+                }
+            }
         }
 
         public void SetupJob(ClientData archetype, List<PortraitShotType> specificRequirements, int reward,
-            string predefinedClientName = null) {
+            string predefinedClientName = null)
+        {
             clientName = predefinedClientName ?? archetype.GetRandomName();
 
             requiredShotTypes = specificRequirements ?? new List<PortraitShotType>();
@@ -99,168 +123,167 @@ namespace SAE_Dubai.Leonardo.Client_System
             // UpdateUI(); // TODO: Implement client UI.
         }
 
-        public void CheckPhoto(CapturedPhoto photo) {
-            if (!isJobActive || !photo.portraitShotType.HasValue ||
-                photo.portraitShotType.Value == PortraitShotType.Undefined) {
-                Debug.Log(
-                    $"<color=yellow>[{clientName} Photo Debug]</color> No valid composition detected or job not active");
-                return; // ! Job not active or photo has no valid evaluated composition.
+        public void CheckPhoto(CapturedPhoto photo)
+        {
+            if (!isJobActive || clientFeedback == null)
+            {
+                return;
+            }
+
+            if (!photo.portraitShotType.HasValue || photo.portraitShotType.Value == PortraitShotType.Undefined)
+            {
+                Debug.Log($"<color=yellow>[{clientName} Photo Debug]</color> No valid composition detected.");
+                // --- Call Feedback for undefined shot ---
+                clientFeedback.HandlePhotoResult(photo, false);
+                // --------------------------------------
+                return;
             }
 
             PortraitShotType capturedType = photo.portraitShotType.Value;
+            bool isCorrectShot = false;
 
-            Debug.Log($"<color=cyan>=== PHOTO COMPOSITION DEBUG: {clientName} ===</color>");
-            Debug.Log(
-                $"<color=cyan>Photo Captured:</color> {PhotoCompositionEvaluator.GetShotTypeDisplayName(capturedType)}");
-            Debug.Log(
-                $"<color=cyan>Required Shot Types:</color> {string.Join(", ", requiredShotTypes.Select(PhotoCompositionEvaluator.GetShotTypeDisplayName))}");
-            Debug.Log(
-                $"<color=cyan>Already Completed:</color> {string.Join(", ", completedShotTypes.Select(PhotoCompositionEvaluator.GetShotTypeDisplayName))}");
-            Debug.Log(
-                $"<color=cyan>Match Found:</color> {requiredShotTypes.Contains(capturedType) && !completedShotTypes.Contains(capturedType)}");
+            //Debug.Log($"<color=cyan>=== PHOTO COMPOSITION DEBUG: {clientName} ===</color>");
+            //Debug.Log($"<color=cyan>Photo Captured:</color> {PhotoCompositionEvaluator.GetShotTypeDisplayName(capturedType)}");
 
-            if (requiredShotTypes.Contains(capturedType) && !completedShotTypes.Contains(capturedType)) {
+            if (requiredShotTypes.Contains(capturedType) && !completedShotTypes.Contains(capturedType))
+            {
                 completedShotTypes.Add(capturedType);
+                isCorrectShot = true;
                 Debug.Log(
                     $"<color=green>[SUCCESS]</color> Client '{clientName}' received required shot: {PhotoCompositionEvaluator.GetShotTypeDisplayName(capturedType)}. Progress: {completedShotTypes.Count}/{requiredShotTypes.Count}");
 
-                if (completedShotTypes.Count >= requiredShotTypes.Count) {
+                if (completedShotTypes.Count >= requiredShotTypes.Count)
+                {
                     Debug.Log(
                         $"<color=green>[JOB COMPLETE]</color> All required shots for '{clientName}' have been captured!");
                     CompleteJob();
+                    return; 
                 }
             }
-            else if (completedShotTypes.Contains(capturedType)) {
+            else if (completedShotTypes.Contains(capturedType))
+            {
+                isCorrectShot = false;
                 Debug.Log(
                     $"<color=yellow>[DUPLICATE]</color> Client '{clientName}' already received this shot type: {PhotoCompositionEvaluator.GetShotTypeDisplayName(capturedType)}");
             }
-            else {
+            else
+            {
+                isCorrectShot = false;
                 Debug.Log(
                     $"<color=red>[MISMATCH]</color> Client '{clientName}' received photo type {PhotoCompositionEvaluator.GetShotTypeDisplayName(capturedType)}, but needs {string.Join(", ", requiredShotTypes.Except(completedShotTypes).Select(PhotoCompositionEvaluator.GetShotTypeDisplayName))}");
             }
+
+            // --- Call Feedback ---
+            // Pass the photo and whether the specific shot composition was correct for the *current* requirements.
+            clientFeedback.HandlePhotoResult(photo, isCorrectShot);
+            // ---------------------
         }
 
-        // private void UpdateUI() TODO
-
-        private void CompleteJob() {
+        private void CompleteJob()
+        {
             isJobActive = false;
             Debug.Log($"Client '{clientName}' job completed! Reward: {rewardAmount}");
-            PlayerBalance.Instance?.AddBalance(rewardAmount);
 
-            // Play completion sound effect
+            if (PlayerBalance.Instance != null)
+            {
+                PlayerBalance.Instance.AddBalance(rewardAmount);
+            }
+            else
+            {
+                Debug.LogWarning("PlayerBalance instance not found. Cannot add reward.");
+            }
+
             AudioSource audioSource = GetComponent<AudioSource>();
-            if (audioSource != null && completionSound != null) {
+            if (audioSource == null)
+            {
+                audioSource = GetComponent<AudioSource>();
+            }
+
+            if (audioSource != null && completionSound != null)
+            {
                 audioSource.PlayOneShot(completionSound);
             }
-            else if (completionSound != null) {
-                // Fallback if no AudioSource on this object
+            else if (completionSound != null)
+            {
                 AudioSource.PlayClipAtPoint(completionSound, transform.position);
             }
 
-            // Spawn particle effect
-            if (completionParticles != null) {
+            if (completionParticles != null)
+            {
                 Instantiate(completionParticles, transform.position + Vector3.up, Quaternion.identity);
             }
 
-            // Show reward text
             ShowRewardText();
 
             OnJobCompleted?.Invoke(this);
-            Destroy(gameObject, 3.0f); // Destroy after delay.
+
+            Destroy(gameObject, 3.0f);
         }
 
-        private void ShowRewardText() {
-            if (rewardTextPrefab != null) {
-                // Find the main canvas if not already assigned
-                if (mainCanvas == null) {
-                    mainCanvas = FindObjectOfType<Canvas>();
-                    if (mainCanvas == null) {
-                        Debug.LogError("No Canvas found in scene for reward text");
-                        return;
-                    }
-                }
-
-                // Instantiate the panel as a child of the main canvas
+        private void ShowRewardText()
+        {
+            if (rewardTextPrefab != null && mainCanvas != null)
+            {
                 GameObject rewardPanel = Instantiate(rewardTextPrefab, mainCanvas.transform);
-
-                // Get the RectTransform to position it properly
                 RectTransform rectTransform = rewardPanel.GetComponent<RectTransform>();
-                if (rectTransform == null) {
+
+                if (rectTransform == null)
+                {
                     Debug.LogError("Reward text prefab has no RectTransform component");
                     Destroy(rewardPanel);
                     return;
                 }
 
-                // Reset the transform properties first
-                rectTransform.localPosition = Vector3.zero;
-                rectTransform.anchoredPosition = Vector2.zero;
+                if (Camera.main != null)
+                {
+                    Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * rewardTextHeight); 
 
-                // Position directly on client in screen space
-                if (Camera.main != null) {
-                    // Convert the world position to screen position
-                    Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 1f);
-
-                    // Adjust for any canvas scaling
-                    if (mainCanvas.renderMode == RenderMode.ScreenSpaceOverlay) {
+                   
+                    if (mainCanvas.renderMode == RenderMode.ScreenSpaceOverlay)
+                    {
                         rectTransform.position = screenPos;
                     }
-                    else if (mainCanvas.renderMode == RenderMode.ScreenSpaceCamera) {
-                        // Convert screen position to local position in the canvas
-                        Vector2 viewportPos = new Vector2(screenPos.x / Screen.width, screenPos.y / Screen.height);
-                        rectTransform.anchorMin = viewportPos;
-                        rectTransform.anchorMax = viewportPos;
-                        rectTransform.anchoredPosition = Vector2.zero;
+                    else 
+                    {
+                        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                            mainCanvas.transform as RectTransform,
+                            screenPos,
+                            mainCanvas.worldCamera,
+                            out Vector2 localPoint);
+                        rectTransform.localPosition = localPoint;
                     }
-
-                    // Make sure it's centered on its position
-                    rectTransform.pivot = new Vector2(0.5f, 0.5f);
+                     // Ensure pivot is centered if needed: rectTransform.pivot = new Vector2(0.5f, 0.5f);
                 }
 
-                // Find the text component and set it
-                TMPro.TextMeshProUGUI textComponent = rewardPanel.GetComponentInChildren<TMPro.TextMeshProUGUI>();
-                if (textComponent != null) {
+                // Set the text.
+                TextMeshProUGUI textComponent = rewardPanel.GetComponentInChildren<TextMeshProUGUI>();
+                if (textComponent != null)
+                {
                     textComponent.text = $"+${rewardAmount}";
                 }
 
-                // Get or add the canvas group for fading
+                // Animation stuff.
                 CanvasGroup canvasGroup = rewardPanel.GetComponent<CanvasGroup>();
-                if (canvasGroup == null) {
-                    canvasGroup = rewardPanel.AddComponent<CanvasGroup>();
-                }
+                if (canvasGroup == null) canvasGroup = rewardPanel.AddComponent<CanvasGroup>();
 
-                // Start with zero scale
                 rectTransform.localScale = Vector3.zero;
+                canvasGroup.alpha = 1f;
 
-                // Create a sequence of animations
                 Sequence rewardSequence = DOTween.Sequence();
-
-                // Pop-in animation
                 rewardSequence.Append(rectTransform.DOScale(1f, 0.3f).SetEase(Ease.OutBack));
-
-                // Wait a bit before moving
-                rewardSequence.AppendInterval(0.3f);
-
-                // Move upward in screen space
-                Vector3 startPos = rectTransform.position;
-                rewardSequence.Append(
-                    rectTransform.DOMove(
-                        new Vector3(startPos.x, startPos.y + 50f, startPos.z),
-                        rewardTextDuration
-                    ).SetEase(Ease.OutCubic)
-                );
-
-                // Fade out
-                rewardSequence.Join(
-                    canvasGroup.DOFade(0, rewardTextDuration * 0.5f)
-                        .SetDelay(rewardTextDuration * 0.5f)
-                );
-
-                // Destroy after animation completes
-                rewardSequence.OnComplete(() => { Destroy(rewardPanel); });
+                rewardSequence.Append(rectTransform.DOAnchorPosY(rectTransform.anchoredPosition.y + 50f, rewardTextDuration).SetEase(Ease.OutCubic)); 
+                rewardSequence.Join(canvasGroup.DOFade(0, rewardTextDuration * 0.5f).SetDelay(rewardTextDuration * 0.5f));
+                rewardSequence.OnComplete(() => Destroy(rewardPanel));
+            }
+            else
+            {
+                 if(rewardTextPrefab == null) Debug.LogWarning("Reward Text Prefab not assigned.");
+                 if(mainCanvas == null) Debug.LogWarning("Main Canvas not found for reward text.");
             }
         }
 
-        public List<Transform> GetOrderedBodyMarkers() {
+        public List<Transform> GetOrderedBodyMarkers()
+        {
             // Order matters: from top to bottom.
             // Only return the main vertical body markers
             return new List<Transform> { headMarker, chestMarker, hipMarker, kneesMarker, feetMarker }
