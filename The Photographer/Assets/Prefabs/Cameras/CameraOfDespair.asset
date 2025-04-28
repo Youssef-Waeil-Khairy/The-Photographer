@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40aff62cdb3172f4daceac3cd7116138, type: 3}
+  m_Name: CameraOfDespair
+  m_EditorClassIdentifier: 
+  cameraPrefab: {fileID: 8164753298345851315, guid: 0ea8f560ba634624a985af59d34c91f6, type: 3}
+  modelName: Camera Of Despair
+  manufacturer: Misery Corp.
+  description: For when you want to watch the world burn.
+  sensorType: 2
+  customSensorSize: {x: 36, y: 24}
+  baseISO: 100
+  minISO: 100
+  maxISO: 6400
+  availableISOStops: 64000000c8000000900100002003000040060000800c000000190000
+  hasAutoISO: 1
+  minAperture: 1.4
+  maxAperture: 16
+  availableApertureStops:
+  - 1.4
+  - 2
+  - 2.8
+  - 4
+  - 5.6
+  - 8
+  - 11
+  - 16
+  - 22
+  hasAutoAperture: 1
+  minShutterSpeed: 0.00025
+  maxShutterSpeed: 30
+  availableShutterSpeedStops:
+  - 0.00025
+  - 0.0005
+  - 0.001
+  - 0.002
+  - 0.004
+  - 0.008
+  - 0.016666668
+  - 0.033333335
+  - 0.06666667
+  - 0.125
+  - 0.25
+  - 0.5
+  - 1
+  - 2
+  - 4
+  - 8
+  - 15
+  - 30
+  hasAutoShutterSpeed: 1
+  hasZoom: 1
+  minFocalLength: 18
+  maxFocalLength: 70
+  hasAutoFocus: 1
+  apertureBladeCount: 5
+  apertureBladeCurvature: {x: 0.5, y: 0.5}
+  apertureBarrelClipping: 0.25
+  apertureAnamorphism: 0
+  hasImageStabilization: 0
+  hasBuiltInFlash: 1
+  photoCapacity: 50
+  cameraIcon: {fileID: 0}
+  shutterSound: {fileID: 0}
+  focusSound: {fileID: 0}
+  zoomSound: {fileID: 0}
