@@ -44,6 +44,9 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
         [TextArea(2, 5)] [Tooltip("Description of this camera's features and quality")]
         public string description = "A basic camera.";
+        
+        [Tooltip("The base price of this camera in the shop")]
+        public int price = 100;
 
         [Header("- Sensor Settings")]
         [Tooltip("The type of camera sensor used in this model")]
@@ -150,6 +153,8 @@ namespace SAE_Dubai.Leonardo.CameraSys
 
         [Tooltip("Sound played when zooming")] public AudioClip zoomSound;
 
+        
+        
         /// <summary>
         /// Returns the sensor size for the selected sensor type.
         /// </summary>

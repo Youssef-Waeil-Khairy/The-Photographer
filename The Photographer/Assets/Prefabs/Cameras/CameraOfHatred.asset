@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40aff62cdb3172f4daceac3cd7116138, type: 3}
   m_Name: CameraOfHatred
   m_EditorClassIdentifier: 
-  cameraPrefab: {fileID: 8164753298345851315, guid: 0ea8f560ba634624a985af59d34c91f6, type: 3}
-  modelName: Default Camera
+  cameraPrefab: {fileID: 149419608986987349, guid: 3c31ad5b25f7f6c45b39f727bc53d668, type: 3}
+  modelName: Camera of Hatred Pro
   manufacturer: Epic leo cameras
   description: A basic camera.
+  price: 500
   sensorType: 12
   customSensorSize: {x: 36, y: 24}
   baseISO: 100

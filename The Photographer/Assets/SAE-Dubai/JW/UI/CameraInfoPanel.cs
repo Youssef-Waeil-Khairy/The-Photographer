@@ -15,6 +15,10 @@ namespace SAE_Dubai.JW.UI
         public GameObject CameraItemPrefab;
 
         private GameObject cameraButtonGO;
+        
+        [Header("- Additional UI Elements")]
+        [Tooltip("Optional UI element to display camera description")]
+        [SerializeField] private TMP_Text cameraDescription;
 
         [Header("- Text Fields")]
         [SerializeField] private TMP_Text cameraName;
@@ -66,6 +70,16 @@ namespace SAE_Dubai.JW.UI
             cameraShutterSpeed.text = $"Shutter Speed: {CamSettings.minShutterSpeed} -> {CamSettings.maxShutterSpeed}";
 
             cameraSensor.text = $"Sensor: {CamSettings.sensorType.ToString()}";
+            
+            /*if (cameraDescription != null && !string.IsNullOrEmpty(CamSettings.description))
+            {
+                cameraDescription.gameObject.SetActive(true);
+                cameraDescription.text = CamSettings.description;
+            }
+            else if (cameraDescription != null)
+            {
+                cameraDescription.gameObject.SetActive(false);
+            }*/
         }
 
         private void UpdatePurchaseUI() {
